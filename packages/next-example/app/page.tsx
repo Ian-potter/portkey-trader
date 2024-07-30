@@ -1,12 +1,33 @@
 'use client';
 import { Button } from 'antd';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { AwakenSwapper, TBestRoutersAmountInfo } from '@portkey/trader-core';
 import { ChainId } from '@portkey/types';
 import detectProvider from '@portkey/detect-provider';
 import { aelf } from '@portkey/utils';
 import { BestSwapRoutesAmountInParams, BestSwapRoutesAmountOutParams, RouteType } from '@portkey/trader-services';
 import { AElfReactProvider, useAElfReact } from '@aelf-react/core';
+import {
+  PortkeyProvider,
+  SignIn,
+  ISignIn,
+  did,
+  ConfigProvider,
+  managerApprove,
+  getChainInfo,
+} from '@portkey/did-ui-react';
+import { storage } from '@/constants/storageKey';
+import { getContractBasic } from '@portkey/contracts';
+import '@portkey/did-ui-react/dist/assets/index.css';
+
+ConfigProvider.setGlobalConfig({
+  connectUrl: 'https://auth-aa-portkey-test.portkey.finance',
+  requestDefaults: {
+    timeout: 30000,
+    baseURL: 'https://aa-portkey-test.portkey.finance',
+  },
+  serviceUrl: 'https://aa-portkey-test.portkey.finance',
+});
 
 const awaken = new AwakenSwapper({
   contractConfig: {
@@ -31,6 +52,7 @@ const swapperParams = {
 
 function APP() {
   const aelfReact = useAElfReact();
+  const signInRef = useRef<ISignIn>();
 
   const [routerInfo, setRouterInfo] = useState<
     {
@@ -136,7 +158,75 @@ function APP() {
       //   });
       // },
     });
+    console.log(result, 'swap====result');
   }, [aelfReact, swapInfo]);
+
+  const onAwakenSwapPortkeySDK = useCallback(async () => {
+    if (!swapInfo) return;
+    const wallet = await did.load('111111', storage.wallet);
+    if (!wallet.didWallet.managementAccount) return signInRef.current?.setOpen(true);
+    console.log(wallet, 'wallet==');
+    const originChainId = localStorage.getItem(storage.originChainId) as ChainId;
+
+    const caHash = did.didWallet.caInfo[originChainId].caHash;
+    const chainInfo = await getChainInfo(originChainId);
+
+    const result = await awaken.swap({
+      routeType: ROUTE_TYPE,
+      // amountOutMin: swapperParams.amountOut,
+      // amountIn: swapperParams,
+      // amountOut: swapInfo.,
+      symbol: swapperParams.symbolIn,
+      amountIn: swapperParams.amountIn,
+      slippageTolerance: '0.005',
+      bestSwapTokensInfo: swapInfo,
+      contractOption: {
+        account: aelf.getWallet(wallet.didWallet.managementAccount.privateKey),
+        callType: 'ca',
+        caHash,
+        caContractAddress: chainInfo.caContractAddress,
+      },
+      userAddress: wallet.didWallet.aaInfo.accountInfo?.caAddress || '',
+      // toAddress: caAddress,
+      tokenApprove: async params => {
+        const [portkeyContract, tokenContract] = await Promise.all(
+          [chainInfo.caContractAddress, chainInfo.defaultToken.address].map(ca =>
+            getContractBasic({
+              contractAddress: ca,
+              account: aelf.getWallet(did.didWallet.managementAccount?.privateKey || ''),
+              rpcUrl: chainInfo.endPoint,
+            }),
+          ),
+        );
+
+        const result = await managerApprove({
+          originChainId: originChainId,
+          symbol: params.symbol,
+          caHash,
+          amount: params.amount,
+          spender: params.spender,
+          targetChainId: originChainId,
+          networkType: 'TESTNET',
+          dappInfo: {
+            icon: 'https://icon.horse/icon/localhost:3000/50',
+            href: 'http://localhost:3000',
+            name: 'localhost',
+          },
+        });
+        console.log(result, 'result===');
+
+        const approveResult = await portkeyContract.callSendMethod('ManagerApprove', '', {
+          caHash,
+          spender: params.spender,
+          symbol: result.symbol,
+          amount: result.amount,
+          guardiansApproved: result.guardiansApproved,
+        });
+        if (approveResult.error) throw approveResult.error;
+      },
+    });
+    // console.log(result, 'swap====result');
+  }, [swapInfo]);
 
   // const send = useCallback(async () => {
   //   // Portkey Extension
@@ -174,7 +264,20 @@ function APP() {
         Awaken swap NightELF
       </Button>
 
+      <Button onClick={onAwakenSwapPortkeySDK}>Awaken swap Portkey SDK</Button>
+
       <div>------</div>
+
+      <SignIn
+        ref={signInRef}
+        pin="111111"
+        onFinish={wallet => {
+          did.save('111111', storage.wallet);
+          localStorage.setItem(storage.originChainId, wallet.chainId);
+          signInRef.current?.setOpen(false);
+          onAwakenSwapPortkeySDK();
+        }}
+      />
     </main>
   );
 }
@@ -186,7 +289,9 @@ export default function Home() {
       nodes={{
         tDVW: { rpcUrl: 'https://tdvw-test-node.aelf.io', chainId: 'tDVW' },
       }}>
-      <APP />
+      <PortkeyProvider networkType={'TESTNET'}>
+        <APP />
+      </PortkeyProvider>
     </AElfReactProvider>
   );
 }
