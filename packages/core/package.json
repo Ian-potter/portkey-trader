@@ -44,12 +44,14 @@
     "aelf-sdk": "^3.4.7"
   },
   "dependencies": {
-    "@portkey/trader-services": "^0.0.1",
-    "@portkey/trader-utils": "^0.0.1",
-    "@portkey/trader-types": "^0.0.1",
-    "@portkey/types": "^2.7.1-alpha.4",
     "@portkey/contracts": "^2.7.1-alpha.4",
+    "@portkey/trader-services": "^0.0.1",
+    "@portkey/trader-types": "^0.0.1",
+    "@portkey/trader-utils": "^0.0.1",
+    "@portkey/types": "^2.7.1-alpha.4",
     "@portkey/utils": "^2.7.1-alpha.4",
-    "bignumber.js": "^9.1.0"
+    "antd": "^5.19.4",
+    "bignumber.js": "^9.1.0",
+    "clsx": "^2.1.1"
   }
 }

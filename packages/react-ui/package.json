@@ -43,6 +43,9 @@
   "peerDependencies": {
     "aelf-sdk": "^3.4.7"
   },
-
-  "gitHead": "9ba1306de72b5035883d7b102fe84beb36b5e258"
+  "gitHead": "9ba1306de72b5035883d7b102fe84beb36b5e258",
+  "dependencies": {
+    "antd": "^5.19.4",
+    "clsx": "^2.1.1"
+  }
 }
