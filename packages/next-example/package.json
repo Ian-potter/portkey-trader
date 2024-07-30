@@ -14,7 +14,9 @@
     "react-dom": "^18",
     "@portkey/trader-core": "^0.0.1",
     "@portkey/detect-provider": "^2.0.0-alpha.2",
-    "aelf-sdk": "^3.4.7"
+    "aelf-sdk": "^3.4.7",
+    "@aelf-react/core": "^0.1.19",
+    "@aelf-react/types": "^0.1.10"
   },
   "devDependencies": {
     "@types/node": "^20",

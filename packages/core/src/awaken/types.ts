@@ -1,7 +1,8 @@
 import { ISwapperBaseConfig } from '../types';
 
 export interface ISwapperContractConfig {
-  contractAddress: string;
+  swapContractAddress: string;
+  hookContractAddress: string;
   rpcUrl: string;
 }
 

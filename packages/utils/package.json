@@ -40,6 +40,10 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/contracts": "^2.6.6"
+    "@portkey/contracts": "^2.7.1-alpha.4",
+    "@portkey/utils": "^2.7.1-alpha.4"
+  },
+  "peerDependencies": {
+    "aelf-sdk": "^3.4.7"
   }
 }

@@ -15,56 +15,72 @@ export type TContractOption =
   | Omit<IEOAInstanceOptions, 'contractAddress' | 'rpcUrl'>
   | Omit<ICAInstanceOptions, 'contractAddress' | 'rpcUrl'>;
 
-export type TCheckBestRouter = {
-  routeType: RouteType;
+export type TSwapToken = {
   feeRates: number[];
   path: string[];
-  amount: number | string;
+  amount: string;
+};
+
+export type TCheckBestRouter = {
+  routeType: RouteType;
+  swapTokens: TSwapToken[];
 };
 
 export type TBaseSwapperParams = {
   contractOption: TContractOption;
 
-  path: string[];
+  bestSwapTokensInfo: TBestRoutersAmountInfo;
 
-  to: string;
-  feeRates: number[];
-
+  toAddress?: string;
+  userAddress: string;
+  slippageTolerance?: string;
   deadline?: PBTimestamp;
   channel?: string;
 };
 
-export type TSwapperForTokens = {
-  routeType: RouteType.AmountIn;
-  amountIn: number | string;
-  amountOutMin: number | string;
+// export type TSwapperForTokens = {
+//   routeType: RouteType.AmountIn;
+//   amountIn: number | string;
+//   amountOut: number | string;
+// } & TBaseSwapperParams;
+
+// export type TSwapperForExactTokens = {
+//   routeType: RouteType.AmountOut;
+//   amountIn: number | string;
+//   amountOut: number | string;
+// } & TBaseSwapperParams;
+
+export type TSwapperParams = {
+  routeType: RouteType;
+  amountIn?: string | number;
+  amountOut?: string | number;
+  symbol: string;
+  tokenApprove?: (params: { spender: string; symbol: string; amount: string | number }) => Promise<void>;
 } & TBaseSwapperParams;
 
-export type TSwapperForExactTokens = {
-  routeType: RouteType.AmountOut;
-  amountInMax: number | string;
-  amountOut: number | string;
-} & TBaseSwapperParams;
+export type TSlippageTolerance = {
+  slippageTolerance?: string;
+};
+export type TGetBestRoutersAmountInParams = Omit<BestSwapRoutesAmountInParams, 'routeType'> & TSlippageTolerance;
 
-export type TGetBestRoutersParams = BestSwapRoutesAmountInParams | BestSwapRoutesAmountOutParams;
+export type TGetBestRoutersAmountOutParams = Omit<BestSwapRoutesAmountOutParams, 'routeType'> & TSlippageTolerance;
 
+export type TBestRoutersResult = {
+  bestRouters: IBestSwapRoutes['routes'];
+  swapTokens: TSwapToken[];
+};
+export type TBestRoutersAmountInfo = {
+  swapTokens: (Omit<TSwapToken, 'amount'> & { amountIn: string; amountOut: string })[];
+  allAmount: string;
+};
 export interface IPortkeySwapperAdapter<Name extends string = string> {
   name: TSwapperName<Name>;
-  getBestRouters(
-    routeType: RouteType.AmountIn,
-    params: Omit<BestSwapRoutesAmountInParams, 'routeType'>,
-  ): Promise<IBestSwapRoutes>;
-  getBestRouters(
-    routeType: RouteType.AmountOut,
-    params: Omit<BestSwapRoutesAmountOutParams, 'routeType'>,
-  ): Promise<IBestSwapRoutes>;
-  // getBestRouters(params: Required<BestSwapRoutesAmountOutParams>): Promise<IBestSwapRoutes>;
-  // getBestRouters(params: TGetBestRoutersParams): Promise<IBestSwapRoutes>;
+  getBestRouters(routeType: RouteType.AmountIn, params: TGetBestRoutersAmountInParams): Promise<TBestRoutersResult>;
+  getBestRouters(routeType: RouteType.AmountOut, params: TGetBestRoutersAmountOutParams): Promise<TBestRoutersResult>;
 
   getAuthToken(): Promise<any>;
-  checkBestRouters(params: TCheckBestRouter): Promise<any>;
-  swap(params: TSwapperForExactTokens): Promise<any>;
-  swap(params: TSwapperForTokens): Promise<any>;
+  checkBestRouters(params: TCheckBestRouter): Promise<TBestRoutersAmountInfo>;
+  swap(params: TSwapperParams): Promise<any>;
 }
 
 export interface ISwapperBaseConfig {
@@ -81,4 +97,5 @@ export interface ISwapperConfig extends ISwapperBaseConfig {
 
 export enum SwapperError {
   noSupportTradePair = 'The current transaction is not supported',
+  outPutError = 'Insufficient Output amount, please Re-enter exchange',
 }

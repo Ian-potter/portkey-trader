@@ -1,19 +1,16 @@
 import {
   IPortkeySwapperAdapter,
   SwapperError,
+  TBestRoutersAmountInfo,
+  TBestRoutersResult,
   TCheckBestRouter,
-  TSwapperForExactTokens,
-  TSwapperForTokens,
+  TContractOption,
+  TGetBestRoutersAmountInParams,
+  TGetBestRoutersAmountOutParams,
   TSwapperName,
+  TSwapperParams,
 } from '../types';
-import {
-  AwakenService,
-  BestSwapRoutesAmountInParams,
-  BestSwapRoutesAmountOutParams,
-  IAwakenService,
-  IBestSwapRoutes,
-  RouteType,
-} from '@portkey/trader-services';
+import { AwakenService, IAwakenService, RouteType } from '@portkey/trader-services';
 
 import { FetchRequest } from '@portkey/request';
 import { IBaseRequest } from '@portkey/types';
@@ -22,8 +19,10 @@ import { SwapperConfig } from '../config';
 import { getContractBasic } from '@portkey/contracts';
 import { aelf } from '@portkey/utils';
 import { COMMON_PRIVATE, DEFAULT_CID } from '../constants';
-import { handleErrorMessage } from '@portkey/trader-utils';
+import { getTokenContractAddress, handleErrorMessage } from '@portkey/trader-utils';
 import { getDeadline } from '../utils';
+import { maxAmountIn, minimumAmountOut } from '../utils/awaken';
+import { ONE, TEN_THOUSAND, ZERO } from '../constants/misc';
 
 export const AwakenName = 'Awaken' as TSwapperName<'Awaken'>;
 
@@ -41,20 +40,31 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
   }
   public async getBestRouters(
     routeType: RouteType.AmountIn,
-    params: Omit<BestSwapRoutesAmountInParams, 'routeType'>,
-  ): Promise<IBestSwapRoutes>;
+    params: TGetBestRoutersAmountInParams,
+  ): Promise<TBestRoutersResult>;
   public async getBestRouters(
     routeType: RouteType.AmountOut,
-    params: Omit<BestSwapRoutesAmountOutParams, 'routeType'>,
-  ): Promise<IBestSwapRoutes>;
+    params: TGetBestRoutersAmountOutParams,
+  ): Promise<TBestRoutersResult>;
   public async getBestRouters(
     routeType: RouteType,
-    params: Omit<BestSwapRoutesAmountInParams, 'routeType'> | Omit<BestSwapRoutesAmountOutParams, 'routeType'>,
-  ): Promise<IBestSwapRoutes> {
+    params: TGetBestRoutersAmountInParams | TGetBestRoutersAmountOutParams,
+  ): Promise<TBestRoutersResult> {
     const result = await this.services.fetchBestSwapRoutes({ ...params, routeType } as any);
     if (result.code !== '20000') throw result.message;
-    if (!result.data.routes?.length) throw SwapperError.noSupportTradePair;
-    return result.data;
+    const bestRouters = result.data?.routes;
+    if (!bestRouters?.length) throw SwapperError.noSupportTradePair;
+    const swapTokens = bestRouters[0].distributions.map(item => {
+      const path = item.tokens.map(item => item.symbol);
+      const amount = routeType === RouteType.AmountIn ? item.amountIn : item.amountOut;
+
+      return {
+        feeRates: item.feeRates.map(item => TEN_THOUSAND.times(item).toNumber()),
+        path,
+        amount,
+      };
+    });
+    return { bestRouters: bestRouters, swapTokens };
   }
 
   getAuthToken(): Promise<any> {
@@ -70,96 +80,201 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     this.fetchRequest = new FetchRequest(this.config.requestConfig);
     this.services = new AwakenService(this.fetchRequest);
   }
-  swap(params: TSwapperForExactTokens): Promise<any>;
-  swap(params: TSwapperForTokens): Promise<any>;
-  async swap({
-    routeType,
-    amountIn,
-    amountInMax,
+
+  async checkAllowanceAndApprove({
+    symbol,
+    owner,
+    amount,
+    tokenApprove,
     contractOption,
-    feeRates,
-    amountOut,
-    amountOutMin,
-    path,
-    to,
-    deadline: _deadline,
-    channel = DEFAULT_CID,
-  }): Promise<any> {
-    // SwapExactTokensForTokens SwapTokensForExactTokens
-    const methodName = routeType === RouteType.AmountIn ? 'SwapExactTokensForTokens' : 'SwapTokensForExactTokens';
-    const deadline = _deadline ?? getDeadline();
-
-    const args = routeType === RouteType.AmountIn ? { amountIn, amountOutMin } : { amountOut, amountInMax };
-
-    const contract = await getContractBasic({
-      contractAddress: this.contractConfig.contractAddress,
+  }: {
+    symbol: string;
+    owner: string;
+    amount: number | string;
+    contractOption: TContractOption;
+    tokenApprove?: (params: { spender: string; symbol: string; amount: string | number }) => Promise<void>;
+  }) {
+    const tokenAddress = await getTokenContractAddress(this.contractConfig.rpcUrl);
+    const tokenContract = await this.getContract({
       rpcUrl: this.contractConfig.rpcUrl,
-      ...contractOption,
-    } as any);
-
-    const result = await contract.callSendMethod(methodName, '', {
-      swapTokens: [
-        {
-          feeRates,
-          path,
-          to,
-          deadline,
-          channel,
-          ...args,
-        },
-      ],
+      contractAddress: tokenAddress,
+      contractOption,
     });
 
-    console.log(result, 'result==swap');
+    const allowanceRes = await tokenContract.callViewMethod('GetAvailableAllowance', {
+      symbol,
+      owner,
+      spender: this.contractConfig.hookContractAddress,
+    });
+
+    if (allowanceRes.error) {
+      throw allowanceRes.error;
+    }
+    let allowanceResult = 0;
+    if (allowanceRes.data.allowance != undefined) {
+      allowanceResult = allowanceRes.data.allowance;
+    } else {
+      allowanceResult = allowanceRes.data.amount || 0;
+    }
+
+    if (ZERO.plus(allowanceResult).lt(amount)) {
+      const approveParams = {
+        spender: this.contractConfig.hookContractAddress,
+        symbol,
+        amount,
+      };
+      if (tokenApprove) {
+        await tokenApprove(approveParams);
+      } else {
+        const result = await tokenContract.callSendMethod('Approve', '', approveParams);
+        if (result.error) throw result.error;
+      }
+    }
   }
 
-  public async checkBestRouters({
-    routeType,
+  getContract({
+    contractOption,
+    contractAddress,
+    rpcUrl,
+  }: {
+    contractOption: TContractOption;
+    contractAddress: string;
+    rpcUrl: string;
+  }) {
+    const contractParams: any = {
+      ...contractOption,
+      contractAddress,
+      rpcUrl,
+    };
+    if ('aelfInstance' in contractParams && contractParams['aelfInstance']) delete contractParams.rpcUrl;
+    return getContractBasic(contractParams);
+  }
 
-    feeRates,
-    path,
-    amount,
-  }: TCheckBestRouter): Promise<any> {
-    const methodName = routeType === RouteType.AmountIn ? 'GetAmountsOut' : 'GetAmountsIn';
-    const amountKey = routeType === RouteType.AmountIn ? 'amountIn' : 'amountOut';
+  async swap({
+    routeType,
+    contractOption,
+    amountIn,
+    amountOut,
+    symbol,
+    bestSwapTokensInfo,
+    slippageTolerance,
+    toAddress,
+    deadline: _deadline,
+    channel = DEFAULT_CID,
+    userAddress,
+    tokenApprove,
+  }: TSwapperParams): Promise<any> {
+    let methodName: 'SwapExactTokensForTokens' | 'SwapTokensForExactTokens';
+    let needApproveAmount;
+    let needApproveKey: 'amountIn' | 'amountOut';
+    switch (routeType) {
+      case RouteType.AmountIn:
+        methodName = 'SwapExactTokensForTokens';
+        needApproveAmount = amountIn;
+        needApproveKey = 'amountIn';
+        break;
+      case RouteType.AmountOut:
+      default:
+        methodName = 'SwapTokensForExactTokens';
+        needApproveAmount = amountOut;
+        needApproveKey = 'amountOut';
+        break;
+    }
+    if (!needApproveAmount) throw `Please set ${needApproveKey}`;
+    await this.checkAllowanceAndApprove({
+      symbol,
+      owner: userAddress,
+      tokenApprove,
+      amount: needApproveAmount,
+      contractOption,
+    });
+
+    const getAmount = (amountIn: string, amountOut: string) =>
+      routeType === RouteType.AmountIn
+        ? {
+            amountIn,
+            amountOutMin: minimumAmountOut(ONE.plus(amountOut), slippageTolerance).toFixed(0),
+          }
+        : { amountOut, amountInMax: maxAmountIn(ONE.plus(amountIn), slippageTolerance).toFixed(0) };
+
+    const deadline = _deadline ?? getDeadline();
+    const swapTokens = bestSwapTokensInfo.swapTokens.map(item => ({
+      feeRates: item.feeRates,
+      path: item.path,
+      to: toAddress ?? userAddress,
+      deadline,
+      channel,
+      ...getAmount(item.amountIn, item.amountOut),
+    }));
+
+    console.log(swapTokens, 'swapTokens===');
+    const contract = await this.getContract({
+      contractAddress: this.contractConfig.swapContractAddress,
+      rpcUrl: this.contractConfig.rpcUrl,
+      contractOption,
+    });
+
+    const result = await contract.callSendMethod(methodName, '', {
+      swapTokens,
+    });
+    if (result.error) {
+      const errorMessage = handleErrorMessage(result.error, 'Swap error');
+      if (errorMessage.includes(SwapperError.outPutError)) throw SwapperError.outPutError;
+      throw errorMessage;
+    }
+    console.log(result, 'result==swap');
+    return result.data;
+  }
+
+  public async checkBestRouters({ swapTokens, routeType }: TCheckBestRouter): Promise<TBestRoutersAmountInfo> {
+    let methodName: 'GetAmountsOut' | 'GetAmountsIn' = 'GetAmountsOut';
+    let amountInputKey: 'amountIn' | 'amountOut' = 'amountIn';
+    let amountResultKey: 'amountOut' | 'amountIn' = 'amountOut';
+
+    switch (routeType) {
+      case RouteType.AmountIn:
+        methodName = 'GetAmountsOut';
+        amountInputKey = 'amountIn';
+        amountResultKey = 'amountOut';
+        break;
+      case RouteType.AmountOut:
+      default:
+        methodName = 'GetAmountsIn';
+        amountInputKey = 'amountOut';
+        amountResultKey = 'amountIn';
+    }
+
     const contract = await getContractBasic({
-      contractAddress: this.contractConfig.contractAddress,
+      contractAddress: this.contractConfig.swapContractAddress,
       rpcUrl: this.contractConfig.rpcUrl,
       account: aelf.getWallet(COMMON_PRIVATE),
     });
 
-    const result = await contract.callViewMethod(methodName, {
-      [amountKey]: amount,
-      feeRates,
-      path,
+    // console.log(feeRates, 'feeRates===');
+    const results = await Promise.all(
+      swapTokens.map(item =>
+        contract.callViewMethod(methodName, {
+          [amountInputKey]: item.amount,
+          feeRates: item.feeRates,
+          path: item.path,
+        }),
+      ),
+    );
+
+    const swapAmount = swapTokens.map((item, index) => {
+      if (results[index].error) throw handleErrorMessage(results[index].error, 'GetAmount error');
+      const amountIndex = amountResultKey === 'amountOut' ? results[index].data.amount.length - 1 : 0;
+      return {
+        feeRates: item.feeRates,
+        path: item.path,
+        [amountInputKey]: item.amount,
+        [amountResultKey]: results[index].data.amount[amountIndex],
+      };
     });
-    if (result.error) throw handleErrorMessage(result.error);
-    console.log(result, 'result===checkBestRouters');
-    return result;
+
+    return {
+      swapTokens: swapAmount as TBestRoutersAmountInfo['swapTokens'],
+      allAmount: swapAmount.reduce((pre, cur) => pre.plus(cur[amountResultKey]), ZERO).toFixed(),
+    };
   }
-
-  // async checkBestRouters({
-  //   routeType,
-
-  //   feeRates,
-  //   path,
-  //   amount,
-
-  //   contractOption,
-  // }: TCheckBestRouter): Promise<any> {
-  //   const methodName = routeType === RouteType.AmountIn ? 'GetAmountsOut' : 'GetAmountsIn';
-  //   const amountKey = routeType === RouteType.AmountIn ? 'amountIn' : 'amountOut';
-  //   const contract = await getContractBasic({
-  //     contractAddress: this.contractConfig.contractAddress,
-  //     ...contractOption,
-  //   } as any);
-
-  //   const result = await contract.callViewMethod(methodName, {
-  //     [amountKey]: amount,
-  //     feeRates,
-  //     path,
-  //   });
-  //   console.log(result, 'result===checkBestRouters');
-  //   return result;
-  // }
 }

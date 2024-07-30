@@ -40,17 +40,17 @@ export interface ITradePair {
 
 export interface IDistribution {
   percent: number;
-  amountIn: number;
-  amountOut: number;
+  amountIn: string;
+  amountOut: string;
   tradePairs: ITradePair[];
   tokens: IToken[];
-  amounts: number[];
+  amounts: string[];
   feeRates: number[];
 }
 
 export interface IRoute {
-  amountIn: number;
-  amountOut: number;
+  amountIn: string;
+  amountOut: string;
   splits: number;
   distributions: IDistribution[];
 }
