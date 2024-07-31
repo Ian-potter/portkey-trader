@@ -20,6 +20,10 @@ export type BestSwapRoutesAmountOutParams = BestSwapRoutesParams & {
   routeType: RouteType.AmountOut;
 };
 
+export type FetchTokenListParams = {
+  chainId: string;
+};
+
 export interface IToken {
   address: string;
   symbol: string;
@@ -57,8 +61,14 @@ export interface IRoute {
 
 export interface IBestSwapRoutes {
   routes: IRoute[];
+  statusCode: number;
+  message: string;
 }
 
+export interface ITokenList {
+  token0: IToken[];
+  token1: IToken[];
+}
 export interface IApiResponse<T = any> {
   code: string;
   data: T;

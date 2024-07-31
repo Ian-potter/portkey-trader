@@ -2,7 +2,9 @@ import { ICAInstanceOptions, IEOAInstanceOptions, IProviderOptions } from '@port
 import {
   BestSwapRoutesAmountInParams,
   BestSwapRoutesAmountOutParams,
+  FetchTokenListParams,
   IBestSwapRoutes,
+  IToken,
   RouteType,
 } from '@portkey/trader-services';
 import { PBTimestamp } from '@portkey/trader-types';
@@ -55,7 +57,11 @@ export type TSwapperParams = {
   amountIn?: string | number;
   amountOut?: string | number;
   symbol: string;
-  tokenApprove?: (params: { spender: string; symbol: string; amount: string | number }) => Promise<void>;
+  tokenApprove?: (params: {
+    spender: string;
+    symbol: string;
+    amount: string | number;
+  }) => Promise<{ error?: any } | void | undefined>;
 } & TBaseSwapperParams;
 
 export type TSlippageTolerance = {
@@ -81,6 +87,7 @@ export interface IPortkeySwapperAdapter<Name extends string = string> {
   getAuthToken(): Promise<any>;
   checkBestRouters(params: TCheckBestRouter): Promise<TBestRoutersAmountInfo>;
   swap(params: TSwapperParams): Promise<any>;
+  getSupportTokenList(params: FetchTokenListParams): Promise<IToken[]>;
 }
 
 export interface ISwapperBaseConfig {
@@ -96,6 +103,7 @@ export interface ISwapperConfig extends ISwapperBaseConfig {
 }
 
 export enum SwapperError {
-  noSupportTradePair = 'The current transaction is not supported',
+  noSupportTradePair = 'The current transaction is not supported.',
+  insufficientLiquidity = 'The transaction is insufficient in liquidity.',
   outPutError = 'Insufficient Output amount, please Re-enter exchange',
 }
