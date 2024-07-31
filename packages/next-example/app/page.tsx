@@ -117,6 +117,8 @@ function APP() {
       // },
     });
     // console.log(result, 'result==');
+    setSwapInfo(undefined);
+    setRouterInfo(undefined);
   }, [swapInfo, routerInfo]);
 
   const onAwakenSwapNightELF = useCallback(async () => {
@@ -159,6 +161,8 @@ function APP() {
       // },
     });
     console.log(result, 'swap====result');
+    setSwapInfo(undefined);
+    setRouterInfo(undefined);
   }, [aelfReact, swapInfo]);
 
   const onAwakenSwapPortkeySDK = useCallback(async () => {
@@ -225,25 +229,16 @@ function APP() {
         if (approveResult.error) throw approveResult.error;
       },
     });
+
+    setSwapInfo(undefined);
+    setRouterInfo(undefined);
     // console.log(result, 'swap====result');
   }, [swapInfo]);
 
-  // const send = useCallback(async () => {
-  //   // Portkey Extension
-
-  //   //
-  //   // Portkey sdk
-  //   // contractOption: {
-  //   //   account: aelf.getWallet('f6e512a3c259e5f9af981d7f99d245aa5bc52fe448495e0b0dd56e8406be6f71'),
-  //   //   rpcUrl: 'https://tdvw-test-node.aelf.io',
-  //   // },
-  //   //
-  //   // NightELF
-  //   // contractOption: {
-  //   //   // account: aelf.getWallet('f6e512a3c259e5f9af981d7f99d245aa5bc52fe448495e0b0dd56e8406be6f71'),
-  //   //   rpcUrl: 'https://tdvw-test-node.aelf.io',
-  //   // },
-  // }, []);
+  const getSupportTokenList = useCallback(async () => {
+    const list = await awaken.getSupportTokenList({ chainId: 'tDVW' });
+    console.log(list, 'getSupportTokenList');
+  }, []);
 
   return (
     <main className=" min-h-screen flex-col items-center justify-between p-24">
@@ -264,7 +259,12 @@ function APP() {
         Awaken swap NightELF
       </Button>
 
-      <Button onClick={onAwakenSwapPortkeySDK}>Awaken swap Portkey SDK</Button>
+      <Button disabled={!swapInfo || !routerInfo} onClick={onAwakenSwapPortkeySDK}>
+        Awaken swap Portkey SDK
+      </Button>
+      <div>------</div>
+
+      <Button onClick={getSupportTokenList}>getSupportTokenList</Button>
 
       <div>------</div>
 

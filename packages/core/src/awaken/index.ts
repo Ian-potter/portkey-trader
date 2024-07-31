@@ -10,7 +10,7 @@ import {
   TSwapperName,
   TSwapperParams,
 } from '../types';
-import { AwakenService, IAwakenService, RouteType } from '@portkey/trader-services';
+import { AwakenService, FetchTokenListParams, IAwakenService, IToken, RouteType } from '@portkey/trader-services';
 
 import { FetchRequest } from '@portkey/request';
 import { IBaseRequest } from '@portkey/types';
@@ -38,6 +38,7 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     this.contractConfig = config.contractConfig;
     this.refreshServices();
   }
+
   public async getBestRouters(
     routeType: RouteType.AmountIn,
     params: TGetBestRoutersAmountInParams,
@@ -53,6 +54,8 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     const result = await this.services.fetchBestSwapRoutes({ ...params, routeType } as any);
     if (result.code !== '20000') throw result.message;
     const bestRouters = result.data?.routes;
+    if (result.data.statusCode === 2000) throw SwapperError.insufficientLiquidity;
+    if (result.data.statusCode === 2001) throw SwapperError.noSupportTradePair;
     if (!bestRouters?.length) throw SwapperError.noSupportTradePair;
     const swapTokens = bestRouters[0].distributions.map(item => {
       const path = item.tokens.map(item => item.symbol);
@@ -76,6 +79,18 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     this.config.setConfig(options);
   }
 
+  async getSupportTokenList(params: FetchTokenListParams): Promise<IToken[]> {
+    const result = await this.services.getSupportTokenList(params);
+    if (result.code !== '20000') throw result.message;
+    const data = result.data;
+    const tokenMap: { [x in string]: IToken } = {};
+    [...data.token0, ...data.token1].forEach(item => {
+      if (tokenMap[item.symbol]) return;
+      tokenMap[item.symbol] = item;
+    });
+    return Object.values(tokenMap);
+  }
+
   refreshServices() {
     this.fetchRequest = new FetchRequest(this.config.requestConfig);
     this.services = new AwakenService(this.fetchRequest);
@@ -92,7 +107,11 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     owner: string;
     amount: number | string;
     contractOption: TContractOption;
-    tokenApprove?: (params: { spender: string; symbol: string; amount: string | number }) => Promise<void>;
+    tokenApprove?: (params: {
+      spender: string;
+      symbol: string;
+      amount: string | number;
+    }) => Promise<{ error?: any } | void | undefined>;
   }) {
     const tokenAddress = await getTokenContractAddress(this.contractConfig.rpcUrl);
     const tokenContract = await this.getContract({
@@ -124,7 +143,8 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
         amount,
       };
       if (tokenApprove) {
-        await tokenApprove(approveParams);
+        const approveRes = await tokenApprove(approveParams);
+        if (approveRes?.error) throw approveRes.error;
       } else {
         const result = await tokenContract.callSendMethod('Approve', '', approveParams);
         if (result.error) throw result.error;

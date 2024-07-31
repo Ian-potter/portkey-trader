@@ -1,13 +1,18 @@
+'use client';
 import loginConfig from '@/constants/config/login.config';
 import { APP_NAME, WEBSITE_ICON } from '@/constants/website';
-import { SignInDesignEnum } from '@aelf-web-login/wallet-adapter-base';
+import { SignInDesignEnum, WalletTypeEnum } from '@aelf-web-login/wallet-adapter-base';
 import { IConfigProps } from '@aelf-web-login/wallet-adapter-bridge';
 import { NightElfWallet } from '@aelf-web-login/wallet-adapter-night-elf';
 import { PortkeyAAWallet } from '@aelf-web-login/wallet-adapter-portkey-aa';
 import { PortkeyDiscoverWallet } from '@aelf-web-login/wallet-adapter-portkey-discover';
-import { init, WebLoginProvider } from '@aelf-web-login/wallet-adapter-react';
-import React from 'react';
-
+import { init, useConnectWallet, WebLoginProvider } from '@aelf-web-login/wallet-adapter-react';
+import { AwakenSwapper, TBestRoutersAmountInfo, TContractOption } from '@portkey/trader-core';
+import { RouteType } from '@portkey/trader-services';
+import { Button } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { ChainId } from '@portkey/types';
+import { getChainInfo } from '@portkey/did-ui-react';
 const {
   CHAIN_ID,
   CONNECT_SERVER,
@@ -22,6 +27,8 @@ const {
 const didConfig = {
   graphQLUrl: GRAPHQL_SERVER,
   connectUrl: CONNECT_SERVER,
+  serviceUrl: PORTKEY_SERVER_URL,
+
   requestDefaults: {
     baseURL: PORTKEY_SERVER_URL,
     timeout: 30000,
@@ -91,8 +98,152 @@ const config: IConfigProps = {
   wallets,
 };
 
+const awaken = new AwakenSwapper({
+  contractConfig: {
+    swapContractAddress: '2vahJs5WeWVJruzd1DuTAu3TwK8jktpJ2NNeALJJWEbPQCUW4Y',
+    hookContractAddress: '2vahJs5WeWVJruzd1DuTAu3TwK8jktpJ2NNeALJJWEbPQCUW4Y',
+    rpcUrl: 'https://tdvw-test-node.aelf.io',
+  },
+  requestDefaults: {
+    baseURL: 'https://test.awaken.finance',
+  },
+});
+
+const ROUTE_TYPE = RouteType.AmountIn;
+
+const swapperParams = {
+  chainId: 'tDVW' as ChainId,
+  symbolIn: 'ELF',
+  symbolOut: 'USDT',
+  // amountIn: 10,
+  amountIn: 10 * 1e8,
+};
+
 const APP = () => {
-  return <div></div>;
+  const [routerInfo, setRouterInfo] = useState<
+    {
+      feeRates: number[];
+      path: string[];
+      amount: string;
+    }[]
+  >();
+
+  const [swapInfo, setSwapInfo] = useState<TBestRoutersAmountInfo>();
+
+  const onAwakenSwapper = useCallback(async () => {
+    const { bestRouters, swapTokens } = await awaken.getBestRouters(ROUTE_TYPE, swapperParams);
+    console.log(bestRouters, 'bestRouters====', swapTokens);
+
+    setRouterInfo(swapTokens);
+  }, []);
+
+  const onAwakenCheckBestRouters = useCallback(async () => {
+    if (!routerInfo) return;
+    console.log(routerInfo, 'routerInfo==');
+    try {
+      const swapTokens = await awaken.checkBestRouters({
+        routeType: ROUTE_TYPE,
+        swapTokens: routerInfo,
+      });
+      console.log(swapTokens, 'check===');
+      setSwapInfo(swapTokens);
+    } catch (error) {
+      console.log(error, 'onAwakenCheckBestRouters===');
+    }
+  }, [routerInfo]);
+
+  const { connectWallet, callSendMethod, walletType, isConnected, walletInfo, disConnectWallet } = useConnectWallet();
+
+  const onAwakenSwapHandler = useCallback(async () => {
+    if (!isConnected) return await connectWallet();
+    const connectInfo = walletInfo;
+    console.log(connectInfo, 'connectInfo==');
+    if (!swapInfo) return;
+    if (!connectInfo) return;
+
+    const chainProvider = await connectInfo.extraInfo?.provider?.getChain('tDVW');
+    const bridge = await connectInfo.extraInfo?.nightElfInfo?.aelfBridges?.['tDVW'];
+    const portkeyInfo = connectInfo.extraInfo?.portkeyInfo;
+    const contractOption: any = {
+      account: {
+        address: connectInfo?.address,
+      },
+    };
+    // account: aelf.getWallet(wallet.didWallet.managementAccount.privateKey),
+    //     callType: 'ca',
+    //     caHash,
+    //     caContractAddress: chainInfo.caContractAddress,
+    if (chainProvider) contractOption.chainProvider = chainProvider;
+    if (bridge) contractOption.aelfInstance = bridge;
+    if (portkeyInfo) {
+      const chainInfo = await getChainInfo(portkeyInfo.chainId);
+
+      contractOption.account = portkeyInfo.walletInfo;
+      contractOption.callType = 'ca';
+      contractOption.caHash = portkeyInfo.caInfo.caHash;
+      contractOption.caContractAddress = chainInfo.caContractAddress;
+    }
+
+    console.log(chainProvider, bridge, 'bridge===');
+
+    const result = await awaken.swap({
+      routeType: ROUTE_TYPE,
+      // amountOutMin: swapperParams.amountOut,
+      // amountIn: swapperParams,
+      // amountOut: swapInfo.,
+      symbol: swapperParams.symbolIn,
+      amountIn: swapperParams.amountIn,
+      slippageTolerance: '0.005',
+      bestSwapTokensInfo: swapInfo,
+      contractOption: contractOption,
+      userAddress: connectInfo?.address,
+      // toAddress: caAddress,
+      tokenApprove: async params => {
+        return await callSendMethod({
+          contractAddress: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+          methodName: 'Approve',
+          args: params,
+          chainId: 'tDVW',
+        });
+      },
+    });
+    setSwapInfo(undefined);
+    setRouterInfo(undefined);
+    console.log(result, 'result==');
+  }, [callSendMethod, connectWallet, isConnected, swapInfo, walletInfo]);
+
+  return (
+    <div>
+      <div>
+        walletType: {localStorage.getItem('connectedWallet') ?? 'unknown'}
+        <Button
+          onClick={async () => {
+            // localStorage.removeItem('connectedWallet');
+            // localStorage.setItem('connectedWallet', 'PortkeyAA');
+            // connectWallet();
+            await disConnectWallet();
+            await connectWallet();
+          }}>
+          change wallet
+        </Button>
+      </div>
+
+      <Button onClick={onAwakenSwapper}>awaken</Button>
+      <div>------</div>
+
+      <Button disabled={!routerInfo} onClick={onAwakenCheckBestRouters}>
+        checkBestRouters Awaken
+      </Button>
+
+      <div>------</div>
+
+      <Button disabled={!swapInfo || !routerInfo} onClick={onAwakenSwapHandler}>
+        Awaken swap
+      </Button>
+
+      <div>------</div>
+    </div>
+  );
 };
 
 export default function Home() {
