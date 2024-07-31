@@ -23,8 +23,8 @@
   "homepage": "https://portkey.finance/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Portkey-Wallet/portkey-web.git",
-    "directory": "packages/services"
+    "url": "https://github.com/Portkey-Wallet/portkey-trader.git",
+    "directory": "packages/trader-services"
   },
   "scripts": {
     "clean": "rm -rf dist",

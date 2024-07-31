@@ -123,7 +123,7 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     const allowanceRes = await tokenContract.callViewMethod('GetAvailableAllowance', {
       symbol,
       owner,
-      spender: this.contractConfig.hookContractAddress,
+      spender: this.contractConfig.swapContractAddress,
     });
 
     if (allowanceRes.error) {
@@ -138,7 +138,7 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
 
     if (ZERO.plus(allowanceResult).lt(amount)) {
       const approveParams = {
-        spender: this.contractConfig.hookContractAddress,
+        spender: this.contractConfig.swapContractAddress,
         symbol,
         amount,
       };

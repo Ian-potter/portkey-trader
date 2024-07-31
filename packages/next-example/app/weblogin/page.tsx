@@ -101,7 +101,6 @@ const config: IConfigProps = {
 const awaken = new AwakenSwapper({
   contractConfig: {
     swapContractAddress: '2vahJs5WeWVJruzd1DuTAu3TwK8jktpJ2NNeALJJWEbPQCUW4Y',
-    hookContractAddress: '2vahJs5WeWVJruzd1DuTAu3TwK8jktpJ2NNeALJJWEbPQCUW4Y',
     rpcUrl: 'https://tdvw-test-node.aelf.io',
   },
   requestDefaults: {
