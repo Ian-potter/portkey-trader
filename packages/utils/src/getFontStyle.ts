@@ -26,13 +26,13 @@ export interface FontStyleProps {
   className?: string;
 }
 
-export default function getFontStyle({
+export const getFontStyle = ({
   weight = 'regular',
   color = 'one',
   size = 14,
   lineHeight,
   align = 'left',
-}: Omit<FontStyleProps, 'classname'>): string {
+}: Omit<FontStyleProps, 'classname'>): string => {
   return clsx(
     `font-weight-${weight}`,
     `font-color-${color}`,
@@ -40,7 +40,7 @@ export default function getFontStyle({
     typeof lineHeight === undefined ? '' : `line-height-${lineHeight}`,
     `text-align-${align}`,
   );
-}
+};
 
 export type TSvgSize = 16 | 20;
 export type TSvgColor = 'one' | 'two';
@@ -54,3 +54,5 @@ export type TGetSvgStyleParams = {
 export const getSvgStyle = ({ size = 20, color = 'one' }: TGetSvgStyleParams) => {
   return clsx(`svg-size-${size}`, `svg-color-${color}`);
 };
+
+export default getFontStyle;

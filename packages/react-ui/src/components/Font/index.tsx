@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import clsx from 'clsx';
 
-import getFontStyle, { FontStyleProps } from '@portkey/trader-utils/src/getFontStyle';
+import { getFontStyle, FontStyleProps } from '@portkey/trader-utils';
 import './index.less';
 
 export interface FontProps extends FontStyleProps {

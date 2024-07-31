@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import './styles.less';
+import { SwapPanel } from './SwapPanel';
 
 enum SwapComponentUiType {
   Mobile = 'Mobile',
@@ -11,12 +12,14 @@ interface ISwapProps {
   componentUiType?: SwapComponentUiType;
 }
 
-export default function Swap({ componentUiType, containerClassName }: ISwapProps) {
+export const Swap = ({ componentUiType, containerClassName }: ISwapProps) => {
   return (
     <>
       <div className={clsx(['swap-page', containerClassName])}>
-        {componentUiType === SwapComponentUiType.Mobile ? <div>swap mobile</div> : <div>swap web</div>}
+        {componentUiType === SwapComponentUiType.Mobile ? <SwapPanel /> : <SwapPanel />}
       </div>
     </>
   );
-}
+};
+
+export default Swap;

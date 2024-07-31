@@ -270,7 +270,6 @@ function APP() {
 
       <div>------</div>
 
-      <Swap />
       <SignIn
         ref={signInRef}
         pin="111111"
@@ -281,6 +280,7 @@ function APP() {
           onAwakenSwapPortkeySDK();
         }}
       />
+      <Swap />
     </main>
   );
 }

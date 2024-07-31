@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 
 import { stringCut, unifyWTokenSymbol } from '@portkey/trader-utils';
 
-import { TokenInfo } from '@portkey/trader-types/src/swap';
-import { FontStyleProps } from '@portkey/trader-utils/src/getFontStyle';
-import { formatSymbol } from '@portkey/trader-utils/src/token';
+import { TokenInfo } from '@portkey/trader-types';
+import { FontStyleProps } from '@portkey/trader-utils';
+import { formatSymbol } from '@portkey/trader-utils';
 import Font from '../Font';
 
 export interface PairProps extends FontStyleProps {

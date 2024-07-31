@@ -1,13 +1,13 @@
 import Font from '../../Font';
 import { forwardRef, useState } from 'react';
-import { formatSymbol } from '@portkey/trader-utils/src/token';
+import { formatSymbol } from '@portkey/trader-utils';
 import { Col, Row } from 'antd';
 import CommonModal from '../../CommonModal';
 import CommonButton from '../../CommonButton';
 import { TSwapInfo } from '../SwapPanel';
 import { TSwapRouteInfo } from '@portkey/trader-types';
 // import { CurrencyLogo } from '../../CurrencyLogo';
-// import { REQ_CODE, SWAP_TIME_INTERVAL, ZERO } from '@portkey/trader-utils/src/constants/misc';
+
 import { SwapRouteInfo } from '../SwapRouteInfo';
 import './styles.less';
 
