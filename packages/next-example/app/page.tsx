@@ -6,6 +6,9 @@ import { ChainId } from '@portkey/types';
 import detectProvider from '@portkey/detect-provider';
 import { aelf } from '@portkey/utils';
 import { BestSwapRoutesAmountInParams, BestSwapRoutesAmountOutParams, RouteType } from '@portkey/trader-services';
+import { Swap } from '@portkey/trader-react-ui';
+
+import { Currency } from '@awaken/sdk-core';
 
 const awaken = new AwakenSwapper({
   contractConfig: {
@@ -95,6 +98,8 @@ export default function Home() {
     //   chainProvider;
     // }
   }, [routerInfo]);
+
+  return <Swap></Swap>;
 
   return (
     <main className=" min-h-screen flex-col items-center justify-between p-24">

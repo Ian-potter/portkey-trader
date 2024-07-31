@@ -1,33 +1,30 @@
 import { Row, Col } from 'antd';
 import clsx from 'clsx';
 import { Currency } from '@awaken/sdk-core';
-import { CurrencyLogo } from 'components/CurrencyLogo';
-import CommonButton, { CommonButtonProps } from 'components/CommonButton';
-import { Pair } from 'components/Pair';
-import { basicModalView } from 'contexts/useModal/actions';
-import { useModalDispatch } from 'contexts/useModal/hooks';
+import { CurrencyLogo } from '../../CurrencyLogo';
+import CommonButton, { CommonButtonProps } from '../../CommonButton';
+import { Pair } from '../../Pair';
+// import { basicModalView } from 'contexts/useModal/actions';
+// import { useModalDispatch } from 'contexts/useModal/hooks';
+// import { IconArrowDown } from '../../icons';
 import Font from '../../Font';
-import { IconArrowDown } from 'assets/icons';
 import './styles.less';
-
 interface SelectTokenButtonProps extends CommonButtonProps {
   token?: Currency;
   setToken?: (token?: Currency) => void;
 }
 
-export default function SwapSelectTokenButton({ token, setToken, className, ...props }: SelectTokenButtonProps) {
-  const { t } = useTranslation();
+export default function SwapSelectTokenButton({ className, token, setToken, ...props }: SelectTokenButtonProps) {
+  // const dispatch = useModalDispatch();
 
-  const dispatch = useModalDispatch();
-
-  const onClick = () => dispatch(basicModalView.setSelectTokenModal.actions(true, setToken, token));
+  // const onClick = () => dispatch(basicModalView.setSelectTokenModal.actions(true, setToken, token));
 
   const renderContent = () => {
     if (!token) {
       return (
         <div className="select-token-btn-label-wrap">
           <Font size={16} lineHeight={24} weight="bold" align="left">
-            {t('selectAToken')}
+            {'selectAToken'}
           </Font>
         </div>
       );
@@ -46,16 +43,10 @@ export default function SwapSelectTokenButton({ token, setToken, className, ...p
   };
 
   return (
-    <CommonButton
-      type={token ? 'ghost' : 'primary'}
-      className={clsx('select-token-btn', className)}
-      onClick={onClick}
-      {...props}>
+    <CommonButton type={'primary'} className={clsx('select-token-btn', className)} {...props}>
       <Row justify="space-between" align="middle">
         <Col className="select-token-middle">{renderContent()}</Col>
-        <Col className="select-token-icon-col">
-          <IconArrowDown className="select-token-icon" />
-        </Col>
+        <Col className="select-token-icon-col">{/* <IconArrowDown className="select-token-icon" /> */}</Col>
       </Row>
     </CommonButton>
   );

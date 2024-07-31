@@ -1,20 +1,14 @@
-import { TPairRoute } from 'pages/Swap/types';
 import './styles.less';
-import Font from 'components/Font';
+import Font from '../../Font';
 import { useMemo } from 'react';
-import { TokenInfo } from 'types';
-import { CurrencyLogo, CurrencyLogos } from 'components/CurrencyLogo';
-import { useTranslation } from 'react-i18next';
-import { ZERO } from 'constants/misc';
-import { useMobile } from 'utils/isMobile';
+import { CurrencyLogo, CurrencyLogos } from '../../CurrencyLogo';
+import { TokenInfo } from '@portkey/trader-types/src/swap';
 
-export type TSwapOrderRoutingProps = {
-  route?: TPairRoute;
-};
+// import { CurrencyLogo, CurrencyLogos } from 'components/CurrencyLogo';
+// import { ZERO } from 'constants/misc';
+// import { useMobile } from 'utils/isMobile';
 
-export const SwapOrderRouting = ({ route }: TSwapOrderRoutingProps) => {
-  const isMobile = useMobile();
-  const { t } = useTranslation();
+export const SwapOrderRouting = ({ route }: any) => {
   const tokenList = useMemo(() => {
     if (!route) return [];
     const _list: Array<TokenInfo[]> = [];
@@ -33,18 +27,18 @@ export const SwapOrderRouting = ({ route }: TSwapOrderRoutingProps) => {
     return route?.rawPath?.[route?.rawPath?.length - 1];
   }, [route?.rawPath]);
 
-  const feeRate = useMemo(() => {
-    if (!route) return '-';
-    return `${ZERO.plus(route.feeRate).times(100).toFixed()}%`;
-  }, [route]);
+  // const feeRate = useMemo(() => {
+  //   if (!route) return '-';
+  //   return `${ZERO.plus(route.feeRate).times(100).toFixed()}%`;
+  // }, [route]);
 
   if (!route) return <></>;
   return (
     <div className="swap-order-routing">
-      {!isMobile && (
+      {!'isMobile' && (
         <div className="swap-order-header">
           <Font size={12} lineHeight={14}>
-            {t('Order Routing')}
+            {'Order Routing'}
           </Font>
         </div>
       )}
@@ -65,7 +59,7 @@ export const SwapOrderRouting = ({ route }: TSwapOrderRoutingProps) => {
           <div className="swap-order-route-info" key={idx}>
             <CurrencyLogos size={16} tokens={item} isSortToken={false} />
             <Font size={12} lineHeight={14}>
-              {feeRate}
+              {'feeRate'}
             </Font>
           </div>
         ))}
