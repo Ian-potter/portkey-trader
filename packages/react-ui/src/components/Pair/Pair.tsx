@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { stringCut, unifyWTokenSymbol } from '@portkey/trader-utils/src/swap';
+import { stringCut, unifyWTokenSymbol } from '@portkey/trader-utils';
 
 import { TokenInfo } from '@portkey/trader-types/src/swap';
 import { FontStyleProps } from '@portkey/trader-utils/src/getFontStyle';
