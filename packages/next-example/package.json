@@ -10,6 +10,7 @@
   "dependencies": {
     "@portkey/detect-provider": "^2.0.0-alpha.2",
     "@portkey/trader-core": "^0.0.1",
+    "@portkey/trader-react-ui": "^0.0.1",
     "aelf-sdk": "^3.4.7",
     "antd": "^5.19.3",
     "clsx": "^2.1.1",

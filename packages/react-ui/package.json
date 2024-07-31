@@ -5,13 +5,6 @@
   "main": "dist/index.js",
   "types": "dist/_types/index.d.ts",
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "require": "./dist/commonjs/index.js"
-    }
-  },
   "author": "",
   "license": "ISC",
   "publishConfig": {
@@ -60,6 +53,9 @@
     "query-string": "^7.1.1",
     "react-qrcode-logo": "2.9.0",
     "react-use": "^17.4.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "@portkey/trader-types": "^0.0.1",
+    "@portkey/trader-utils": "^0.0.1",
+    "@portkey/trader-core": "^0.0.1"
   }
 }

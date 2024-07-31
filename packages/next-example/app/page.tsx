@@ -7,7 +7,6 @@ import detectProvider from '@portkey/detect-provider';
 import { aelf } from '@portkey/utils';
 import { BestSwapRoutesAmountInParams, BestSwapRoutesAmountOutParams, RouteType } from '@portkey/trader-services';
 import { Swap } from '@portkey/trader-react-ui';
-
 import { Currency } from '@awaken/sdk-core';
 
 const awaken = new AwakenSwapper({
@@ -99,8 +98,6 @@ export default function Home() {
     // }
   }, [routerInfo]);
 
-  return <Swap></Swap>;
-
   return (
     <main className=" min-h-screen flex-col items-center justify-between p-24">
       <Button onClick={onAwakenSwapper}>awaken</Button>
@@ -113,6 +110,8 @@ export default function Home() {
       <Button onClick={onAwakenSwapPortkey}>Awaken swap Portkey extension</Button>
 
       <div>------</div>
+
+      <Swap />
     </main>
   );
 }

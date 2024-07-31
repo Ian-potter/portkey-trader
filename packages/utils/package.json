@@ -40,6 +40,7 @@
     "start": "tsc --watch"
   },
   "dependencies": {
+    "@portkey/trader-types": "^0.0.1",
     "@portkey/contracts": "^2.6.6",
     "loadsh": "^0.0.4",
     "@awaken/sdk-core": "git+https://github.com/Awaken-Finance/sdk-core.git"

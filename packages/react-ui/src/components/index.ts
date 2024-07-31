@@ -1,2 +1,2 @@
 export { CircleProcess } from './CircleProcess';
-export * from './Swap';
+export { default as Swap } from './Swap';
