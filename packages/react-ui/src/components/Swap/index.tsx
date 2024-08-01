@@ -1,10 +1,7 @@
 import clsx from 'clsx';
 import './styles.less';
-import { SwapPanel } from './SwapPanel';
-import SelectTokenModal from './SelectTokenModal';
-import { AwakenSwapProvider, useAwakenSwapContext } from '../../context/AwakenSwap';
-import CommonButton from '../CommonButton';
-import { swapActions } from '../../context/AwakenSwap/actions';
+import SwapPanel from './components/SwapPanel/';
+import { AwakenSwapProvider } from '../../context/AwakenSwap';
 
 export enum SwapComponentUiType {
   Mobile = 'Mobile',

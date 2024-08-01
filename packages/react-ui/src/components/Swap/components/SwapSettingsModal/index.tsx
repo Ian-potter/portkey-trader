@@ -1,27 +1,29 @@
 import { useTranslation } from 'react-i18next';
-import CommonModal from '../../CommonModal';
+import CommonModal from '../../../CommonModal';
 import TransactionSettings from './TransactionSettings';
-import { useAwakenSwapContext } from '../../../context/AwakenSwap';
-import { useIsMobile } from '../../../hooks/device';
-import { swapActions } from '../../../context/AwakenSwap/actions';
+import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
+import { useIsMobile } from '../../../../hooks/device';
+import { swapActions } from '../../../../context/AwakenSwap/actions';
 import './styles.less';
-import CommonModalHeader from '../../CommonModalHeader';
-import CommonButton from '../../CommonButton';
+import CommonModalHeader from '../../../CommonModalHeader';
+import CommonButton from '../../../CommonButton';
 
 export default function SwapSettingsModal() {
   const { t } = useTranslation();
   const [{ isSettingModalShow }, { dispatch }] = useAwakenSwapContext();
   const isMobile = useIsMobile();
 
+  console.log('useAwakenSwapContext', isSettingModalShow);
+
   const onCloseModal = () => {
-    dispatch(swapActions.setIsSettingModalShow.actions(false));
+    dispatch(swapActions.setSettingModalShow.actions(false));
   };
 
   return (
     <CommonModal
       closable
       centered
-      open={true}
+      open={isSettingModalShow}
       className="transactions-settings-modal"
       title={false}
       mask={isMobile}

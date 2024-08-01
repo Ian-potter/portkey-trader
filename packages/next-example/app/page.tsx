@@ -6,7 +6,7 @@ import { ChainId } from '@portkey/types';
 import detectProvider from '@portkey/detect-provider';
 import { aelf } from '@portkey/utils';
 import { BestSwapRoutesAmountInParams, BestSwapRoutesAmountOutParams, RouteType } from '@portkey/trader-services';
-import { Swap, SwapPanel } from '@portkey/trader-react-ui';
+import { Swap } from '@portkey/trader-react-ui';
 import { Currency } from '@awaken/sdk-core';
 import { AElfReactProvider, useAElfReact } from '@aelf-react/core';
 import {
@@ -240,7 +240,6 @@ function APP() {
   const getSupportTokenList = useCallback(async () => {
     const list = await awaken.getSupportTokenList({ chainId: 'tDVW' });
     console.log(list, 'getSupportTokenList');
-    s;
   }, []);
 
   return (
@@ -282,7 +281,7 @@ function APP() {
         }}
       />
       {/* <Swap /> */}
-      <SwapPanel />
+      <Swap />
     </main>
   );
 }

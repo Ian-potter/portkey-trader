@@ -1,7 +1,7 @@
 import './styles.less';
-import Font from '../../Font';
+import Font from '../../../Font';
 import { useMemo } from 'react';
-import { CurrencyLogo, CurrencyLogos } from '../../CurrencyLogo';
+import { CurrencyLogo, CurrencyLogos } from '../../../CurrencyLogo';
 import { TokenInfo } from '@portkey/trader-types/src/swap';
 
 // import { CurrencyLogo, CurrencyLogos } from 'components/CurrencyLogo';

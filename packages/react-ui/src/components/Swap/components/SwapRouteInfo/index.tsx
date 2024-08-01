@@ -14,11 +14,12 @@ import { Col, Row } from 'antd';
 // import { TSwapInfo } from '../SwapPanel';
 // import { formatSymbol } from 'utils/token';
 import './styles.less';
-import { TSwapInfo } from '../SwapPanel';
+
 import { TSwapRouteInfo } from '@portkey/trader-types';
-import Font from '../../Font';
-import CommonTooltip from '../../CommonTooltip';
-import { CurrencyLogos } from '../../CurrencyLogo';
+import Font from '../../../Font';
+import CommonTooltip from '../../../CommonTooltip';
+import { CurrencyLogos } from '../../../CurrencyLogo';
+import { TSwapInfo } from '../SwapPanel';
 
 export type TSwapRouteInfoProps = {
   swapInfo: TSwapInfo;

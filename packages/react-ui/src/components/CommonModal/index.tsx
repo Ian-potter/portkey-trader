@@ -89,7 +89,7 @@ export default function CommonModal({
           className={clsx('common-modal', className)}
           title={renderTitle}
           closable={false}
-          visible={visible}
+          open={visible}
           onCancel={onCancel}
           {...props}
         />
@@ -111,7 +111,7 @@ export default function CommonModal({
           className={clsx('common-modal', className)}
           height={height}
           width={width}
-          visible={visible}
+          open={visible}
           onClose={onCancel as any}
           {...drawProps}
         />

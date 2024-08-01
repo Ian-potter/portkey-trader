@@ -1,17 +1,17 @@
 import clsx from 'clsx';
 import { ChangeEventHandler, useCallback, useMemo, useState } from 'react';
-import useDebounce from '../../../hooks/useDebounce';
-import { filterTokens, useSortedTokensByQuery } from '../../../utils/filtering';
+import useDebounce from '../../../../hooks/useDebounce';
+import { filterTokens, useSortedTokensByQuery } from '../../../../utils/filtering';
 import CurrencyRow from './CurrencyRow';
 import { useTokenComparator } from './sorting';
 import { useTranslation } from 'react-i18next';
 import { Token } from '@/types';
 
-import SearchInput from '../../SearchInput';
-import CommonList from '../../CommonList';
+import SearchInput from '../../../SearchInput';
+import CommonList from '../../../CommonList';
 // import { useAllTokenList } from 'hooks/tokenList';
 import './styles.less';
-import { ZERO } from '../../../constants/misc';
+import { ZERO } from '../../../../constants/misc';
 
 const mockList = [
   {
@@ -190,7 +190,7 @@ export default function SelectTokenList({ onClickManageTokens }: { onClickManage
   const tokenComparator = useTokenComparator(invertSearchOrder, {});
 
   const filteredTokens: Token[] = useMemo(() => {
-    return filterTokens(allTokens, debouncedQuery);
+    return filterTokens(allTokens as unknown as Token[], debouncedQuery);
   }, [allTokens, debouncedQuery]);
 
   const sortedTokens: Token[] = useMemo(() => {

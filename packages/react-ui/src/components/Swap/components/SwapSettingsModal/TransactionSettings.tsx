@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Col, Row } from 'antd';
 import clsx from 'clsx';
-import CommonTooltip from '../../CommonTooltip';
+import CommonTooltip from '../../../CommonTooltip';
 import { useTranslation } from 'react-i18next';
 import { priceImpactList } from './config';
-import Font from '../../Font';
-import CommonInput from '../../CommonInput';
-import CommonSwitch from '../../CommonSwitch';
+import Font from '../../../Font';
+import CommonInput from '../../../CommonInput';
+import CommonSwitch from '../../../CommonSwitch';
 import BigNumber from 'bignumber.js';
 import { timesDecimals } from '@portkey/trader-utils';
 

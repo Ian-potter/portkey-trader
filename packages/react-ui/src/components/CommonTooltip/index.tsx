@@ -114,7 +114,7 @@ export default function CommonTooltip({
       getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
       placement={placement}
       overlayClassName={style}
-      visible={open}
+      open={open}
       title={title}
       className="awk-common-tool-tip"
       arrowPointAtCenter={arrowPointAtCenter}

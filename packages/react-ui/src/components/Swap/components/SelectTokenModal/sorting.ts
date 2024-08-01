@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { useMemo } from 'react';
 
 import { divDecimals } from '@portkey/trader-utils';
-import { TOKEN_SORT_MAP, ZERO } from '../../../constants/misc';
+import { TOKEN_SORT_MAP, ZERO } from '../../../../constants/misc';
 import { Token } from '@/types';
 
 // compare two token amounts with highest one coming first

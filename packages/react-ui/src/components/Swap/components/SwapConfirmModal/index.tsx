@@ -1,12 +1,11 @@
-import Font from '../../Font';
+import Font from '../../../Font';
 import { forwardRef, useState } from 'react';
 import { formatSymbol } from '@portkey/trader-utils';
 import { Col, Row } from 'antd';
-import CommonModal from '../../CommonModal';
-import CommonButton from '../../CommonButton';
-import { TSwapInfo } from '../SwapPanel';
+import CommonModal from '../../../CommonModal';
+import CommonButton from '../../../CommonButton';
 import { TSwapRouteInfo } from '@portkey/trader-types';
-import { CurrencyLogo } from '../../CurrencyLogo';
+import { CurrencyLogo } from '../../../CurrencyLogo';
 
 import { SwapRouteInfo } from '../SwapRouteInfo';
 import './styles.less';
@@ -19,12 +18,12 @@ export type TSwapConfirmModalProps = {
 };
 
 export interface SwapConfirmModalInterface {
-  show: (params: { swapInfo: TSwapInfo; routeInfo: TSwapRouteInfo; priceLabel: string }) => void;
+  show: (params: { swapInfo: any; routeInfo: TSwapRouteInfo; priceLabel: string }) => void;
 }
 
 export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) => {
   const [isVisible] = useState(false);
-  const [swapInfo] = useState<TSwapInfo>();
+  const [swapInfo] = useState<any>();
   const [routeInfo] = useState<TSwapRouteInfo>();
   const [priceLabel] = useState('');
 
@@ -221,7 +220,7 @@ export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) 
       showBackIcon={false}
       closable={true}
       centered={true}
-      visible={isVisible}
+      open={isVisible}
       title={'Review Swap'}
       className={'swap-confirm-modal'}
       onCancel={() => {

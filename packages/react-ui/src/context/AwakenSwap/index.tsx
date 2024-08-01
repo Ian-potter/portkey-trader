@@ -15,46 +15,12 @@ const INITIAL_STATE: AwakenSwapState = {
 };
 
 const AwakenSwapContext = createContext<any>(INITIAL_STATE);
-export const useAwakenSwapContext = (): [AwakenSwapState, BasicActions] => useContext(AwakenSwapContext);
+export function useAwakenSwapContext(): [AwakenSwapState, BasicActions] {
+  return useContext(AwakenSwapContext);
+}
 
 export function AwakenSwapProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
-
-  // const chain = useMemo(() => {
-  //   const networkType = ETransferConfig.getConfig('networkType') as NetworkType;
-  //   const defaultChainIds = networkType === 'TESTNET' ? [CHAIN_ID.tDVW, CHAIN_ID.AELF] : [CHAIN_ID.tDVV, CHAIN_ID.AELF];
-  //   const supportChainIds = depositConfigRef.current?.supportChainIds || defaultChainIds;
-  //   const chainList: IChainMenuItem[] = [];
-  //   supportChainIds.forEach((item) => {
-  //     if (CHAIN_MENU_DATA[item]?.key) {
-  //       chainList.push(CHAIN_MENU_DATA[item]);
-  //     }
-  //   });
-  //   return {
-  //     chainList: chainList,
-  //     chainItem: chainList[0],
-  //   };
-  // }, []);
-
-  // const providerValue = useMemo<[ETransferDepositState, { dispatch: React.Dispatch<any> }]>(() => {
-  //   const { chainId, network, depositToken, receiveToken } = getDepositDefaultConfig();
-  //   let currentChainItem: IChainMenuItem | undefined;
-  //   if (chainId) {
-  //     currentChainItem = chain.chainList?.find((chain) => chain.key === chainId);
-  //   }
-
-  //   return [
-  //     {
-  //       chainList: chain.chainList,
-  //       chainItem: currentChainItem || chain.chainItem,
-  //       networkItem: { network: network },
-  //       depositTokenSymbol: depositToken,
-  //       receiveTokenSymbol: receiveToken,
-  //       ...state,
-  //     },
-  //     { dispatch },
-  //   ];
-  // }, [chain.chainItem, chain.chainList, state]);
 
   const providerValue = useMemo<[AwakenSwapState, { dispatch: React.Dispatch<any> }]>(() => {
     return [
@@ -85,6 +51,8 @@ function reducer(state: AwakenSwapState, { type, payload }: any) {
     }
     case AwakenSwapActions.setSettingModalShow: {
       const isSettingModalShow = payload.isSettingModalShow;
+      console.log('isSettingModalShow', isSettingModalShow, Object.assign({}, state, { isSettingModalShow }));
+
       return Object.assign({}, state, { isSettingModalShow });
     }
     case AwakenSwapActions.destroy: {

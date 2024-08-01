@@ -41,7 +41,7 @@ export const swapActions = {
     actions: (isConfirmModalShow: boolean) =>
       basicActions(AwakenSwapActions['setConfirmModalShow'], { isConfirmModalShow }),
   },
-  setIsSettingModalShow: {
+  setSettingModalShow: {
     type: AwakenSwapActions['setSettingModalShow'],
     actions: (isSettingModalShow: boolean) =>
       basicActions(AwakenSwapActions['setSettingModalShow'], { isSettingModalShow }),

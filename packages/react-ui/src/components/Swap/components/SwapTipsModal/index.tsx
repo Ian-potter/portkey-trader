@@ -1,9 +1,9 @@
 import './styles.less';
-import CommonModal from '../../CommonModal';
-import { useAwakenSwapContext } from '../../../context/AwakenSwap';
-import { swapActions } from '../../../context/AwakenSwap/actions';
-import CommonModalHeader from '../../CommonModalHeader';
-import CommonButton from '../../CommonButton';
+import CommonModal from '../../../CommonModal';
+import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
+import { swapActions } from '../../../../context/AwakenSwap/actions';
+import CommonModalHeader from '../../../CommonModalHeader';
+import CommonButton from '../../../CommonButton';
 
 export default function SwapTipsModal() {
   const [{ tipsModalInfo, isTipsModalShow }, { dispatch }] = useAwakenSwapContext();
