@@ -157,85 +157,83 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   }, [valueInBalance, valueInfo.tokenIn, valueInfo.tokenOut, valueInfo.valueIn, valueInfo.valueOut]);
 
   return (
-    <AwakenSwapProvider>
-      <div className={clsx('swap-panel-wrapper', wrapClassName)}>
-        <InputContainer
-          value={valueInfo.valueIn}
-          balance={valueInBalance}
-          tokenInfo={valueInfo.tokenIn}
-          onInputChange={onValueInChange}
-          onSelectToken={onSelectTokenIn}
-          showMax
-          onClickMax={onClickMax}
-        />
-        <div className="swap-token-switch-wrap">
-          <div className="swap-token-switch-btn portkey-swap-flex-center" onClick={switchToken}>
-            <CommonSvg type="icon-arrow-down3" className="swap-token-switch-btn-default" />
-            <CommonSvg type="icon-price-switch" className="swap-token-switch-btn-hover" />
-          </div>
+    <div className={clsx('swap-panel-wrapper', wrapClassName)}>
+      <InputContainer
+        value={valueInfo.valueIn}
+        balance={valueInBalance}
+        tokenInfo={valueInfo.tokenIn}
+        onInputChange={onValueInChange}
+        onSelectToken={onSelectTokenIn}
+        showMax
+        onClickMax={onClickMax}
+      />
+      <div className="swap-token-switch-wrap">
+        <div className="swap-token-switch-btn portkey-swap-flex-center" onClick={switchToken}>
+          <CommonSvg type="icon-arrow-down3" className="swap-token-switch-btn-default" />
+          <CommonSvg type="icon-price-switch" className="swap-token-switch-btn-hover" />
         </div>
-        <InputContainer
-          title="Receive"
-          value={valueInfo.valueOut}
-          balance={valueOutBalance}
-          tokenInfo={valueInfo.tokenOut}
-          wrapClassName="below-input-container"
-          onInputChange={onValueOutChange}
-          onSelectToken={onSelectTokenOut}
-        />
-
-        <div className={clsx('swap-btn-wrap')}>
-          <CommonButton
-            className={clsx(
-              confirmBtnError === BtnErrEnum.error && 'btn-error',
-              confirmBtnError === BtnErrEnum.tip && 'btn-tip',
-            )}
-            disabled={confirmBtnError !== BtnErrEnum.none}>
-            {confirmBtnText}
-          </CommonButton>
-        </div>
-
-        <div className="swap-price-swap portkey-swap-flex-row-between">
-          <div className="portkey-swap-flex-center">
-            <div className="single-price-swap">{`1 ELF = 0.423567 USDT`}</div>
-            <CommonSvg type="icon-price-switch" />
-            <CircleProcess />
-          </div>
-          <CommonSvg
-            type="icon-arrow-up2"
-            onClick={() => setExtraPriceInfoShow(!extraPriceInfoShow)}
-            className={clsx('portkey-swap-row-center', !extraPriceInfoShow && 'rotate-icon')}
-          />
-        </div>
-
-        {extraPriceInfoShow && (
-          <div className="swap-price-swap-info portkey-swap-flex-column">
-            {extraPriceInfoData.map((info, index: number) => (
-              <div key={index} className="portkey-swap-flex-row-between price-swap-info-item">
-                <div className="portkey-swap-flex-row-center">
-                  <span className="price-swap-info-label">{info.label}</span>
-                  <Tooltip title={info.tooltipMsg}>
-                    <CommonSvg type="icon-tip-qs" />
-                  </Tooltip>
-                </div>
-                <div className="price-swap-info-value">{info.value}</div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <CommonButton
-          onClick={() => {
-            dispatch(swapActions.setSettingModalShow.actions(true));
-          }}>
-          CLICKK
-        </CommonButton>
-
-        <SwapTipsModal />
-        <SelectTokenModal />
-        <SwapSettingsModal />
-        <SwapConfirmModal gasFee={''} tokenInPrice={''} tokenOutPrice={''} />
       </div>
-    </AwakenSwapProvider>
+      <InputContainer
+        title="Receive"
+        value={valueInfo.valueOut}
+        balance={valueOutBalance}
+        tokenInfo={valueInfo.tokenOut}
+        wrapClassName="below-input-container"
+        onInputChange={onValueOutChange}
+        onSelectToken={onSelectTokenOut}
+      />
+
+      <div className={clsx('swap-btn-wrap')}>
+        <CommonButton
+          className={clsx(
+            confirmBtnError === BtnErrEnum.error && 'btn-error',
+            confirmBtnError === BtnErrEnum.tip && 'btn-tip',
+          )}
+          disabled={confirmBtnError !== BtnErrEnum.none}>
+          {confirmBtnText}
+        </CommonButton>
+      </div>
+
+      <div className="swap-price-swap portkey-swap-flex-row-between">
+        <div className="portkey-swap-flex-center">
+          <div className="single-price-swap">{`1 ELF = 0.423567 USDT`}</div>
+          <CommonSvg type="icon-price-switch" />
+          <CircleProcess />
+        </div>
+        <CommonSvg
+          type="icon-arrow-up2"
+          onClick={() => setExtraPriceInfoShow(!extraPriceInfoShow)}
+          className={clsx('portkey-swap-row-center', !extraPriceInfoShow && 'rotate-icon')}
+        />
+      </div>
+
+      {extraPriceInfoShow && (
+        <div className="swap-price-swap-info portkey-swap-flex-column">
+          {extraPriceInfoData.map((info, index: number) => (
+            <div key={index} className="portkey-swap-flex-row-between price-swap-info-item">
+              <div className="portkey-swap-flex-row-center">
+                <span className="price-swap-info-label">{info.label}</span>
+                <Tooltip title={info.tooltipMsg}>
+                  <CommonSvg type="icon-tip-qs" />
+                </Tooltip>
+              </div>
+              <div className="price-swap-info-value">{info.value}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <CommonButton
+        onClick={() => {
+          dispatch(swapActions.setSettingModalShow.actions(true));
+        }}>
+        CLICKK
+      </CommonButton>
+
+      <SwapTipsModal />
+      <SelectTokenModal />
+      <SwapSettingsModal />
+      <SwapConfirmModal gasFee={''} tokenInPrice={''} tokenOutPrice={''} />
+    </div>
   );
 }
