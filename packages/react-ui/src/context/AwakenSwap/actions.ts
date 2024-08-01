@@ -1,16 +1,25 @@
+import { ComponentType } from '@/types';
 import { basicActions } from '../utils';
 
 export const AwakenSwapActions = {
   initialized: 'INITIALIZED',
   destroy: 'DESTROY',
   setSelectTokenModalShow: 'setSelectTokenModal',
+  setTipsModalShow: 'setTipsModalShow',
+  setConfirmModalShow: 'setConfirmModalShow',
+  setSettingModalShow: 'setSettingModalShow',
 };
 
 export interface AwakenSwapState {
-  // chain
+  isMobile: boolean;
   isSelectModalShow: boolean;
-  chainItem: any;
-  chainList?: any[];
+  isConfirmModalShow: boolean;
+  isSettingModalShow: boolean;
+  isTipsModalShow: boolean;
+  tipsModalInfo: {
+    title: string;
+    content: string;
+  };
 }
 
 export const swapActions = {
@@ -24,6 +33,21 @@ export const swapActions = {
   },
   setSelectTokenModalShow: {
     type: AwakenSwapActions['setSelectTokenModalShow'],
-    actions: (isOpen: boolean) => basicActions(AwakenSwapActions['setSelectTokenModalShow'], { isOpen }),
+    actions: (isSelectModalShow: boolean) =>
+      basicActions(AwakenSwapActions['setSelectTokenModalShow'], { isSelectModalShow }),
+  },
+  setConfirmModalShow: {
+    type: AwakenSwapActions['setConfirmModalShow'],
+    actions: (isConfirmModalShow: boolean) =>
+      basicActions(AwakenSwapActions['setConfirmModalShow'], { isConfirmModalShow }),
+  },
+  setIsSettingModalShow: {
+    type: AwakenSwapActions['setSettingModalShow'],
+    actions: (isSettingModalShow: boolean) =>
+      basicActions(AwakenSwapActions['setSettingModalShow'], { isSettingModalShow }),
+  },
+  setTipsModalShow: {
+    type: AwakenSwapActions['setTipsModalShow'],
+    actions: (isTipsModalShow: boolean) => basicActions(AwakenSwapActions['setTipsModalShow'], { isTipsModalShow }),
   },
 };

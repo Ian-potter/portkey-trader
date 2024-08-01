@@ -1,12 +1,12 @@
 import { Currency } from '@awaken/sdk-core';
 import { List, Row, Col } from 'antd';
 import BigNumber from 'bignumber.js';
-import { CurrencyLogo } from '@/components/CurrencyLogo';
+import { CurrencyLogo } from '../../CurrencyLogo';
 // import { useModal } from 'contexts/useModal';
-import { isEqCurrency } from '@/utils';
+import { isEqCurrency } from '../../../utils';
 
-import { Pair } from '@/components/Pair';
-import Font from '@/components/Font';
+import { Pair } from '../../Pair';
+import Font from '../../Font';
 import { useMemo } from 'react';
 import clsx from 'clsx';
 import { divDecimals } from '@portkey/trader-utils';

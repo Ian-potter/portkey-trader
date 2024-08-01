@@ -1,12 +1,21 @@
 import React, { createContext, useMemo, useReducer, useContext } from 'react';
 import { AwakenSwapActions, AwakenSwapState } from './actions';
+import { BasicActions } from '../utils';
 
-const INITIAL_STATE = {
+const INITIAL_STATE: AwakenSwapState = {
+  isMobile: false,
   isSelectModalShow: false,
+  isConfirmModalShow: false,
+  isSettingModalShow: false,
+  isTipsModalShow: false,
+  tipsModalInfo: {
+    title: '',
+    content: '',
+  },
 };
 
 const AwakenSwapContext = createContext<any>(INITIAL_STATE);
-export const useAwakenSwapContext = () => useContext(AwakenSwapContext);
+export const useAwakenSwapContext = (): [AwakenSwapState, BasicActions] => useContext(AwakenSwapContext);
 
 export function AwakenSwapProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
@@ -63,8 +72,20 @@ export function AwakenSwapProvider({ children }: { children: React.ReactNode }) 
 function reducer(state: AwakenSwapState, { type, payload }: any) {
   switch (type) {
     case AwakenSwapActions.setSelectTokenModalShow: {
-      const isOpen = payload.isOpen;
-      return Object.assign({}, state, { isOpen });
+      const isSelectModalShow = payload.isSelectModalShow;
+      return Object.assign({}, state, { isSelectModalShow });
+    }
+    case AwakenSwapActions.setTipsModalShow: {
+      const isTipsModalShow = payload.isTipsModalShow;
+      return Object.assign({}, state, { isTipsModalShow });
+    }
+    case AwakenSwapActions.setConfirmModalShow: {
+      const isConfirmModalShow = payload.isConfirmModalShow;
+      return Object.assign({}, state, { isConfirmModalShow });
+    }
+    case AwakenSwapActions.setSettingModalShow: {
+      const isSettingModalShow = payload.isSettingModalShow;
+      return Object.assign({}, state, { isSettingModalShow });
     }
     case AwakenSwapActions.destroy: {
       return INITIAL_STATE;

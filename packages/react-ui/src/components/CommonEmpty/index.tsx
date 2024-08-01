@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode, useMemo } from 'react';
 
-import { TableEmptyData, TableEmptyInternet, TableEmptySearch } from '@/assets/images';
+import { TableEmptyData, TableEmptyInternet, TableEmptySearch } from '../../assets/images';
 import './index.less';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';

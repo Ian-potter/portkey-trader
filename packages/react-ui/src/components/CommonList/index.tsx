@@ -1,12 +1,12 @@
 import { List, ListProps, Spin } from 'antd';
 import { useMemo } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import Font from '@/components/Font';
+import Font from '../Font';
 import clsx from 'clsx';
-import CommonEmpty from '@/components/CommonEmpty';
+import CommonEmpty from '../CommonEmpty';
 // import { useMobile } from 'utils/isMobile';
 import { useTranslation } from 'react-i18next';
-import { COMMON_LOADING_CONFIG } from '@/components/CommonLoading/loading';
+import { COMMON_LOADING_CONFIG } from '../CommonLoading/loading';
 import './index.less';
 
 export interface CommonListProps<T> {

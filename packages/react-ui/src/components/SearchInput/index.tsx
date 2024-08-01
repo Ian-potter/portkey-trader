@@ -1,7 +1,16 @@
+import clsx from 'clsx';
 import CommonInput, { CommonInputProps } from '../CommonInput';
+import CommonSvg from '../CommonSvg';
+import './style.less';
 
-// import { IconSearch } from 'assets/icons';
-
-export default function SearchInput({ placeholder = 'Search', ...props }: CommonInputProps) {
-  return <CommonInput placeholder={placeholder} prefix={<div />} allowClear {...props} />;
+export default function SearchInput({ placeholder = 'Search', className, ...props }: CommonInputProps) {
+  return (
+    <CommonInput
+      placeholder={placeholder}
+      prefix={<CommonSvg type={'icon-search'} />}
+      allowClear
+      className={clsx(['commonSearchInput', className])}
+      {...props}
+    />
+  );
 }

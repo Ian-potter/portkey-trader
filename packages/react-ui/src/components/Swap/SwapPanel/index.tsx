@@ -39,6 +39,11 @@ import { ZERO } from '../../../constants/misc';
 import CommonSvg from '../../CommonSvg';
 import CommonButton from '../../CommonButton';
 import { validate } from 'uuid';
+import { useAwakenSwapContext } from '../../../context/AwakenSwap/index';
+import SelectTokenModal from '../SelectTokenModal';
+import { swapActions } from '../../../context/AwakenSwap/actions';
+import SwapTipsModal from '../SwapTipsModal';
+import SwapSettingsModal from '../SwapSettingsModal';
 // import { CircleProcess, CircleProcessInterface } from 'components/CircleProcess';
 // import { formatPrice } from 'utils/price';
 // import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
@@ -366,6 +371,15 @@ export const SwapPanel = () => {
           </>
         )}
       </div>
+      <SelectTokenModal />
+      <CommonButton
+        style={{ width: '300px', height: '50px', backgroundColor: 'red' }}
+        onClick={() => {
+          dispatch(swapActions.setSelectTokenModalShow.actions(true));
+          console.log('click');
+        }}>
+        Click
+      </CommonButton>
 
       {/* <SwapConfirmModal
         ref={swapConfirmModalRef}
@@ -374,6 +388,9 @@ export const SwapPanel = () => {
         gasFee={gasFee}
         onSuccess={onSwapSuccess}
       /> */}
+
+      <SwapTipsModal />
+      <SwapSettingsModal />
     </>
   );
 };

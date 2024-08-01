@@ -1,0 +1,74 @@
+/* stylelint-disable no-descending-specificity */
+
+.transactions-settings-modal {
+  width: 430px !important;
+  box-shadow: 0 0 24px 0 rgb(0 0 0 / 50%);
+
+  .ant-drawer-header {
+    border-bottom: none;
+  }
+
+  .content-wrap {
+    padding: 20px;
+    padding-top: 0;
+  }
+
+  .ant-modal-body {
+    padding: 0;
+  }
+
+  .ant-drawer-body {
+    padding: 0 16px 64px;
+  }
+
+  .fee-item {
+    width: 58px;
+    height: 36;
+    line-height: 34px;
+    border: 1px solid #393d47;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    &-ative {
+      border-color: var(--ant-primary-color);
+    }
+    &-mobile {
+      width: 64px;
+    }
+  }
+
+  .fee-input {
+    height: 36px;
+    border-radius: 4px;
+  }
+
+  .mins-input {
+    height: 36px;
+    width: 124px;
+    text-align: right;
+    border-radius: 4px;
+  }
+
+  .box-margin {
+    margin-top: 8px;
+  }
+
+  .switch-icon {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.confirm-modal-btnWrap {
+  padding-top: 30px;
+  width: 100%;
+  .common-button.ant-btn {
+    width: 100%;
+    background-color: #5b8ef4;
+    color: #fff;
+    width: 100%;
+    height: 48px;
+    border-radius: 24px;
+  }
+}

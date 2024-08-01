@@ -6,7 +6,7 @@ import CommonModal from '../../CommonModal';
 import CommonButton from '../../CommonButton';
 import { TSwapInfo } from '../SwapPanel';
 import { TSwapRouteInfo } from '@portkey/trader-types';
-// import { CurrencyLogo } from '../../CurrencyLogo';
+import { CurrencyLogo } from '../../CurrencyLogo';
 
 import { SwapRouteInfo } from '../SwapRouteInfo';
 import './styles.less';

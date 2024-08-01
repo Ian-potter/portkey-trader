@@ -2,7 +2,9 @@ import clsx from 'clsx';
 import './styles.less';
 import { SwapPanel } from './SwapPanel';
 import SelectTokenModal from './SelectTokenModal';
-import { AwakenSwapProvider } from '../../context/AwakenSwap';
+import { AwakenSwapProvider, useAwakenSwapContext } from '../../context/AwakenSwap';
+import CommonButton from '../CommonButton';
+import { swapActions } from '../../context/AwakenSwap/actions';
 
 export enum SwapComponentUiType {
   Mobile = 'Mobile',
@@ -19,7 +21,6 @@ export const Swap = ({ componentUiType, containerClassName }: ISwapProps) => {
     <AwakenSwapProvider>
       <div className={clsx(['swap-page', containerClassName])}>
         {componentUiType === SwapComponentUiType.Mobile ? <SwapPanel /> : <SwapPanel />}
-        <SelectTokenModal />
       </div>
     </AwakenSwapProvider>
   );

@@ -1,8 +1,8 @@
 import { Ref, useMemo, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { Input, InputProps, InputRef } from 'antd';
-// import { IconClearInput } from '../../assets/icons';
 import clsx from 'clsx';
 import './index.less';
+import CommonSvg from '../CommonSvg';
 
 let blurTimer: any = null;
 
@@ -74,7 +74,7 @@ export default forwardRef(function CommonInput(
     }
 
     if (typeof allowClear === 'boolean') {
-      return { clearIcon: <div>clear</div> };
+      return { clearIcon: <CommonSvg type={'icon-clear-input'} /> };
     }
 
     return allowClear;
