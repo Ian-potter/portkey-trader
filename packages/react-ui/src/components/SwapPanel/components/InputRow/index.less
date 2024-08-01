@@ -1,0 +1,78 @@
+.swap-input-wrapper {
+  width: 100%;
+  padding: 20px 12px;
+  border-radius: 6px;
+  background-color: #F7F7F9;
+
+  .swap-input-row1 {
+    font-size: 14px;
+    line-height: 22px;
+    color: #515A62;
+  }
+  .swap-input-row2 {
+    margin-top: 6px;
+    .swap-input-value {
+      width: 100%;
+      padding: 0;
+      font-size: 30px;
+      line-height: 40px;
+      font-weight: 500;
+        color: #B6BABF;
+        // color: #25272A;
+      outline: none;
+      &::placeholder {
+        font-size: 30px;
+        line-height: 40px;
+        font-weight: 500;
+        color: #B6BABF;
+      }
+    }
+    .select-token-wrap {
+      padding: 8px 12px;
+      gap: 12px;
+      border-radius: 6px;
+      background-color: #5B8EF4;
+      cursor: pointer;
+      .select-token-wrap-text {
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 500;
+        color: #fff;
+      }
+    }
+    .show-token-wrap {
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background-color: #DEE2E8;
+      cursor: pointer;
+      .icon-arrow-up2-icon {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  .swap-input-row3 {
+    margin-top: 6px;
+    .value-in-usd, .balance-show, .percent-show {
+      font-size: 12px;
+      line-height: 18px;
+      color: #515A62;
+    }
+    .percent-show {
+      color: #B34B4B;
+      margin-left: 8px;
+    }
+    .show-max {
+      margin-left: 8px;
+      padding: 3px 8px;
+      font-size: 13px;
+      line-height: 14px;
+      font-weight: 500;
+      color: #5B8EF4;
+      border-radius: 4px;
+      border: 1px solid #5B8EF4;
+      cursor: pointer;
+    }
+  }
+
+}

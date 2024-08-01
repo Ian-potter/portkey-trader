@@ -10,12 +10,14 @@ export interface CommonInputProps extends InputProps {
   textAlign?: 'left' | 'center' | 'right';
   resumePositionOnBlur?: boolean;
   inputRef?: Ref<InputRef>;
+  wrapClassName?: string;
 }
 
 export default forwardRef(function CommonInput(
   {
     textAlign = 'left',
     className,
+    wrapClassName,
     value = '',
     allowClear,
     resumePositionOnBlur = false,
@@ -90,7 +92,7 @@ export default forwardRef(function CommonInput(
   }, [className, textAlign]);
 
   return (
-    <span onClick={handleFocus}>
+    <span onClick={handleFocus} className={wrapClassName}>
       <Input
         className={style}
         maxLength={maxLength}
@@ -101,7 +103,6 @@ export default forwardRef(function CommonInput(
         max={100}
         allowClear={renderClear}
         ref={inputEle}
-        placeholder="0.00"
       />
     </span>
   );

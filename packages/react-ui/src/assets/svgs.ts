@@ -7,6 +7,8 @@ export default {
     '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" >\n<path d="M3 5L6 8L9 5" stroke="#E5E8EF" stroke-linecap="round" stroke-linejoin="round"/>\n</svg>\n',
   'icon-arrow-down2':
     '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" >\n<path d="M4 6L8 10L12 6" stroke="#E5E8EF" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>\n</svg>\n',
+  'icon-arrow-down3':
+    '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" >\n<path d="M7.30003 12.4238V1.30345C7.30003 1.193 7.38958 1.10345 7.50003 1.10345H8.50003C8.61049 1.10345 8.70003 1.193 8.70003 1.30345V12.4231L11.8185 9.30469C11.8966 9.22659 12.0232 9.22659 12.1013 9.30469L12.8084 10.0118C12.8865 10.0899 12.8865 10.2165 12.8084 10.2946L8.35358 14.7501C8.15831 14.9454 7.84173 14.9454 7.64647 14.7501L3.1917 10.2953C3.11359 10.2172 3.11359 10.0906 3.1917 10.0125L3.8988 9.30538C3.97691 9.22728 4.10354 9.22728 4.18165 9.30538L7.30003 12.4238Z" fill="#515A62"/>\n</svg>\n',
   'icon-arrow-left':
     '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" >\n<g id="&#231;&#174;&#173;&#229;&#164;&#180;">\n<path id="Vector 1005" d="M10 4L6 8L10 12" stroke="#E5E8EF" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>\n</g>\n</svg>\n',
   'icon-arrow-left2':
