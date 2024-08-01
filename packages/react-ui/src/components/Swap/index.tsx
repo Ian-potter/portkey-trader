@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import './styles.less';
 import { SwapPanel } from './SwapPanel';
 
-enum SwapComponentUiType {
+export enum SwapComponentUiType {
   Mobile = 'Mobile',
   Web = 'Web',
 }

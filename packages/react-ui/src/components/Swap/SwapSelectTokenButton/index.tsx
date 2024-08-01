@@ -6,9 +6,9 @@ import CommonButton, { CommonButtonProps } from '../../CommonButton';
 import { Pair } from '../../Pair';
 // import { basicModalView } from 'contexts/useModal/actions';
 // import { useModalDispatch } from 'contexts/useModal/hooks';
-// import { IconArrowDown } from '../../icons';
 import Font from '../../Font';
 import './styles.less';
+import CommonSvg from '../../CommonSvg';
 interface SelectTokenButtonProps extends CommonButtonProps {
   token?: Currency;
   setToken?: (token?: Currency) => void;
@@ -24,7 +24,7 @@ export default function SwapSelectTokenButton({ className, token, setToken, ...p
       return (
         <div className="select-token-btn-label-wrap">
           <Font size={16} lineHeight={24} weight="bold" align="left">
-            {'selectAToken'}
+            {'Select a token'}
           </Font>
         </div>
       );
@@ -46,7 +46,7 @@ export default function SwapSelectTokenButton({ className, token, setToken, ...p
     <CommonButton type={'primary'} className={clsx('select-token-btn', className)} {...props}>
       <Row justify="space-between" align="middle">
         <Col className="select-token-middle">{renderContent()}</Col>
-        <Col className="select-token-icon-col">{/* <IconArrowDown className="select-token-icon" /> */}</Col>
+        <Col className="select-token-icon-col">{<CommonSvg type="icon-arrow-down" />}</Col>
       </Row>
     </CommonButton>
   );

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 // import { sleep } from 'utils';
 // import { useGetRouteList } from '../../hooks';
 // import { TPairRoute, TSwapRouteInfo } from '../../types';
@@ -13,7 +13,7 @@ import SwapSelectTokenButton from '../SwapSelectTokenButton';
 import SwapInputRow from '../SwapInputRow';
 // import { IconArrowDown2, IconPriceSwitch, IconSettingFee, IconSwapDefault, IconSwapHover } from 'assets/icons';
 // import { useReturnLastCallback } from 'hooks';
-import { Col, Row } from 'antd';
+import { Col, Row, Tooltip } from 'antd';
 import clsx from 'clsx';
 // import CommonTooltip from 'components/CommonTooltip';
 // import { useTranslation } from 'react-i18next';
@@ -36,6 +36,9 @@ import Font from '../../Font';
 import { CircleProcess } from '../../CircleProcess';
 import CommonTooltip from '../../CommonTooltip';
 import { ZERO } from '../../../constants/misc';
+import CommonSvg from '../../CommonSvg';
+import CommonButton from '../../CommonButton';
+import { validate } from 'uuid';
 // import { CircleProcess, CircleProcessInterface } from 'components/CircleProcess';
 // import { formatPrice } from 'utils/price';
 // import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';
@@ -76,6 +79,7 @@ export const SwapPanel = () => {
     valueOut: '',
     isFocusValueIn: true,
   });
+  const [extraPriceInfoShow, setExtraPriceInfoShow] = useState(false);
   // const swapInfoRef = useRef(swapInfo);
   // swapInfoRef.current = swapInfo;
   // const currencyBalances = useCurrencyBalancesV2([swapInfo.tokenIn, swapInfo.tokenOut]);
@@ -422,12 +426,12 @@ export const SwapPanel = () => {
   //   return ZERO.plus(parseUserSlippageTolerance(userSlippageTolerance)).dp(2).toString();
   // }, [userSlippageTolerance]);
 
-  // const isExtraInfoShow = useMemo(() => {
-  //   const { tokenIn, tokenOut } = swapInfo;
-  //   if (!tokenIn || !tokenOut) return false;
-  //   // if (!valueIn && !valueOut) return false;
-  //   return true;
-  // }, [swapInfo]);
+  const isExtraInfoShow = useMemo(() => {
+    const { tokenIn, tokenOut } = swapInfo;
+    if (!tokenIn || !tokenOut) return false;
+    // if (!valueIn && !valueOut) return false;
+    return true;
+  }, [swapInfo]);
 
   // const isExceedBalance = useMemo(() => {
   //   const { tokenIn, valueIn } = swapInfo;
@@ -560,6 +564,46 @@ export const SwapPanel = () => {
   //   };
   // }, [swapInfo, tokenInPrice, tokenOutPrice]);
 
+  const extraPriceInfoData = useMemo(() => {
+    return [
+      {
+        label: 'Max. Slippage',
+        value: (
+          <div className="portkey-swap-ui-row-center">
+            <span>0.5%</span>
+            <CommonSvg type="icon-edit" />
+          </div>
+        ),
+        tooltipMsg: `The trade will be cancelled when slippage exceeds this percentage.`,
+      },
+      {
+        label: 'Min. Received',
+        value: '1.990049 USDT',
+        tooltipMsg: `Min.Received refers to the exchange result at the price corresponding to the Max.Slippage you set.Generally, it will be more.`,
+      },
+      {
+        label: 'Price Impact',
+        value: '0.11%',
+        tooltipMsg: `The maximum impact on the currency price of the liquidity pool after the transaction is completed.`,
+      },
+      {
+        label: 'Swap Fee',
+        value: '0.00059107 ELF',
+        tooltipMsg: `The accumulated fee share of this trading pair's positions.`,
+      },
+      {
+        label: 'Network Cost',
+        value: '0.0048 ELF',
+        tooltipMsg: `Network Cost are the miner fees paid in order for transactions to proceed.`,
+      },
+      {
+        label: 'Order Routing',
+        value: 'xxx',
+        tooltipMsg: `Awaken's order routing selects the swap path with the lowest comprehensive cost to complete the transaction and increase the amount you receive.`,
+      },
+    ];
+  }, []);
+
   return (
     <>
       <div className="swap-panel">
@@ -574,7 +618,7 @@ export const SwapPanel = () => {
           gasFee={'gasFee'}
           suffix={
             <SwapSelectTokenButton
-              className="swap-select-token-btn"
+              className={clsx('swap-select-token-btn', swapInfo.tokenIn && 'swap-select-token-btn-selected')}
               type="default"
               size="middle"
               // token={swapInfo.tokenIn}
@@ -583,9 +627,9 @@ export const SwapPanel = () => {
           }
         />
         <div className="swap-token-switch-wrap">
-          <div className="swap-token-switch-btn">
-            {/* <IconSwapDefault className="swap-token-switch-btn-default" />
-            <IconSwapHover className="swap-token-switch-btn-hover" /> */}
+          <div className="swap-token-switch-btn portkey-swap-ui-flex-center">
+            <CommonSvg type="icon-arrow-left2" className="swap-token-switch-btn-default" />
+            <CommonSvg type="icon-price-switch" className="swap-token-switch-btn-hover" />
           </div>
         </div>
         <SwapInputRow
@@ -597,7 +641,7 @@ export const SwapPanel = () => {
           token={swapInfo.tokenOut}
           suffix={
             <SwapSelectTokenButton
-              className="swap-select-token-btn"
+              className={clsx('swap-select-token-btn', swapInfo.tokenOut && 'swap-select-token-btn-selected')}
               type="default"
               size="middle"
               // token={swapInfo.tokenOut}
@@ -625,21 +669,51 @@ export const SwapPanel = () => {
           </div>
         )}
 
-        {/* <div className="swap-btn-wrap">
-          <AuthBtn
+        <div className="swap-btn-wrap">
+          <CommonButton>Select a token</CommonButton>
+          {/* <AuthBtn
             type={swapBtnInfo.type}
             size="large"
             className={clsx('swap-btn', swapBtnInfo.className)}
             onClick={onSwapClick}
             loading={isSwapping}
-            disabled={!!"!swapBtnInfo.active"}>
+            disabled={!!'!swapBtnInfo.active'}>
             <Font size={16} color={swapBtnInfo.fontColor}>
-              {"swapBtnInfo.label"}
+              {'swapBtnInfo.label'}
             </Font>
-          </AuthBtn>
-        </div> */}
+          </AuthBtn> */}
+        </div>
 
-        {'isExtraInfoShow' && (
+        <div className="swap-price-swap portkey-swap-ui-flex-row-between">
+          <div className="portkey-swap-ui-flex-center">
+            <div className="single-price-swap">{`1 ELF = 0.423567 USDT`}</div>
+            <CommonSvg type="icon-price-switch" />
+            <CircleProcess />
+          </div>
+          <CommonSvg
+            type="icon-arrow-up2"
+            onClick={() => setExtraPriceInfoShow(!extraPriceInfoShow)}
+            className={clsx('portkey-swap-ui-row-center', extraPriceInfoShow && 'rotate-icon')}
+          />
+        </div>
+
+        {extraPriceInfoShow && (
+          <div className="swap-price-swap-info portkey-swap-ui-flex-column">
+            {extraPriceInfoData.map((info, index: number) => (
+              <div key={index} className="portkey-swap-ui-flex-row-between price-swap-info-item">
+                <div className="portkey-swap-ui-flex-row-center">
+                  <span className="price-swap-info-label">{info.label}</span>
+                  <Tooltip title={info.tooltipMsg}>
+                    <CommonSvg type="icon-tip-qs" />
+                  </Tooltip>
+                </div>
+                <div className="price-swap-info-value">{info.value}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {isExtraInfoShow && (
           <>
             <Row className="swap-extra-wrap" align={'middle'} justify={'space-between'}>
               <Col className="price-warp">
