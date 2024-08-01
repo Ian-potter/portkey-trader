@@ -47,15 +47,18 @@
     "postcss": "^8.4.21"
   },
   "dependencies": {
-    "antd": "^5.19.4",
-    "clsx": "^2.1.1",
-    "moment": "^2.29.4",
-    "query-string": "^7.1.1",
-    "react-qrcode-logo": "2.9.0",
-    "react-use": "^17.4.0",
-    "uuid": "^8.3.2",
+    "@portkey/trader-core": "^0.0.1",
     "@portkey/trader-types": "^0.0.1",
     "@portkey/trader-utils": "^0.0.1",
-    "@portkey/trader-core": "^0.0.1"
+    "@types/react-infinite-scroller": "^1.2.5",
+    "antd": "^5.19.4",
+    "clsx": "^2.1.1",
+    "lottie-react": "^2.4.0",
+    "moment": "^2.29.4",
+    "query-string": "^7.1.1",
+    "react-infinite-scroller": "^1.2.6",
+    "react-qrcode-logo": "2.9.0",
+    "react-use": "^17.4.0",
+    "uuid": "^8.3.2"
   }
 }

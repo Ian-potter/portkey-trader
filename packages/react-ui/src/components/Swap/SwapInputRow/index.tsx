@@ -19,6 +19,8 @@ import './styles.less';
 // import PriceUSDDigits from '../../PriceUSDDigits';
 // import { getFontStyle } from '@portkey/trader-util';
 import { ZERO } from '../../../constants/misc';
+// import PriceUSDDigits from 'components/PriceUSDDigits';
+// import getFontStyle from 'utils/getFontStyle';
 // import { useMobile } from 'utils/isMobile';
 // import clsx from 'clsx';
 // import { useConnectWallet } from '@aelf-web-login/wallet-adapter-react';

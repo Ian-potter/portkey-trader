@@ -7,7 +7,6 @@ import { ImageProps } from 'antd';
 import './index.less';
 import clsx from 'clsx';
 import Logo from '../Logo';
-import { mockCurrency } from '../mockdata';
 // import { NATIVE_LOGO } from 'assets/logo';
 // import { getPairsLogoOrderByTokenWeights } from 'utils/pair';
 export function CurrencyLogo({
@@ -60,7 +59,7 @@ export function CurrencyLogo({
   );
 }
 export function CurrencyLogos({
-  tokens = [mockCurrency, mockCurrency],
+  tokens = [],
   size = 20,
   preview,
   className,
@@ -80,7 +79,7 @@ export function CurrencyLogos({
   const tokenList = useMemo(() => {
     return [
       {
-        currency: mockCurrency,
+        currency: null,
         address: '',
         src: '',
         symbol: '',
@@ -88,7 +87,7 @@ export function CurrencyLogos({
     ];
     // if (!isSortToken) return tokens;
     // return getPairsLogoOrderByTokenWeights(tokens);
-  }, [isSortToken, tokens]);
+  }, []);
 
   return (
     <div
@@ -108,7 +107,7 @@ export function CurrencyLogos({
             currency={currency}
             address={address}
             preview={preview}
-            symbol={symbol || currency?.symbol || ''}
+            symbol={symbol || ''}
             style={{
               zIndex: tokens.length - k,
               marginLeft: k === 0 ? 0 : `-${size / 4}px`,

@@ -1,12 +1,12 @@
-import React, { createContext, useMemo, useReducer } from 'react';
+import React, { createContext, useMemo, useReducer, useContext } from 'react';
 import { AwakenSwapActions, AwakenSwapState } from './actions';
 
 const INITIAL_STATE = {
-  chainList: [],
-  chainItem: {},
+  isSelectModalShow: false,
 };
 
 const AwakenSwapContext = createContext<any>(INITIAL_STATE);
+export const useAwakenSwapContext = () => useContext(AwakenSwapContext);
 
 export function AwakenSwapProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
@@ -62,29 +62,9 @@ export function AwakenSwapProvider({ children }: { children: React.ReactNode }) 
 //reducer
 function reducer(state: AwakenSwapState, { type, payload }: any) {
   switch (type) {
-    case AwakenSwapActions.setDepositTokenSymbol: {
-      const symbol = payload.symbol;
-      if (!symbol) return state;
-
-      return Object.assign({}, state, { depositTokenSymbol: symbol });
-    }
-    case AwakenSwapActions.setDepositTokenList: {
-      const list = payload.list;
-      if (!list || !Array.isArray(list)) return state;
-
-      return Object.assign({}, state, { depositTokenList: list });
-    }
-    case AwakenSwapActions.setNetworkItem: {
-      const networkItem = payload.network;
-      if (!networkItem) return state;
-
-      return Object.assign({}, state, { networkItem });
-    }
-    case AwakenSwapActions.setNetworkList: {
-      const list = payload.list;
-      if (!list || !Array.isArray(list)) return state;
-
-      return Object.assign({}, state, { networkList: list });
+    case AwakenSwapActions.setSelectTokenModalShow: {
+      const isOpen = payload.isOpen;
+      return Object.assign({}, state, { isOpen });
     }
     case AwakenSwapActions.destroy: {
       return INITIAL_STATE;
