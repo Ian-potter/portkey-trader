@@ -44,7 +44,7 @@ export default function SwapSelectTokenButton({ className, token, setToken, ...p
 
   return (
     <CommonButton type={'primary'} className={clsx('select-token-btn', className)} {...props}>
-      <Row justify="space-between" align="middle">
+      <Row justify="space-between" align="middle" className="select-token-content">
         <Col className="select-token-middle">{renderContent()}</Col>
         <Col className="select-token-icon-col">{<CommonSvg type="icon-arrow-down" />}</Col>
       </Row>

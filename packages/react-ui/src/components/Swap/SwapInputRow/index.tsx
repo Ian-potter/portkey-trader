@@ -1,15 +1,14 @@
 import BigNumber from 'bignumber.js';
 import { Button, Col, InputProps, Row } from 'antd';
-import { useMemo } from 'react';
+import { useMemo, useCallback, useRef } from 'react';
 import clsx from 'clsx';
 import Font from '../../Font';
 
 import { Currency } from '@awaken/sdk-core';
-// import { parseInputChange, unitConverter } from 'utils';
+import { parseInputChange, unitConverter } from '../../../utils/input';
 // import { useTranslation } from 'react-i18next';
 // import { useTokenPrice } from 'contexts/useTokenPrice/hooks';
-// import { isValidNumber } from 'utils/reg';
-// import { divDecimals } from 'utils/calculate';
+import { isValidNumber } from '../../../utils/reg';
 
 import CommonInput from '../../CommonInput';
 // import Font from 'components/Font';
@@ -19,6 +18,7 @@ import './styles.less';
 // import PriceUSDDigits from '../../PriceUSDDigits';
 // import { getFontStyle } from '@portkey/trader-util';
 import { ZERO } from '../../../constants/misc';
+import { divDecimals } from '@portkey/trader-utils';
 // import PriceUSDDigits from 'components/PriceUSDDigits';
 // import getFontStyle from 'utils/getFontStyle';
 // import { useMobile } from 'utils/isMobile';
@@ -43,8 +43,8 @@ interface Props extends Omit<InputProps, 'onChange'> {
 }
 export default function SwapInputRow(props: Props) {
   const {
-    // token,
-    // onChange,
+    token,
+    onChange,
     value,
     placeholder = '0.00',
     suffix = '',
@@ -75,24 +75,24 @@ export default function SwapInputRow(props: Props) {
   //   return unitConverter(divDecimals(balance || ZERO, token?.decimals), 8);
   // }, [balance, isConnected, token?.decimals]);
 
-  // const min = useRef<BigNumber>(divDecimals('1', token?.decimals));
+  const min = useRef<BigNumber>(divDecimals('1', token?.decimals));
 
-  // const setValue = useCallback(
-  //   (_value: string) => {
-  //     onChange && onChange(parseInputChange(_value, min.current, token?.decimals));
-  //   },
-  //   [token, onChange],
-  // );
+  const setValue = useCallback(
+    (_value: string) => {
+      onChange && onChange(parseInputChange(_value, min.current, token?.decimals));
+    },
+    [token, onChange],
+  );
 
-  // const onInputChange = useCallback(
-  //   (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     if (event.target.value && !isValidNumber(event.target.value)) {
-  //       return;
-  //     }
-  //     setValue(event.target.value);
-  //   },
-  //   [setValue],
-  // );
+  const onInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.value && !isValidNumber(event.target.value)) {
+        return;
+      }
+      setValue(event.target.value);
+    },
+    [setValue],
+  );
 
   const renderUsd = useMemo(() => {
     if (value === undefined || value === '')
@@ -137,17 +137,15 @@ export default function SwapInputRow(props: Props) {
         {title}
       </Font>
 
-      <Row gutter={[0, 12]} justify="space-between">
-        <Col span={24}>
-          <CommonInput
-            suffix={suffix}
-            value={value ?? ''}
-            placeholder={placeholder}
-            className="swap-input"
-            disabled={!'token' || disabled}
-          />
-        </Col>
-      </Row>
+      <div className="portkey-swap-flex-row-between">
+        <CommonInput
+          value={value ?? ''}
+          placeholder={placeholder}
+          className="swap-input"
+          // disabled={!token || disabled}
+        />
+        <div>{suffix}</div>
+      </div>
 
       <div className="swap-input-row-footer flex">
         <div>{!hideUSD && renderUsd}</div>

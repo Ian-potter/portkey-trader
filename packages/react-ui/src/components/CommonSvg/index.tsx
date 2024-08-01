@@ -14,7 +14,7 @@ export interface CommonSvgProps {
 export default function CommonSvg({ type, className, ...props }: CommonSvgProps) {
   return (
     <div
-      className={clsx('portkey-swap-ui-common-svg', `${type.toLocaleLowerCase()}-icon`, className)}
+      className={clsx('portkey-swap-common-svg', `${type.toLocaleLowerCase()}-icon`, className)}
       dangerouslySetInnerHTML={{ __html: svgList[type] }}
       {...props}></div>
   );

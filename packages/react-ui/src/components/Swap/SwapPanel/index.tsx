@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 // import { sleep } from 'utils';
 // import { useGetRouteList } from '../../hooks';
 // import { TPairRoute, TSwapRouteInfo } from '../../types';
@@ -52,24 +52,8 @@ export type TSwapInfo = {
   isFocusValueIn: boolean;
 };
 
-// type TCalculateCbResult =
-//   | {
-//       valueIn: string;
-//       valueOut: string;
-//       routeInfo?: TSwapRouteInfo;
-//     }
-//   | undefined;
-
 export const SwapPanel = () => {
-  // const { t } = useTranslation();
-  // const _getRouteList = useGetRouteList();
-  // const getRouteList = useReturnLastCallback(_getRouteList, [_getRouteList]);
-
-  // const circleProcessRef = useRef<CircleProcessInterface>();
-  // const swapConfirmModalRef = useRef<SwapConfirmModalInterface>();
-  // const { data: gasFee = 0 } = useRequest(getTransactionFee);
-
-  const [swapInfo] = useState<TSwapInfo>({
+  const [swapInfo, setSwapInfo] = useState<TSwapInfo>({
     // tokenIn: ChainConstants.constants.COMMON_BASES[2],
     // tokenOut: ChainConstants.constants.COMMON_BASES[0],
     // tokenIn: null,
@@ -80,351 +64,8 @@ export const SwapPanel = () => {
     isFocusValueIn: true,
   });
   const [extraPriceInfoShow, setExtraPriceInfoShow] = useState(false);
-  // const swapInfoRef = useRef(swapInfo);
-  // swapInfoRef.current = swapInfo;
-  // const currencyBalances = useCurrencyBalancesV2([swapInfo.tokenIn, swapInfo.tokenOut]);
-  // const refreshTokenValueRef = useRef<typeof refreshTokenValue>();
-
-  // const routeListRef = useRef<TPairRoute[]>();
-  // const [optimumRouteInfo, setOptimumRouteInfo] = useState<TSwapRouteInfo>();
-
-  // const [isPriceReverse, setIsPriceReverse] = useState(false);
-  // const resetIsPriceReverse = useCallback(() => {
-  //   setIsPriceReverse(false);
-  // }, []);
 
   const [isRouteEmpty] = useState(false);
-  // // const preRoutePair = useRef(`${swapInfo.tokenIn?.symbol}_${swapInfo.tokenOut?.symbol}`);
-  // const executeCb = useCallback(
-  //   async (isRefreshTokenValue = true) => {
-  //     const { tokenIn, tokenOut } = swapInfoRef.current;
-  //     if (!tokenIn || !tokenOut) return;
-
-  //     // const nowRoutePair = `${tokenIn.symbol}_${tokenOut.symbol}`;
-  //     // if (preRoutePair.current !== nowRoutePair) {
-  //     //   setIsRouteEmpty(false);
-  //     // }
-  //     // preRoutePair.current = nowRoutePair;
-
-  //     try {
-  //       const routeList = await getRouteList({
-  //         startSymbol: tokenIn.symbol,
-  //         endSymbol: tokenOut.symbol,
-  //       });
-
-  //       if (
-  //         tokenIn.symbol !== swapInfoRef.current.tokenIn?.symbol ||
-  //         tokenOut.symbol !== swapInfoRef.current.tokenOut?.symbol
-  //       ) {
-  //         console.log('executeCb: to exceed the time limit');
-  //         return undefined;
-  //       }
-  //       if (!routeList || routeList.length === 0) {
-  //         setIsRouteEmpty(true);
-  //       } else {
-  //         setIsRouteEmpty(false);
-  //       }
-  //       routeListRef.current = routeList;
-  //       console.log('routeList', routeList);
-  //       isRefreshTokenValue && refreshTokenValueRef.current?.();
-  //       return routeList;
-  //     } catch (error) {
-  //       console.log('executeCb error', error);
-  //     }
-  //     return undefined;
-  //   },
-  //   [getRouteList],
-  // );
-  // const executeCbRef = useRef(executeCb);
-  // executeCbRef.current = executeCb;
-
-  // const calculateCb = useReturnLastCallback(
-  //   async ({ tokenIn, tokenOut, valueIn, valueOut, isFocusValueIn }: TSwapInfo, isRefreshRouteList = false) => {
-  //     console.log('calculateCb', isRefreshRouteList);
-  //     let routeList = routeListRef.current;
-  //     if (!routeList || isRefreshRouteList) {
-  //       routeList = await executeCbRef.current(!isRefreshRouteList);
-  //       if (!routeList) return;
-  //     }
-  //     console.log('calculateCb start');
-
-  //     let winRoute: TSwapRouteInfo | undefined = undefined;
-  //     if (isFocusValueIn) {
-  //       const result = getRouteInfoWithValueIn(routeList, valueIn);
-  //       if (result.length === 0) {
-  //         return {
-  //           valueIn,
-  //           valueOut: '',
-  //         };
-  //       }
-  //       let maxValueOut = ZERO;
-  //       result.forEach(item => {
-  //         const bigReceive = ZERO.plus(item.valueOut);
-  //         if (bigReceive.gt(maxValueOut)) {
-  //           winRoute = item;
-  //           maxValueOut = bigReceive;
-  //         }
-  //       });
-  //       console.log('winRoute', winRoute);
-  //       return {
-  //         valueIn,
-  //         valueOut: bigNumberToUPString(maxValueOut, tokenOut?.decimals),
-  //         routeInfo: winRoute,
-  //       };
-  //     } else {
-  //       const result = getRouteInfoWithValueOut(routeList, valueOut);
-  //       if (result.length === 0) {
-  //         return {
-  //           valueIn: '',
-  //           valueOut,
-  //         };
-  //       }
-  //       let minValueIn = ZERO.plus(result[0]?.valueIn || 0);
-  //       winRoute = result[0];
-  //       result.forEach(item => {
-  //         const bigReceive = ZERO.plus(item.valueIn);
-  //         if (bigReceive.lt(minValueIn)) {
-  //           winRoute = item;
-  //           minValueIn = bigReceive;
-  //         }
-  //       });
-  //       return {
-  //         valueIn: bigNumberToUPString(minValueIn, tokenIn?.decimals),
-  //         valueOut,
-  //         routeInfo: winRoute,
-  //       };
-  //     }
-  //   },
-  //   [],
-  // );
-
-  // const [isInvalidParis, setIsInvalidParis] = useState(false);
-  // const refreshTokenValue = useCallback(
-  //   async (isRefresh = false) => {
-  //     const { tokenIn, tokenOut, valueIn, valueOut, isFocusValueIn } = swapInfoRef.current;
-  //     if ((isFocusValueIn && valueIn === '') || (!isFocusValueIn && valueOut === '')) {
-  //       setSwapInfo(pre => ({
-  //         ...pre,
-  //         valueIn: '',
-  //         valueOut: '',
-  //       }));
-  //       setOptimumRouteInfo(undefined);
-  //       return;
-  //     }
-
-  //     if ((isFocusValueIn && ZERO.eq(valueIn)) || (!isFocusValueIn && ZERO.eq(valueOut))) {
-  //       setIsInvalidParis(false);
-  //       setOptimumRouteInfo(undefined);
-  //       return;
-  //     }
-
-  //     try {
-  //       const result: TCalculateCbResult = await calculateCb(
-  //         {
-  //           tokenIn,
-  //           tokenOut,
-  //           valueIn,
-  //           valueOut,
-  //           isFocusValueIn,
-  //         },
-  //         isRefresh,
-  //       );
-  //       if (!result) return;
-
-  //       const _swapInfo = swapInfoRef.current;
-  //       if (
-  //         _swapInfo.tokenIn?.symbol !== tokenIn?.symbol ||
-  //         _swapInfo.tokenOut?.symbol !== tokenOut?.symbol ||
-  //         _swapInfo.isFocusValueIn !== isFocusValueIn ||
-  //         (isFocusValueIn ? _swapInfo.valueIn !== valueIn : _swapInfo.valueOut !== valueOut)
-  //       ) {
-  //         console.log('calculateCb: to exceed the time limit');
-  //         return;
-  //       }
-
-  //       if (!result.valueIn || !result.valueOut) {
-  //         setIsInvalidParis(true);
-  //       } else {
-  //         setIsInvalidParis(false);
-  //       }
-  //       setSwapInfo(pre => ({
-  //         ...pre,
-  //         valueIn: result.valueIn,
-  //         valueOut: result.valueOut,
-  //       }));
-  //       setOptimumRouteInfo(result.routeInfo);
-  //       return result;
-  //     } catch (error) {
-  //       console.log('refreshTokenValue', error);
-  //     }
-  //   },
-  //   [calculateCb],
-  // );
-  // refreshTokenValueRef.current = refreshTokenValue;
-
-  // const timerRef = useRef<NodeJS.Timeout>();
-
-  // const clearTimer = useCallback(() => {
-  //   if (!timerRef.current) return;
-  //   clearInterval(timerRef.current);
-  //   timerRef.current = undefined;
-  //   routeListRef.current = undefined;
-  //   console.log('clearTimer');
-  // }, []);
-
-  // useEffect(() => {
-  //   return () => {
-  //     clearTimer();
-  //   };
-  // }, [clearTimer]);
-
-  // const registerTimer = useCallback(() => {
-  //   clearTimer();
-  //   const { tokenIn, tokenOut } = swapInfoRef.current;
-  //   if (!tokenIn || !tokenOut) return;
-
-  //   executeCbRef.current();
-  //   circleProcessRef.current?.start();
-  //   timerRef.current = setInterval(() => {
-  //     executeCbRef.current();
-  //     circleProcessRef.current?.start();
-  //   }, SWAP_TIME_INTERVAL);
-  // }, [clearTimer]);
-
-  // useEffectOnce(() => {
-  //   const { tokenIn, tokenOut } = swapInfo;
-  //   if (!tokenIn || !tokenOut) return;
-  //   registerTimer();
-  // });
-
-  // const setValueIn = useCallback(
-  //   async (value: string) => {
-  //     setSwapInfo(pre => ({
-  //       ...pre,
-  //       valueIn: value,
-  //       valueOut: '',
-  //       isFocusValueIn: true,
-  //     }));
-  //     await sleep(100);
-  //     refreshTokenValue();
-  //   },
-  //   [refreshTokenValue],
-  // );
-  // const setValueOut = useCallback(
-  //   async (value: string) => {
-  //     setSwapInfo(pre => ({ ...pre, valueOut: value, valueIn: '', isFocusValueIn: false }));
-  //     await sleep(100);
-  //     refreshTokenValue();
-  //   },
-  //   [refreshTokenValue],
-  // );
-
-  // const onTokenChange = useCallback(async () => {
-  //   resetIsPriceReverse();
-  //   setOptimumRouteInfo(undefined);
-  //   setIsRouteEmpty(false);
-  //   await sleep(100);
-  //   registerTimer();
-  // }, [registerTimer, resetIsPriceReverse]);
-
-  // const setTokenIn = useCallback(
-  //   async (tokenIn?: Currency) => {
-  //     if (!tokenIn) return;
-  //     setSwapInfo(pre => {
-  //       const isSwitch = pre.tokenOut?.symbol === tokenIn.symbol;
-  //       if (!isSwitch)
-  //         return {
-  //           ...pre,
-  //           tokenIn,
-  //           isFocusValueIn: true,
-  //           valueIn: '',
-  //           valueOut: '',
-  //         };
-  //       return {
-  //         ...pre,
-  //         tokenIn,
-  //         tokenOut: pre.tokenIn,
-  //         isFocusValueIn: !pre.isFocusValueIn,
-  //         valueOut: pre.isFocusValueIn ? pre.valueIn : '',
-  //         valueIn: pre.isFocusValueIn ? '' : pre.valueOut,
-  //       };
-  //     });
-  //     onTokenChange();
-  //   },
-  //   [onTokenChange],
-  // );
-
-  // const setTokenOut = useCallback(
-  //   async (tokenOut?: Currency) => {
-  //     if (!tokenOut) return;
-  //     setSwapInfo(pre => {
-  //       const isSwitch = pre.tokenIn?.symbol === tokenOut.symbol;
-  //       if (!isSwitch)
-  //         return {
-  //           ...pre,
-  //           tokenOut,
-  //           isFocusValueIn: true,
-  //           valueOut: '',
-  //         };
-
-  //       return {
-  //         ...pre,
-  //         tokenOut,
-  //         tokenIn: pre.tokenOut,
-  //         isFocusValueIn: !pre.isFocusValueIn,
-  //         valueOut: pre.isFocusValueIn ? pre.valueIn : '',
-  //         valueIn: pre.isFocusValueIn ? '' : pre.valueOut,
-  //       };
-  //     });
-  //     onTokenChange();
-  //   },
-  //   [onTokenChange],
-  // );
-
-  // const switchToken = useCallback(async () => {
-  //   setSwapInfo(pre => ({
-  //     ...pre,
-  //     tokenIn: pre.tokenOut,
-  //     tokenOut: pre.tokenIn,
-  //     isFocusValueIn: !pre.isFocusValueIn,
-  //     valueOut: pre.isFocusValueIn ? pre.valueIn : '',
-  //     valueIn: pre.isFocusValueIn ? '' : pre.valueOut,
-  //   }));
-  //   onTokenChange();
-  // }, [onTokenChange]);
-
-  // const priceLabel = useMemo(() => {
-  //   const { tokenIn, tokenOut, valueIn, valueOut } = swapInfo;
-  //   if (!tokenIn || !tokenOut) return '-';
-  //   // if (!valueIn && !valueOut) return '-';
-  //   const symbolIn = formatSymbol(tokenIn.symbol);
-  //   const symbolOut = formatSymbol(tokenOut.symbol);
-
-  //   if (!isPriceReverse) {
-  //     if (!valueIn || !valueOut) return `1 ${symbolOut} = - ${symbolIn}`;
-
-  //     const _price = formatPrice(ZERO.plus(valueIn).div(ZERO.plus(valueOut)));
-  //     return `1 ${symbolOut} = ${_price} ${symbolIn}`;
-  //   } else {
-  //     if (!valueIn || !valueOut) return `1 ${symbolIn} = - ${symbolOut}`;
-
-  //     const _price = formatPrice(ZERO.plus(valueOut).div(ZERO.plus(valueIn)));
-  //     return `1 ${symbolIn} = ${_price} ${symbolOut}`;
-  //   }
-  // }, [isPriceReverse, swapInfo]);
-
-  // const onReversePrice = useCallback(() => {
-  //   setIsPriceReverse(pre => !pre);
-  // }, []);
-
-  // const [isDetailShow, setIsDetailShow] = useState(false);
-  // const switchDetailShow = useCallback(() => {
-  //   setIsDetailShow(pre => !pre);
-  // }, []);
-  // const [{ userSlippageTolerance }] = useUserSettings();
-  // const slippageValue = useMemo(() => {
-  //   return ZERO.plus(parseUserSlippageTolerance(userSlippageTolerance)).dp(2).toString();
-  // }, [userSlippageTolerance]);
 
   const isExtraInfoShow = useMemo(() => {
     const { tokenIn, tokenOut } = swapInfo;
@@ -433,143 +74,96 @@ export const SwapPanel = () => {
     return true;
   }, [swapInfo]);
 
-  // const isExceedBalance = useMemo(() => {
-  //   const { tokenIn, valueIn } = swapInfo;
-  //   if (!tokenIn) return false;
-  //   const tokenInBalance = currencyBalances?.[getCurrencyAddress(swapInfo.tokenIn)];
-  //   if (tokenInBalance === undefined) return true;
-  //   const validBalance = tokenIn.symbol === 'ELF' ? ZERO.plus(tokenInBalance).minus(gasFee) : tokenInBalance;
-  //   if (ZERO.plus(valueIn).gt(divDecimals(validBalance, tokenIn.decimals))) return true;
-  //   return false;
-  // }, [currencyBalances, gasFee, swapInfo]);
+  const onTokenChange = useCallback(() => {
+    // TODO
+  }, []);
 
-  // const { isConnected, isLocking } = useConnectWallet();
-  // const swapBtnInfo = useMemo<{
-  //   active?: boolean;
-  //   label: string;
-  //   className?: string;
-  //   fontColor?: FontColor;
-  //   type?: 'primary';
-  // }>(() => {
-  //   if (!isConnected) return { label: t(isLocking ? 'Unlock' : 'connectWallet'), fontColor: 'primary', active: true };
-  //   const { tokenIn, tokenOut, isFocusValueIn, valueIn, valueOut } = swapInfo;
-  //   if (!tokenIn || !tokenOut) return { label: t('selectAToken'), fontColor: 'two' };
-  //   if (isRouteEmpty) return { label: t('Go To Create'), active: true, type: 'primary' };
-  //   if (isFocusValueIn && (!valueIn || ZERO.eq(valueIn))) return { label: t('Enter an amount'), fontColor: 'two' };
-  //   if (!isFocusValueIn && (!valueOut || ZERO.eq(valueOut))) return { label: t('Enter an amount'), fontColor: 'two' };
+  const setTokenIn = useCallback(
+    async (tokenIn?: Currency) => {
+      if (!tokenIn) return;
+      setSwapInfo((pre) => {
+        const isSwitch = pre.tokenOut?.symbol === tokenIn.symbol;
+        if (!isSwitch)
+          return {
+            ...pre,
+            tokenIn,
+            isFocusValueIn: true,
+            valueIn: '',
+            valueOut: '',
+          };
+        return {
+          ...pre,
+          tokenIn,
+          tokenOut: pre.tokenIn,
+          isFocusValueIn: !pre.isFocusValueIn,
+          valueOut: pre.isFocusValueIn ? pre.valueIn : '',
+          valueIn: pre.isFocusValueIn ? '' : pre.valueOut,
+        };
+      });
+      onTokenChange();
+    },
+    [onTokenChange],
+  );
 
-  //   if (isInvalidParis) return { label: t('Insufficient liquidity for this trade'), className: 'swap-btn-error' };
-  //   if (isExceedBalance)
-  //     return {
-  //       label: t(`insufficientBalance`, { symbol: formatSymbol(tokenIn?.symbol) }),
-  //       className: 'swap-btn-error',
-  //     };
-  //   return {
-  //     active: true,
-  //     className: 'swap-btn-active',
-  //     label: t('Swap'),
-  //     type: 'primary',
-  //   };
-  // }, [isConnected, isExceedBalance, isInvalidParis, isLocking, isRouteEmpty, swapInfo, t]);
+  const setTokenOut = useCallback(
+    async (tokenOut?: Currency) => {
+      if (!tokenOut) return;
+      setSwapInfo((pre) => {
+        const isSwitch = pre.tokenIn?.symbol === tokenOut.symbol;
+        if (!isSwitch)
+          return {
+            ...pre,
+            tokenOut,
+            isFocusValueIn: true,
+            valueOut: '',
+          };
 
-  // const [isSwapping, setIsSwapping] = useState(false);
-  // const modalDispatch = useModalDispatch();
-  // const onSwapClick = useCallback(async () => {
-  //   const { tokenIn, tokenOut, valueIn, valueOut } = swapInfo;
-  //   if (!tokenIn || !tokenOut) return;
+        return {
+          ...pre,
+          tokenOut,
+          tokenIn: pre.tokenOut,
+          isFocusValueIn: !pre.isFocusValueIn,
+          valueOut: pre.isFocusValueIn ? pre.valueIn : '',
+          valueIn: pre.isFocusValueIn ? '' : pre.valueOut,
+        };
+      });
+      onTokenChange();
+    },
+    [onTokenChange],
+  );
 
-  //   if (isRouteEmpty) {
-  //     modalDispatch(
-  //       basicModalView.setSwapNotSupported.actions({
-  //         tokenIn,
-  //         tokenOut,
-  //       }),
-  //     );
-  //     return;
-  //   }
+  const switchToken = useCallback(async () => {
+    setSwapInfo((pre) => ({
+      ...pre,
+      tokenIn: pre.tokenOut,
+      tokenOut: pre.tokenIn,
+      isFocusValueIn: !pre.isFocusValueIn,
+      valueOut: pre.isFocusValueIn ? pre.valueIn : '',
+      valueIn: pre.isFocusValueIn ? '' : pre.valueOut,
+    }));
+    onTokenChange();
+  }, [onTokenChange]);
 
-  //   if (!valueIn || !valueOut) return;
+  const setValueIn = useCallback(async (value: string) => {
+    setSwapInfo((pre) => ({
+      ...pre,
+      valueIn: value,
+      valueOut: '',
+      isFocusValueIn: true,
+    }));
+    // refreshTokenValueDebounce();
+  }, []);
 
-  //   const _refreshTokenValue = refreshTokenValueRef.current;
-  //   if (!_refreshTokenValue) return;
-  //   setIsSwapping(true);
-  //   try {
-  //     const result = await _refreshTokenValue(true);
-  //     // can not get routeInfo
-  //     if (!result || !result.routeInfo) return;
-
-  //     const routeInfo = result.routeInfo;
-  //     const { route } = routeInfo;
-  //     const routeSymbolIn = route.rawPath?.[0]?.symbol;
-  //     const routeSymbolOut = route.rawPath?.[route.rawPath?.length - 1]?.symbol;
-  //     // swapInfo do not match routeInfo
-  //     if (tokenIn.symbol !== routeSymbolIn || tokenOut.symbol !== routeSymbolOut) return;
-
-  //     swapConfirmModalRef.current?.show({
-  //       swapInfo: {
-  //         ...swapInfo,
-  //         valueIn: result.valueIn,
-  //         valueOut: result.valueOut,
-  //       },
-  //       routeInfo,
-  //       priceLabel,
-  //     });
-  //   } catch (error) {
-  //     console.log('error', error);
-  //   } finally {
-  //     console.log('onSwap finally');
-  //     setIsSwapping(false);
-  //   }
-  // }, [isRouteEmpty, modalDispatch, priceLabel, swapInfo]);
-
-  // const onSwapSuccess = useCallback(() => {
-  //   setSwapInfo(pre => ({
-  //     ...pre,
-  //     valueIn: '',
-  //     valueOut: '',
-  //   }));
-  //   setOptimumRouteInfo(undefined);
-  //   registerTimer();
-  // }, [registerTimer]);
-
-  // const tokenInPrice = useTokenPrice({ symbol: swapInfo.tokenIn?.symbol });
-  // const tokenOutPrice = useTokenPrice({ symbol: swapInfo.tokenOut?.symbol });
-  // const usdImpactInfo = useMemo(() => {
-  //   const { tokenIn, tokenOut, valueIn, valueOut } = swapInfo;
-  //   if (!tokenIn || !tokenOut || !valueIn || !valueOut) return undefined;
-
-  //   if (
-  //     !tokenInPrice ||
-  //     tokenInPrice === '0' ||
-  //     !tokenOutPrice ||
-  //     tokenOutPrice === '0' ||
-  //     ZERO.eq(valueIn) ||
-  //     ZERO.eq(valueOut)
-  //   )
-  //     return;
-
-  //   const priceIn = ZERO.plus(valueIn).times(tokenInPrice);
-  //   const priceOut = ZERO.plus(valueOut).times(tokenOutPrice);
-  //   const _impact = priceOut.minus(priceIn).div(priceIn).times(100).dp(2);
-  //   let fontColor: FontColor = 'two';
-  //   if (_impact.gt(ZERO)) {
-  //     fontColor = 'rise';
-  //   } else if (_impact.lt(ZERO)) {
-  //     fontColor = 'fall';
-  //   }
-
-  //   return {
-  //     label: `${_impact.gt(ZERO) ? '+' : ''}${_impact.toFixed()}%`,
-  //     fontColor,
-  //   };
-  // }, [swapInfo, tokenInPrice, tokenOutPrice]);
-
+  const setValueOut = useCallback(async (value: string) => {
+    setSwapInfo((pre) => ({ ...pre, valueOut: value, valueIn: '', isFocusValueIn: false }));
+    // refreshTokenValueDebounce();
+  }, []);
   const extraPriceInfoData = useMemo(() => {
     return [
       {
         label: 'Max. Slippage',
         value: (
-          <div className="portkey-swap-ui-row-center">
+          <div className="portkey-swap-row-center">
             <span>0.5%</span>
             <CommonSvg type="icon-edit" />
           </div>
@@ -610,7 +204,7 @@ export const SwapPanel = () => {
         <SwapInputRow
           title={'Pay'}
           value={swapInfo.valueIn}
-          // onChange={setValueIn}
+          onChange={setValueIn}
           // balance={'currencyBalances?.[getCurrencyAddress(swapInfo.tokenIn)]' }
           balance={ZERO}
           token={swapInfo.tokenIn}
@@ -621,13 +215,13 @@ export const SwapPanel = () => {
               className={clsx('swap-select-token-btn', swapInfo.tokenIn && 'swap-select-token-btn-selected')}
               type="default"
               size="middle"
-              // token={swapInfo.tokenIn}
-              // setToken={setTokenIn}
+              token={swapInfo.tokenIn}
+              setToken={setTokenIn}
             />
           }
         />
         <div className="swap-token-switch-wrap">
-          <div className="swap-token-switch-btn portkey-swap-ui-flex-center">
+          <div className="swap-token-switch-btn portkey-swap-flex-center" onClick={switchToken}>
             <CommonSvg type="icon-arrow-left2" className="swap-token-switch-btn-default" />
             <CommonSvg type="icon-price-switch" className="swap-token-switch-btn-hover" />
           </div>
@@ -636,7 +230,7 @@ export const SwapPanel = () => {
           className="swap-input-out-row"
           title={'Receive'}
           value={swapInfo.valueOut}
-          // onChange={setValueOut}
+          onChange={setValueOut}
           // balance={currencyBalances?.[getCurrencyAddress(swapInfo.tokenOut)]}
           token={swapInfo.tokenOut}
           suffix={
@@ -644,8 +238,8 @@ export const SwapPanel = () => {
               className={clsx('swap-select-token-btn', swapInfo.tokenOut && 'swap-select-token-btn-selected')}
               type="default"
               size="middle"
-              // token={swapInfo.tokenOut}
-              // setToken={setTokenOut}
+              token={swapInfo.tokenOut}
+              setToken={setTokenOut}
             />
           }
           usdSuffix={
@@ -684,8 +278,8 @@ export const SwapPanel = () => {
           </AuthBtn> */}
         </div>
 
-        <div className="swap-price-swap portkey-swap-ui-flex-row-between">
-          <div className="portkey-swap-ui-flex-center">
+        <div className="swap-price-swap portkey-swap-flex-row-between">
+          <div className="portkey-swap-flex-center">
             <div className="single-price-swap">{`1 ELF = 0.423567 USDT`}</div>
             <CommonSvg type="icon-price-switch" />
             <CircleProcess />
@@ -693,15 +287,15 @@ export const SwapPanel = () => {
           <CommonSvg
             type="icon-arrow-up2"
             onClick={() => setExtraPriceInfoShow(!extraPriceInfoShow)}
-            className={clsx('portkey-swap-ui-row-center', extraPriceInfoShow && 'rotate-icon')}
+            className={clsx('portkey-swap-row-center', extraPriceInfoShow && 'rotate-icon')}
           />
         </div>
 
         {extraPriceInfoShow && (
-          <div className="swap-price-swap-info portkey-swap-ui-flex-column">
+          <div className="swap-price-swap-info portkey-swap-flex-column">
             {extraPriceInfoData.map((info, index: number) => (
-              <div key={index} className="portkey-swap-ui-flex-row-between price-swap-info-item">
-                <div className="portkey-swap-ui-flex-row-center">
+              <div key={index} className="portkey-swap-flex-row-between price-swap-info-item">
+                <div className="portkey-swap-flex-row-center">
                   <span className="price-swap-info-label">{info.label}</span>
                   <Tooltip title={info.tooltipMsg}>
                     <CommonSvg type="icon-tip-qs" />
