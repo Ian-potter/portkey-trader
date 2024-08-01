@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { Col, InputProps, Row } from 'antd';
+import { Button, Col, InputProps, Row } from 'antd';
+import { useMemo } from 'react';
 import clsx from 'clsx';
 import Font from '../../Font';
 
@@ -15,6 +16,9 @@ import CommonInput from '../../CommonInput';
 // import { ZERO } from 'constants/misc';
 
 import './styles.less';
+// import PriceUSDDigits from '../../PriceUSDDigits';
+// import { getFontStyle } from '@portkey/trader-util';
+import { ZERO } from '../../../constants/misc';
 // import PriceUSDDigits from 'components/PriceUSDDigits';
 // import getFontStyle from 'utils/getFontStyle';
 // import { useMobile } from 'utils/isMobile';
@@ -55,7 +59,9 @@ export default function SwapInputRow(props: Props) {
     className,
   } = props;
   // const { t } = useTranslation();
+  // TODO
   // const isMobile = useMobile();
+  const isMobile = false;
 
   // const inputRef = useRef<InputRef>(null);
   // const { isConnected } = useConnectWallet();
@@ -88,25 +94,26 @@ export default function SwapInputRow(props: Props) {
   //   [setValue],
   // );
 
-  // const renderUsd = useMemo(() => {
-  //   if (value === undefined || value === '')
-  //     return (
-  //       <Font size={isMobile ? 12 : 14} color="two">
-  //         -
-  //       </Font>
-  //     );
+  const renderUsd = useMemo(() => {
+    if (value === undefined || value === '')
+      return (
+        <Font size={isMobile ? 12 : 14} color="two">
+          -
+        </Font>
+      );
 
-  //   return (
-  //     <>
-  //       <PriceUSDDigits
-  //         wrapperClassName="swap-input-price-wrap"
-  //         className={getFontStyle({ size: isMobile ? 12 : 14, color: 'two' })}
-  //         price={ZERO.plus(value).times(tokenPrice)}
-  //       />
-  //       {usdSuffix}
-  //     </>
-  //   );
-  // }, [value, isMobile, tokenPrice, usdSuffix]);
+    return (
+      <>
+        {/* <PriceUSDDigits
+          wrapperClassName="swap-input-price-wrap"
+          // className={getFontStyle({ size: isMobile ? 12 : 14, color: 'two' })}
+          price={1}
+          // price={ZERO.plus(value).times(tokenPrice)}
+        /> */}
+        {/* {usdSuffix} */}
+      </>
+    );
+  }, [value, isMobile]);
 
   // const onMax = useCallback(() => {
   //   if (token?.symbol === 'ELF' && gasFee && balance) {
@@ -142,15 +149,15 @@ export default function SwapInputRow(props: Props) {
         </Col>
       </Row>
 
-      <div className="swap-input-row-footer">
-        <div>{!hideUSD && !!'renderUsd'}</div>
+      <div className="swap-input-row-footer flex">
+        <div>{!hideUSD && renderUsd}</div>
         <div>
           {!hidBlance && (
-            <div className="balance-box">
+            <div className="balance-box flex">
               <Font size={14} color="two" lineHeight={20}>
-                {`${'balance'}: ${'displayBalance'}`}
+                {`${'Balance'}: ${'123.12'}`}
               </Font>
-              {showMax && <div className="max-btn">MAX</div>}
+              {showMax && <Button className="max-btn">MAX</Button>}
             </div>
           )}
         </div>

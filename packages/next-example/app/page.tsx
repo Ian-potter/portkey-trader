@@ -238,8 +238,8 @@ function APP() {
   }, [swapInfo]);
 
   const getSupportTokenList = useCallback(async () => {
-    const list = await awaken.getSupportTokenList({ chainId: 'tDVW' });
-    console.log(list, 'getSupportTokenList');
+    // const list = await awaken.getSupportTokenList({ chainId: 'tDVW' });
+    // console.log(list, 'getSupportTokenList');s
   }, []);
 
   return (

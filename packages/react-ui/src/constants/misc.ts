@@ -1,5 +1,8 @@
 import BigNumber from 'bignumber.js';
 
+export const ZERO = new BigNumber(0);
+export const ONE = new BigNumber(1);
+
 export const DIGIT_CODE = {
   // digit code expiration time (minutes)
   expiration: 10,
@@ -17,8 +20,6 @@ export const TOKEN_SORT_MAP: Record<string, string> = {
   ELF: LANG_MAX.toFixed(),
   USDT: LANG_MAX.minus(1).toFixed(),
 };
-
-export const ZERO = new BigNumber(0);
 
 export const isEffectiveNumber = (v: any) => {
   const val = new BigNumber(v);

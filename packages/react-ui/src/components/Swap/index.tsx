@@ -4,7 +4,7 @@ import { SwapPanel } from './SwapPanel';
 import SelectTokenModal from './SelectTokenModal';
 import { AwakenSwapProvider } from '../../context/AwakenSwap';
 
-enum SwapComponentUiType {
+export enum SwapComponentUiType {
   Mobile = 'Mobile',
   Web = 'Web',
 }

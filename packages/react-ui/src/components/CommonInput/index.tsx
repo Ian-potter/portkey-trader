@@ -101,6 +101,7 @@ export default forwardRef(function CommonInput(
         max={100}
         allowClear={renderClear}
         ref={inputEle}
+        placeholder="0.00"
       />
     </span>
   );
