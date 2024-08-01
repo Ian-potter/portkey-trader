@@ -21,6 +21,7 @@ import {
 import { storage } from '@/constants/storageKey';
 import { getContractBasic } from '@portkey/contracts';
 import '@portkey/did-ui-react/dist/assets/index.css';
+import '@portkey/trader-react-ui/dist/assets/index.css';
 
 ConfigProvider.setGlobalConfig({
   connectUrl: 'https://auth-aa-portkey-test.portkey.finance',

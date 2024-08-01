@@ -14,7 +14,7 @@ import CommonInput from '../../CommonInput';
 // import Font from 'components/Font';
 // import { ZERO } from 'constants/misc';
 
-// import './styles.less';
+import './styles.less';
 // import PriceUSDDigits from 'components/PriceUSDDigits';
 // import getFontStyle from 'utils/getFontStyle';
 // import { useMobile } from 'utils/isMobile';

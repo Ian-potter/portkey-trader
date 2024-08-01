@@ -20,9 +20,12 @@
     "isolatedModules": true,
     "allowUnreachableCode": false,
     "experimentalDecorators": true,
-
     "outDir": "./dist/_types",
-    "declaration": true
+    "declaration": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["global.d.ts", "src", "index.ts"],
   "exclude": ["./dist", "node_modules"]
