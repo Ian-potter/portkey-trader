@@ -281,7 +281,7 @@ function APP() {
         }}
       />
       {/* <Swap /> */}
-      <Swap componentUiType={ComponentType.Mobile} />
+      <Swap componentUiType={ComponentType.Mobile} awakenSwapInstance={awaken} />
     </main>
   );
 }

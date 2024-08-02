@@ -1,6 +1,7 @@
 import React, { createContext, useMemo, useReducer, useContext } from 'react';
 import { AwakenSwapActions, AwakenSwapState } from './actions';
 import { BasicActions } from '../utils';
+import { AwakenSwapper } from '@portkey/trader-core';
 
 const INITIAL_STATE: AwakenSwapState = {
   isMobile: false,
@@ -12,6 +13,7 @@ const INITIAL_STATE: AwakenSwapState = {
     title: '',
     content: '',
   },
+  supportTokenList: [],
 };
 
 const AwakenSwapContext = createContext<any>(INITIAL_STATE);
@@ -19,18 +21,27 @@ export function useAwakenSwapContext(): [AwakenSwapState, BasicActions] {
   return useContext(AwakenSwapContext);
 }
 
-export function AwakenSwapProvider({ children, isMobile }: { children: React.ReactNode; isMobile: boolean }) {
+export function AwakenSwapProvider({
+  children,
+  isMobile,
+  awakenSwapInstance,
+}: {
+  children: React.ReactNode;
+  isMobile: boolean;
+  awakenSwapInstance?: AwakenSwapper;
+}) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
   const providerValue = useMemo<[AwakenSwapState, { dispatch: React.Dispatch<any> }]>(() => {
     return [
       {
+        awakenSwapInstance,
         isMobile,
         ...state,
       },
       { dispatch },
     ];
-  }, [isMobile, state]);
+  }, [awakenSwapInstance, isMobile, state]);
 
   return <AwakenSwapContext.Provider value={providerValue}>{children}</AwakenSwapContext.Provider>;
 }
@@ -53,6 +64,10 @@ function reducer(state: AwakenSwapState, { type, payload }: any) {
     case AwakenSwapActions.setSettingModalShow: {
       const isSettingModalShow = payload.isSettingModalShow;
       return Object.assign({}, state, { isSettingModalShow });
+    }
+    case AwakenSwapActions.setSupportTokenList: {
+      const list = payload.list;
+      return Object.assign({}, state, { supportTokenList: list });
     }
     case AwakenSwapActions.destroy: {
       return INITIAL_STATE;

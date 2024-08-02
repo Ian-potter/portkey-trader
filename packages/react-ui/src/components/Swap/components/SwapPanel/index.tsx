@@ -32,6 +32,7 @@ import { TSwapRoute } from '../../types';
 import BigNumber from 'bignumber.js';
 import TokenLogoPair from '../TokenLogoPair';
 import { CurrencyLogos } from '../../../CurrencyLogo';
+import { useTokenList } from '../../../../hooks/tokenList';
 
 export interface ISwapPanel {
   wrapClassName?: string;
@@ -54,7 +55,6 @@ export enum BtnErrEnum {
 export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   const [{ isMobile }, { dispatch }] = useAwakenSwapContext();
 
-  console.log('isMobile', isMobile);
   const [extraPriceInfoShow, setExtraPriceInfoShow] = useState(false);
   const [valueInfo, setValueInfo] = useState<any>({
     tokenIn: {

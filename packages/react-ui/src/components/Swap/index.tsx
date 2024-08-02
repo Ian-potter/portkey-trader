@@ -11,9 +11,9 @@ interface ISwapProps {
   awakenSwapInstance?: AwakenSwapper;
 }
 
-export const Swap = ({ componentUiType, containerClassName }: ISwapProps) => {
+export const Swap = ({ componentUiType, containerClassName, awakenSwapInstance }: ISwapProps) => {
   return (
-    <AwakenSwapProvider isMobile={componentUiType === ComponentType.Mobile}>
+    <AwakenSwapProvider isMobile={componentUiType === ComponentType.Mobile} awakenSwapInstance={awakenSwapInstance}>
       <div className={clsx(['swap-page', containerClassName])}>
         {componentUiType === ComponentType.Mobile ? <SwapPanel /> : <SwapPanel />}
       </div>
