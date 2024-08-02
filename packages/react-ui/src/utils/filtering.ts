@@ -1,6 +1,6 @@
 import { TokenInfo } from '@awaken/token-lists';
 import { useMemo } from 'react';
-import { Token } from '@/types';
+import { TTokenItem } from '../types';
 
 const alwaysTrue = () => true;
 
@@ -8,7 +8,7 @@ const alwaysTrue = () => true;
  * Create a filter function to apply to a token for whether it matches a particular search query
  * @param search the search query to apply to the token
  */
-export function createTokenFilterFunction<T extends Token | TokenInfo>(search: string): (tokens: T) => boolean {
+export function createTokenFilterFunction<T extends TTokenItem | TokenInfo>(search: string): (tokens: T) => boolean {
   const lowerSearchParts = search
     .toLowerCase()
     .split(/\s+/)
@@ -25,14 +25,14 @@ export function createTokenFilterFunction<T extends Token | TokenInfo>(search: s
     return lowerSearchParts.every((p) => p.length === 0 || sParts.some((sp) => sp.startsWith(p) || sp.endsWith(p)));
   };
 
-  return ({ name, symbol }: T): boolean => Boolean((symbol && matchesSearch(symbol)) || (name && matchesSearch(name)));
+  return ({ symbol }: T): boolean => Boolean(symbol && matchesSearch(symbol));
 }
 
-export function filterTokens<T extends Token | TokenInfo>(tokens: T[], search: string): T[] {
+export function filterTokens<T extends TTokenItem | TokenInfo>(tokens: T[], search: string): T[] {
   return tokens.filter(createTokenFilterFunction(search));
 }
 
-export function useSortedTokensByQuery(tokens: Token[] | undefined, searchQuery: string): Token[] {
+export function useSortedTokensByQuery(tokens: TTokenItem[] | undefined, searchQuery: string): TTokenItem[] {
   return useMemo(() => {
     if (!tokens) {
       return [];
@@ -47,9 +47,9 @@ export function useSortedTokensByQuery(tokens: Token[] | undefined, searchQuery:
       return tokens;
     }
 
-    const exactMatches: Token[] = [];
-    const symbolSubtrings: Token[] = [];
-    const rest: Token[] = [];
+    const exactMatches: TTokenItem[] = [];
+    const symbolSubtrings: TTokenItem[] = [];
+    const rest: TTokenItem[] = [];
 
     // sort tokens by exact match -> subtring on symbol match -> rest
     tokens.map((token) => {

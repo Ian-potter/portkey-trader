@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 import { divDecimals } from '@portkey/trader-utils';
 import { TOKEN_SORT_MAP, ZERO } from '../../../../constants/misc';
-import { Token } from '@/types';
+import { TTokenItem } from '../../../../types';
 
 // compare two token amounts with highest one coming first
 function balanceComparator(balanceA?: BigNumber, balanceB?: BigNumber) {
@@ -18,8 +18,8 @@ function balanceComparator(balanceA?: BigNumber, balanceB?: BigNumber) {
 }
 function getTokenComparator(balances: {
   [tokenAddress: string]: BigNumber | undefined;
-}): (tokenA: Token, tokenB: Token) => number {
-  return function sortTokens(tokenA: Token, tokenB: Token): number {
+}): (tokenA: TTokenItem, tokenB: TTokenItem) => number {
+  return function sortTokens(tokenA: TTokenItem, tokenB: TTokenItem): number {
     // -1 = a is first
     // 1 = b is first
 
@@ -51,11 +51,11 @@ export function useTokenComparator(
   balances: {
     [tokenAddress: string]: BigNumber;
   },
-): (tokenA: Token, tokenB: Token) => number {
+): (tokenA: TTokenItem, tokenB: TTokenItem) => number {
   const comparator = useMemo(() => getTokenComparator(balances ?? {}), [balances]);
   return useMemo(() => {
     if (inverted) {
-      return (tokenA: Token, tokenB: Token) => comparator(tokenA, tokenB) * -1;
+      return (tokenA: TTokenItem, tokenB: TTokenItem) => comparator(tokenA, tokenB) * -1;
     } else {
       return comparator;
     }

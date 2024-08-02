@@ -52,7 +52,9 @@ export enum BtnErrEnum {
 }
 
 export default function SwapPanel({ wrapClassName }: ISwapPanel) {
-  const [, { dispatch }] = useAwakenSwapContext();
+  const [{ isMobile }, { dispatch }] = useAwakenSwapContext();
+
+  console.log('isMobile', isMobile);
   const [extraPriceInfoShow, setExtraPriceInfoShow] = useState(false);
   const [valueInfo, setValueInfo] = useState<any>({
     tokenIn: {

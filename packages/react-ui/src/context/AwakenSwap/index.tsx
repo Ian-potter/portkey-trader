@@ -19,17 +19,18 @@ export function useAwakenSwapContext(): [AwakenSwapState, BasicActions] {
   return useContext(AwakenSwapContext);
 }
 
-export function AwakenSwapProvider({ children }: { children: React.ReactNode }) {
+export function AwakenSwapProvider({ children, isMobile }: { children: React.ReactNode; isMobile: boolean }) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
   const providerValue = useMemo<[AwakenSwapState, { dispatch: React.Dispatch<any> }]>(() => {
     return [
       {
+        isMobile,
         ...state,
       },
       { dispatch },
     ];
-  }, [state]);
+  }, [isMobile, state]);
 
   return <AwakenSwapContext.Provider value={providerValue}>{children}</AwakenSwapContext.Provider>;
 }
