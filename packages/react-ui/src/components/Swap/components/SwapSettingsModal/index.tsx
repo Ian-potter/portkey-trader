@@ -14,6 +14,7 @@ import Font from '../../../Font';
 import CommonInput from '../../../CommonInput';
 import BigNumber from 'bignumber.js';
 import { timesDecimals } from '@portkey/trader-utils';
+import CommonTooltip from '../../../CommonTooltip';
 
 interface SwapSettingsModalProps {
   value: string;
@@ -82,6 +83,17 @@ export default function SwapSettingsModal(props: SwapSettingsModalProps) {
       <>
         <CommonModalHeader title={t('Settings')} showClose={true} onClose={onCloseModal} />
         <div className="content-wrap">
+          <div className="tips-wrap">
+            <span className="price-swap-info-label">{'Max. Slippage'}</span>
+            <CommonTooltip
+              placement="top"
+              title={'The trade will be cancelled when slippage exceeds this percentage.'}
+              getPopupContainer={(v) => v}
+              // buttonTitle={'ok'}
+              // headerDesc={'yyy'}
+            />
+          </div>
+
           <Row gutter={[0, 8]}>
             <Col span={24}>
               <Row gutter={[8, 0]} wrap={false}>

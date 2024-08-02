@@ -478,7 +478,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
           {extraPriceInfoData.map((info, index: number) => (
             <div key={index} className="portkey-swap-flex-row-between price-swap-info-item">
               <div className="portkey-swap-flex-row-center">
-                <span className="price-swap-info-label">{info.label}</span>
+                <span className="max-label">{info.label}</span>
                 <CommonTooltip
                   placement="top"
                   title={info.tooltipMsg}
