@@ -12,6 +12,7 @@ import CommonList from '../../../CommonList';
 // import { useAllTokenList } from 'hooks/tokenList';
 import './styles.less';
 import { ZERO } from '../../../../constants/misc';
+import { Currency } from '@awaken/sdk-core';
 
 const mockList = [
   {
@@ -177,7 +178,12 @@ const mockList = [
   },
 ];
 
-export default function SelectTokenList({ onClickManageTokens }: { onClickManageTokens?: () => void }) {
+interface SelectTokenListProps {
+  selectedToken?: Currency;
+  onConfirm?: (token?: Currency) => void;
+}
+
+export default function SelectTokenList(props: SelectTokenListProps) {
   const { t } = useTranslation();
   // const isMobile = useMobile();
   const isMobile = false;
@@ -214,7 +220,7 @@ export default function SelectTokenList({ onClickManageTokens }: { onClickManage
           className={clsx('select-token-list', !isMobile && filteredSortedTokens.length > 9 && 'token-list-large')}
           dataSource={filteredSortedTokens}
           renderItem={(item: any) => (
-            <CurrencyRow key={item.address} currency={item} balance={ZERO} isBalanceShow={false} />
+            <CurrencyRow key={item.address} currency={item} balance={ZERO} isBalanceShow={false} {...props} />
           )}
           loading={false}
           pageNum={1}

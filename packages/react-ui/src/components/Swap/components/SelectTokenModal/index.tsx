@@ -4,7 +4,14 @@ import SelectTokenList from './SelectTokenList';
 import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
 import { swapActions } from '../../../../context/AwakenSwap/actions';
 import CommonModalHeader from '../../../CommonModalHeader';
-export default function SelectTokenModal() {
+import { Currency } from '@awaken/sdk-core';
+
+interface ISelectTokenModalProps {
+  selectedToken?: Currency;
+  onConfirm?: (token?: Currency) => void;
+}
+
+export default function SelectTokenModal(props: ISelectTokenModalProps) {
   const [{ isSelectModalShow }, { dispatch }] = useAwakenSwapContext();
   const isMobile = false;
 
@@ -25,7 +32,7 @@ export default function SelectTokenModal() {
       <div className="modal-panel">
         <div className="modal-panel-content">
           <CommonModalHeader title={'Select a Token'} showClose={true} onClose={onCloseModal} />
-          <SelectTokenList />
+          <SelectTokenList {...props} />
         </div>
       </div>
     </CommonModal>

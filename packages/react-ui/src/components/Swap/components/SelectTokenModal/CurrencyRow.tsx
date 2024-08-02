@@ -12,17 +12,23 @@ import clsx from 'clsx';
 import { divDecimals } from '@portkey/trader-utils';
 
 export interface ICurrencyRowProps {
-  currency: Currency;
+  currency?: Currency;
+  selectedToken?: Currency;
   balance?: BigNumber;
   isBalanceShow?: boolean;
+  onConfirm?: (token?: Currency) => void;
 }
-export default function CurrencyRow({ currency, balance, isBalanceShow = true }: ICurrencyRowProps) {
-  // const [{ tokenCallBack, selectedToken }, { dispatch }] = useModal();
-  // const isSelected = isEqCurrency(selectedToken, currency);
-  const isSelected = false;
+export default function CurrencyRow({
+  currency,
+  selectedToken,
+  balance,
+  isBalanceShow = true,
+  onConfirm,
+}: ICurrencyRowProps) {
+  const isSelected = isEqCurrency(selectedToken, currency);
 
   const displayBalance = useMemo(() => {
-    return divDecimals(balance, currency.decimals);
+    return divDecimals(balance, currency?.decimals);
   }, [balance, currency]);
 
   return (
@@ -30,8 +36,7 @@ export default function CurrencyRow({ currency, balance, isBalanceShow = true }:
       className={clsx('select-token-list-item', isSelected && 'select-token-list-item-active')}
       onClick={() => {
         if (isSelected) return;
-        // tokenCallBack?.(currency);
-        // dispatch(basicModalView.setSelectTokenModal.actions(false));
+        onConfirm?.(currency);
       }}>
       <Col span={24}>
         <Row justify="space-between" align="middle" className="select-token-list-item">
@@ -41,7 +46,7 @@ export default function CurrencyRow({ currency, balance, isBalanceShow = true }:
                 <CurrencyLogo size={24} currency={currency} />
               </Col>
               <Col>
-                <Pair lineHeight={24} size={16} weight="medium" symbol={currency.symbol} />
+                <Pair lineHeight={24} size={16} weight="medium" symbol={currency?.symbol} />
               </Col>
             </Row>
           </Col>

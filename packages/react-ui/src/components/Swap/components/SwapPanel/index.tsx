@@ -225,7 +225,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
 
       <CommonButton
         onClick={() => {
-          dispatch(swapActions.setSettingModalShow.actions(true));
+          dispatch(swapActions.setConfirmModalShow.actions(true));
         }}>
         CLICKK
       </CommonButton>
