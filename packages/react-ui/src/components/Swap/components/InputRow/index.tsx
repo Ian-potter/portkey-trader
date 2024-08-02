@@ -4,17 +4,19 @@ import CommonSvg from '../../../../components/CommonSvg';
 import { Currency } from '@awaken/sdk-core';
 import clsx from 'clsx';
 import TokenImageDisplay from '../TokenImageDisplay';
+import { ZERO } from '../../../../constants/misc';
 import './index.less';
 
 export interface IInputContainer {
   title?: string;
   wrapClassName?: string;
   value?: number | string;
-  valueInUsd?: number | string;
+  priceInUsd?: number | string;
   balance?: number | string;
   placeholder?: string;
   tokenInfo?: Currency;
   showMax?: boolean;
+  usdSuffix?: React.ReactNode;
   onInputChange: (v: string) => void;
   onSelectToken: () => void;
   onClickMax?: () => void;
@@ -24,32 +26,38 @@ export default function InputContainer({
   title = 'Pay',
   wrapClassName,
   value = 0,
-  valueInUsd = '-',
+  priceInUsd,
   balance = '-',
   placeholder = '0.00',
   tokenInfo,
   showMax,
+  usdSuffix,
   onInputChange,
   onSelectToken,
   onClickMax,
 }: IInputContainer) {
+  const valueInUsd = useMemo(() => {
+    if (!(value && priceInUsd)) return '-';
+    return `$${ZERO.plus(value).times(priceInUsd).toFixed(2)}`;
+  }, [priceInUsd, value]);
+
   const renderSelectToken = useMemo(() => {
     return (
-      <div className="select-token-wrap portkey-swap-flex-row-center">
+      <div className="select-token-wrap portkey-swap-flex-row-center" onClick={onSelectToken}>
         <div className="select-token-wrap-text">{`Select a token`}</div>
-        <CommonSvg type="icon-arrow-down2" onClick={onSelectToken} />
+        <CommonSvg type="icon-arrow-down2" />
       </div>
     );
   }, [onSelectToken]);
   const renderTokenInfo = useMemo(() => {
     return (
       <div className="show-token-wrap portkey-swap-flex-row-center">
-        <TokenImageDisplay symbol="ELF" width={20} />
-        <span>{`ELF`}</span>
+        <TokenImageDisplay symbol={tokenInfo?.symbol} width={20} />
+        <span>{tokenInfo?.symbol}</span>
         <CommonSvg type="icon-arrow-up2" onClick={onSelectToken} />
       </div>
     );
-  }, [onSelectToken]);
+  }, [onSelectToken, tokenInfo?.symbol]);
 
   return (
     <div className={clsx('swap-input-wrapper', wrapClassName)}>
@@ -61,7 +69,7 @@ export default function InputContainer({
           placeholder={placeholder}
           className="swap-input-value"
           wrapClassName="portkey-swap-flex-1"
-          // disabled={!tokenInfo}
+          disabled={!tokenInfo}
           // ref={inputRef}
         />
         {tokenInfo ? renderTokenInfo : renderSelectToken}
@@ -69,10 +77,10 @@ export default function InputContainer({
       <div className="swap-input-row3 portkey-swap-flex-row-between">
         <div className="portkey-swap-flex-row-center">
           <span className="value-in-usd">{valueInUsd}</span>
-          <span className="percent-show">{`-0.32%`}</span>
+          <span className="usd-suffix-show">{usdSuffix}</span>
         </div>
         <div className="portkey-swap-flex-row-center">
-          <div className="balance-show">{`Balance: ${balance}`}</div>
+          <div className="balance-show">{`Balance: ${balance ? balance : '-'}`}</div>
           {showMax && (
             <div className="show-max" onClick={onClickMax}>
               MAX

@@ -5,3 +5,4 @@ export * from './calculate';
 export * from './token';
 export * from './textProcessor';
 export * from './aelf';
+export * from './price';

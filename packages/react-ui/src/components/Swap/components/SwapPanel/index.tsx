@@ -1,13 +1,14 @@
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useState, useMemo, useEffect, useRef } from 'react';
+import { useEffectOnce } from 'react-use';
 import clsx from 'clsx';
 import InputContainer from '../InputRow';
 import CommonSvg from '../../../CommonSvg';
 import CommonButton from '../../../CommonButton';
-import { CircleProcess } from '../../../CircleProcess';
-import { Currency } from '@awaken/sdk-core';
+import { CircleProcess, CircleProcessInterface } from '../../../CircleProcess';
+// import { Token } from '@awaken/sdk-core';
 import { Tooltip } from 'antd';
 import { isValidNumber } from '../../../../utils/reg';
-import { ZERO } from '../../../../constants/misc';
+import { SWAP_TIME_INTERVAL, ZERO } from '../../../../constants/misc';
 import './index.less';
 import SwapTipsModal from '../SwapTipsModal';
 import SwapSettingsModal from '../SwapSettingsModal';
@@ -15,14 +16,29 @@ import { SwapConfirmModal } from '../SwapConfirmModal';
 import { AwakenSwapProvider, useAwakenSwapContext } from '../../../../context/AwakenSwap';
 import SelectTokenModal from '../SelectTokenModal';
 import { swapActions } from '../../../../context/AwakenSwap/actions';
+import { useGetTokenPrice } from '../../../../hooks/price';
+import { Token } from '../../../../types';
+import {
+  awaken,
+  bigNumberToString,
+  getPriceImpactWithBuy,
+  minimumAmountOut,
+  parseUserSlippageTolerance,
+} from '../../../../utils/swap';
+import { RouteType } from '@portkey/trader-services';
+import { divDecimals, formatSymbol, formatPrice, timesDecimals, ONE } from '@portkey/trader-utils';
+import CommonTooltip from '../../../CommonTooltip';
+import { TSwapRoute } from '../../types';
+import BigNumber from 'bignumber.js';
+import TokenLogoPair from '../TokenLogoPair';
 
 export interface ISwapPanel {
   wrapClassName?: string;
 }
 
 export type TSwapInfo = {
-  tokenIn?: Currency | undefined;
-  tokenOut?: Currency | undefined;
+  tokenIn?: Token | undefined;
+  tokenOut?: Token | undefined;
 
   valueIn: string;
   valueOut: string;
@@ -37,42 +53,243 @@ export enum BtnErrEnum {
 export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   const [, { dispatch }] = useAwakenSwapContext();
   const [extraPriceInfoShow, setExtraPriceInfoShow] = useState(false);
-  const [valueInfo, setValueInfo] = useState<TSwapInfo>({
-    tokenIn: undefined,
-    tokenOut: undefined,
+  const [valueInfo, setValueInfo] = useState<any>({
+    tokenIn: {
+      address: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+      symbol: 'ELF',
+      decimals: 8,
+      chainId: 'tDVW',
+      // id: 'b2aede10-f4e8-4d21-9e60-767cdd427f0f',
+    },
+    tokenOut: {
+      address: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+      symbol: 'USDT',
+      decimals: 6,
+      chainId: 'tDVW',
+      id: '910301a7-ee78-425f-951d-60099c895ecc',
+    },
 
     valueIn: '',
     valueOut: '',
   });
+
+  const valueInfoRef = useRef(valueInfo);
+  valueInfoRef.current = valueInfo;
+  const [swapRoute, setSwapRoute] = useState<TSwapRoute>();
+  const circleProcessRef = useRef<CircleProcessInterface>();
+  const [tokenInUsd, setTokenInUsd] = useState('');
+  const [tokenOutUsd, setTokenOutUsd] = useState('');
   const [valueInBalance, setValueInBalance] = useState('');
   const [valueOutBalance, setValueOutBalance] = useState('');
   const [confirmBtnError, setConfirmBtnError] = useState<BtnErrEnum>(BtnErrEnum.none);
+  const [isUnitConversionReverse, setIsUnitConversionReverse] = useState(false);
+  const getTokenPrice = useGetTokenPrice();
+  const timerRef = useRef<NodeJS.Timeout>();
+  // TODO
+  const gasFee = 0;
+  // TODO
+  const userSlippageTolerance = '0.005';
+  const slippageValue = useMemo(() => {
+    return ZERO.plus(parseUserSlippageTolerance(userSlippageTolerance)).dp(2).toString();
+  }, [userSlippageTolerance]);
+  const amountOutMinValue = useMemo(() => {
+    const { valueOut, tokenOut } = valueInfo;
+    if (!valueOut || !tokenOut) return '-';
+    const _value = bigNumberToString(minimumAmountOut(ZERO.plus(valueOut), userSlippageTolerance), tokenOut.decimals);
+    return `${_value} ${formatSymbol(tokenOut.symbol)}`;
+  }, [valueInfo, userSlippageTolerance]);
+  const priceImpact = useMemo(() => {
+    if (!swapRoute) return '-';
+
+    const impactList: BigNumber[] = [];
+    swapRoute.distributions.forEach((path) => {
+      for (let i = 0; i < path.tokens.length - 1; i++) {
+        const tradePairExtension = path.tradePairExtensions[i];
+        const tokenIn = path.tokens[i];
+        const tokenOut = path.tokens[i + 1];
+        const tokenInReserve = ZERO.plus(tradePairExtension.valueLocked0);
+        const tokenOutReserve = ZERO.plus(tradePairExtension.valueLocked1);
+        const valueIn = divDecimals(path.amounts[i], tokenIn.decimals);
+        const valueOut = divDecimals(path.amounts[i + 1], tokenOut.decimals);
+        const _impact = getPriceImpactWithBuy(tokenOutReserve, tokenInReserve, valueIn, valueOut);
+        impactList.push(_impact);
+      }
+    });
+
+    return `${bigNumberToString(BigNumber.max(...impactList), 2)}%`;
+  }, [swapRoute]);
+  const swapFeeValue = useMemo(() => {
+    const { tokenIn, valueIn } = valueInfo;
+
+    if (!swapRoute || !tokenIn || !valueIn) return '-';
+
+    let totalFee = ZERO;
+    swapRoute.distributions.forEach((path) => {
+      const { amountIn, feeRates } = path;
+      const reserveRate = feeRates.reduce((p, c) => p.times(ONE.minus(c)), ONE);
+      const totalFeeRate = ONE.minus(reserveRate);
+      const feeAmount = ZERO.plus(amountIn).times(totalFeeRate);
+      const fee = divDecimals(feeAmount, tokenIn.decimals).dp(tokenIn.decimals);
+      totalFee = totalFee.plus(fee);
+    });
+
+    return `${totalFee.toFixed()} ${formatSymbol(tokenIn.symbol)}`;
+  }, [swapRoute, valueInfo]);
+
+  const gasFeeValue = useMemo(() => {
+    return divDecimals(ZERO.plus(gasFee), 8);
+  }, [gasFee]);
+
+  const clearTimer = useCallback(() => {
+    if (!timerRef.current) return;
+    clearInterval(timerRef.current);
+    timerRef.current = undefined;
+    // routeListRef.current = undefined;
+    console.log('clearTimer');
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearTimer();
+    };
+  }, [clearTimer]);
+
+  const registerTimer = useCallback(() => {
+    clearTimer();
+    const { tokenIn, tokenOut } = valueInfoRef.current;
+    if (!tokenIn || !tokenOut) return;
+
+    // executeCbRef.current();
+    circleProcessRef.current?.start();
+    timerRef.current = setInterval(() => {
+      // executeCbRef.current();
+      circleProcessRef.current?.start();
+    }, SWAP_TIME_INTERVAL);
+  }, [clearTimer]);
+
+  useEffectOnce(() => {
+    const { tokenIn, tokenOut } = valueInfo;
+    if (!tokenIn || !tokenOut) return;
+    registerTimer();
+  });
+
+  useEffect(() => {
+    if (!valueInfo.tokenIn?.symbol) return;
+    getTokenPrice({
+      symbol: valueInfo.tokenIn.symbol,
+      chainId: 'tDVW',
+      tokenAddress: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+    })
+      .then((res) => {
+        setTokenInUsd(res);
+      })
+      .catch((err) => {
+        setTokenInUsd('');
+        console.log('===getTokenPrice error', err);
+      });
+  }, [getTokenPrice, valueInfo.tokenIn.symbol]);
+
+  useEffect(() => {
+    if (!valueInfo.tokenOut?.symbol) return;
+    getTokenPrice({
+      symbol: valueInfo.tokenOut.symbol,
+      chainId: 'tDVW',
+      tokenAddress: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+    })
+      .then((res) => {
+        setTokenOutUsd(res);
+      })
+      .catch((err) => {
+        setTokenOutUsd('');
+        console.log('===getTokenPrice error', err);
+      });
+  }, [getTokenPrice, valueInfo.tokenIn.symbol, valueInfo.tokenOut.symbol]);
+
+  const usdImpactInfo = useMemo(() => {
+    const { tokenIn, tokenOut, valueIn, valueOut } = valueInfo;
+    if (!tokenIn || !tokenOut || !valueIn || !valueOut) return undefined;
+
+    if (
+      !tokenInUsd ||
+      tokenInUsd === '0' ||
+      !tokenOutUsd ||
+      tokenOutUsd === '0' ||
+      ZERO.eq(valueIn) ||
+      ZERO.eq(valueOut)
+    )
+      return;
+
+    const priceIn = ZERO.plus(valueIn).times(tokenInUsd);
+    const priceOut = ZERO.plus(valueOut).times(tokenOutUsd);
+    const _impact = priceOut.minus(priceIn).div(priceIn).times(100).dp(2);
+    let fontColor = '#00B75F';
+    if (_impact.gt(ZERO)) {
+      fontColor = '#00B75F';
+    } else if (_impact.lt(ZERO)) {
+      fontColor = '#B34B4B';
+    }
+
+    return {
+      label: `${_impact.gt(ZERO) ? '+' : ''}${_impact.toFixed()}%`,
+      fontColor,
+    };
+  }, [tokenInUsd, tokenOutUsd, valueInfo]);
 
   const onValueInChange = useCallback(
-    (v: string) => {
+    async (v: string) => {
       if (v && !isValidNumber(v)) return;
-      setValueInfo({
-        ...valueInfo,
+      setValueInfo((pre) => ({
+        ...pre,
         valueIn: v,
-      });
+      }));
+      const params = {
+        chainId: 'tDVW' as any,
+        symbolIn: valueInfo.tokenIn.symbol,
+        symbolOut: valueInfo.tokenOut.symbol,
+        amountIn: timesDecimals(v, valueInfo.tokenIn.decimals).toFixed(),
+      };
+      const { bestRouters, swapTokens } = await awaken.getBestRouters(RouteType.AmountIn, params);
+      const bestRoute = bestRouters?.[0];
+      setSwapRoute(bestRoute as any);
+      const _amountOut = divDecimals(bestRoute.amountOut, valueInfo.tokenOut.decimals).toFixed();
+      setValueInfo((pre) => ({
+        ...pre,
+        valueOut: _amountOut,
+      }));
+      console.log('🌹🌹🌹onValueInChange', bestRouters, swapTokens);
     },
     [valueInfo],
   );
 
   const onValueOutChange = useCallback(
-    (v: string) => {
+    async (v: string) => {
       if (v && !isValidNumber(v)) return;
       setValueInfo({
         ...valueInfo,
         valueOut: v,
       });
+      const params = {
+        chainId: 'tDVW' as any,
+        symbolIn: valueInfo.tokenIn.symbol,
+        symbolOut: valueInfo.tokenOut.symbol,
+        amountOut: timesDecimals(v, valueInfo.tokenOut.decimals).toFixed(),
+      };
+      const { bestRouters, swapTokens } = await awaken.getBestRouters(RouteType.AmountOut, params);
+      const bestRoute = bestRouters?.[0];
+      setSwapRoute(bestRoute as any);
+      const _amountIn = divDecimals(bestRoute.amountIn, valueInfo.tokenIn.decimals).toFixed();
+      setValueInfo((pre) => ({
+        ...pre,
+        valueIn: _amountIn,
+      }));
+      console.log('🌹🌹🌹onValueOutChange', bestRouters, swapTokens);
     },
     [valueInfo],
   );
   const onSelectTokenIn = useCallback(() => {
-    // TODO open modal
-  }, []);
-  const onTokenInChange = useCallback((token: Currency) => {
+    dispatch(swapActions.setSelectTokenModalShow.actions(true));
+  }, [dispatch]);
+  const onTokenInChange = useCallback((token: Token) => {
     setValueInfo((pre) => ({
       ...pre,
       tokenIn: token,
@@ -81,7 +298,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   const onSelectTokenOut = useCallback(() => {
     // TODO open modal
   }, []);
-  const onTokenOutChange = useCallback((token: Currency) => {
+  const onTokenOutChange = useCallback((token: Token) => {
     setValueInfo((pre) => ({
       ...pre,
       tokenOut: token,
@@ -99,45 +316,83 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
     //
   }, []);
 
+  const unitConversionShow = useMemo(() => {
+    const { tokenIn, tokenOut, valueIn, valueOut } = valueInfo;
+    if (!tokenIn || !tokenOut) return '-';
+    const symbolIn = formatSymbol(tokenIn.symbol);
+    const symbolOut = formatSymbol(tokenOut.symbol);
+
+    if (!isUnitConversionReverse) {
+      if (!valueIn || !valueOut) return `1 ${symbolOut} = - ${symbolIn}`;
+
+      const _price = formatPrice(ZERO.plus(valueIn).div(ZERO.plus(valueOut)));
+      return `1 ${symbolOut} = ${_price} ${symbolIn}`;
+    } else {
+      if (!valueIn || !valueOut) return `1 ${symbolIn} = - ${symbolOut}`;
+
+      const _price = formatPrice(ZERO.plus(valueOut).div(ZERO.plus(valueIn)));
+      return `1 ${symbolIn} = ${_price} ${symbolOut}`;
+    }
+  }, [isUnitConversionReverse, valueInfo]);
+
   const extraPriceInfoData = useMemo(() => {
     return [
       {
         label: 'Max. Slippage',
         value: (
           <div className="portkey-swap-row-center">
-            <span>0.5%</span>
-            <CommonSvg type="icon-edit" />
+            <span>{slippageValue}</span>
+            <CommonSvg
+              type="icon-edit"
+              onClick={() => {
+                dispatch(swapActions.setSettingModalShow.actions(true));
+              }}
+            />
           </div>
         ),
         tooltipMsg: `The trade will be cancelled when slippage exceeds this percentage.`,
       },
       {
         label: 'Min. Received',
-        value: '1.990049 USDT',
+        value: amountOutMinValue,
         tooltipMsg: `Min.Received refers to the exchange result at the price corresponding to the Max.Slippage you set.Generally, it will be more.`,
       },
       {
         label: 'Price Impact',
-        value: '0.11%',
+        value: priceImpact,
         tooltipMsg: `The maximum impact on the currency price of the liquidity pool after the transaction is completed.`,
       },
       {
         label: 'Swap Fee',
-        value: '0.00059107 ELF',
+        value: swapFeeValue,
         tooltipMsg: `The accumulated fee share of this trading pair's positions.`,
       },
       {
         label: 'Network Cost',
-        value: '0.0048 ELF',
+        value: `${gasFeeValue} ELF`,
         tooltipMsg: `Network Cost are the miner fees paid in order for transactions to proceed.`,
       },
       {
         label: 'Order Routing',
-        value: 'xxx',
+        value: (
+          <div className="portkey-swap-flex-row-center">
+            <TokenLogoPair token1={valueInfo.tokenIn} token2={valueInfo.tokenOut} />
+            <CommonSvg type="icon-arrow-up2" />
+          </div>
+        ),
         tooltipMsg: `Awaken's order routing selects the swap path with the lowest comprehensive cost to complete the transaction and increase the amount you receive.`,
       },
     ];
-  }, []);
+  }, [
+    amountOutMinValue,
+    dispatch,
+    gasFeeValue,
+    priceImpact,
+    slippageValue,
+    swapFeeValue,
+    valueInfo.tokenIn,
+    valueInfo.tokenOut,
+  ]);
 
   const confirmBtnText = useMemo(() => {
     if (!(valueInfo.tokenIn && valueInfo.tokenOut)) {
@@ -159,7 +414,9 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   return (
     <div className={clsx('swap-panel-wrapper', wrapClassName)}>
       <InputContainer
+        title="Pay"
         value={valueInfo.valueIn}
+        priceInUsd={tokenInUsd}
         balance={valueInBalance}
         tokenInfo={valueInfo.tokenIn}
         onInputChange={onValueInChange}
@@ -176,11 +433,13 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
       <InputContainer
         title="Receive"
         value={valueInfo.valueOut}
+        priceInUsd={tokenOutUsd}
         balance={valueOutBalance}
         tokenInfo={valueInfo.tokenOut}
         wrapClassName="below-input-container"
         onInputChange={onValueOutChange}
         onSelectToken={onSelectTokenOut}
+        usdSuffix={<span style={{ color: usdImpactInfo?.fontColor }}>{usdImpactInfo?.label}</span>}
       />
 
       <div className={clsx('swap-btn-wrap')}>
@@ -194,18 +453,20 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
         </CommonButton>
       </div>
 
-      <div className="swap-price-swap portkey-swap-flex-row-between">
-        <div className="portkey-swap-flex-center">
-          <div className="single-price-swap">{`1 ELF = 0.423567 USDT`}</div>
-          <CommonSvg type="icon-price-switch" />
-          <CircleProcess />
+      {unitConversionShow !== '-' && (
+        <div className="swap-price-swap portkey-swap-flex-row-between">
+          <div className="portkey-swap-flex-center">
+            <div className="single-price-swap">{unitConversionShow}</div>
+            <CommonSvg type="icon-price-switch" onClick={() => setIsUnitConversionReverse((pre) => !pre)} />
+            <CircleProcess ref={circleProcessRef} />
+          </div>
+          <CommonSvg
+            type="icon-arrow-up2"
+            onClick={() => setExtraPriceInfoShow(!extraPriceInfoShow)}
+            className={clsx('portkey-swap-row-center', !extraPriceInfoShow && 'rotate-icon')}
+          />
         </div>
-        <CommonSvg
-          type="icon-arrow-up2"
-          onClick={() => setExtraPriceInfoShow(!extraPriceInfoShow)}
-          className={clsx('portkey-swap-row-center', !extraPriceInfoShow && 'rotate-icon')}
-        />
-      </div>
+      )}
 
       {extraPriceInfoShow && (
         <div className="swap-price-swap-info portkey-swap-flex-column">
@@ -213,9 +474,13 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
             <div key={index} className="portkey-swap-flex-row-between price-swap-info-item">
               <div className="portkey-swap-flex-row-center">
                 <span className="price-swap-info-label">{info.label}</span>
-                <Tooltip title={info.tooltipMsg}>
-                  <CommonSvg type="icon-tip-qs" />
-                </Tooltip>
+                <CommonTooltip
+                  placement="top"
+                  title={info.tooltipMsg}
+                  getPopupContainer={(v) => v}
+                  // buttonTitle={'ok'}
+                  // headerDesc={'yyy'}
+                />
               </div>
               <div className="price-swap-info-value">{info.value}</div>
             </div>
@@ -233,7 +498,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
       <SwapTipsModal />
       <SelectTokenModal />
       <SwapSettingsModal />
-      <SwapConfirmModal gasFee={''} tokenInPrice={''} tokenOutPrice={''} />
+      <SwapConfirmModal gasFee={''} tokenInUsd={''} tokenOutUsd={''} />
     </div>
   );
 }

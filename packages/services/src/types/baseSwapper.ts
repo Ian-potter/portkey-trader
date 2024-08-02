@@ -74,3 +74,14 @@ export interface IApiResponse<T = any> {
   data: T;
   message: string;
 }
+
+export interface IFetchTokenPriceParams {
+  chainId: ChainId;
+  tokenId?: string;
+  tokenAddress: string;
+  symbol: string;
+}
+
+export interface IFetchTokenPriceResult {
+  data: string;
+}
