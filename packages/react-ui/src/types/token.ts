@@ -1,3 +1,6 @@
-import type { ERCToken, ELFChainToken, WrappedTokenInfo } from '@awaken/sdk-core';
-
-export type Token = ERCToken | ELFChainToken | WrappedTokenInfo;
+export type TTokenItem = {
+  symbol: string;
+  decimals: number;
+  address: string;
+  chainId?: string;
+};

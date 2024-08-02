@@ -46,12 +46,11 @@ export const SwapOrderRouting = ({ route }: any) => {
       <div className="swap-order-content">
         {firstToken && (
           <div className="swap-order-token-icon">
-            <CurrencyLogo
+            {/* <CurrencyLogos
               size={16}
-              address={firstToken.address}
-              symbol={firstToken.symbol}
+              tokens={[{ symbol: 'ELF', }, { symbol: 'USDT' }]}
               className={'swap-order-token-icon'}
-            />
+            /> */}
           </div>
         )}
 
@@ -66,12 +65,7 @@ export const SwapOrderRouting = ({ route }: any) => {
 
         {lastToken && (
           <div className="swap-order-token-icon">
-            <CurrencyLogo
-              size={16}
-              address={lastToken.address}
-              symbol={lastToken.symbol}
-              className={'swap-order-token-icon'}
-            />
+            <CurrencyLogo size={16} symbol={lastToken.symbol} className={'swap-order-token-icon'} />
           </div>
         )}
 

@@ -4,11 +4,11 @@ import SelectTokenList from './SelectTokenList';
 import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
 import { swapActions } from '../../../../context/AwakenSwap/actions';
 import CommonModalHeader from '../../../CommonModalHeader';
-import { Currency } from '@awaken/sdk-core';
+import { TTokenItem } from '../../../../types';
 
 interface ISelectTokenModalProps {
-  selectedToken?: Currency;
-  onConfirm?: (token?: Currency) => void;
+  selectedToken?: TTokenItem;
+  onConfirm?: (token?: TTokenItem) => void;
 }
 
 export default function SelectTokenModal(props: ISelectTokenModalProps) {

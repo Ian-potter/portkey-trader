@@ -1,4 +1,3 @@
-import { Currency } from '@awaken/sdk-core';
 import { List, Row, Col } from 'antd';
 import BigNumber from 'bignumber.js';
 import { CurrencyLogo } from '../../../CurrencyLogo';
@@ -9,14 +8,15 @@ import { Pair } from '../../../Pair';
 import Font from '../../../Font';
 import { useMemo } from 'react';
 import clsx from 'clsx';
+import { TTokenItem } from '../../../../types';
 import { divDecimals } from '@portkey/trader-utils';
 
 export interface ICurrencyRowProps {
-  currency?: Currency;
-  selectedToken?: Currency;
+  currency?: TTokenItem;
+  selectedToken?: TTokenItem;
   balance?: BigNumber;
   isBalanceShow?: boolean;
-  onConfirm?: (token?: Currency) => void;
+  onConfirm?: (token?: TTokenItem) => void;
 }
 export default function CurrencyRow({
   currency,
@@ -43,7 +43,7 @@ export default function CurrencyRow({
           <Col>
             <Row gutter={[8, 0]} align="middle">
               <Col className="currency-logo-col">
-                <CurrencyLogo size={24} currency={currency} />
+                <CurrencyLogo size={24} symbol={currency?.symbol} />
               </Col>
               <Col>
                 <Pair lineHeight={24} size={16} weight="medium" symbol={currency?.symbol} />

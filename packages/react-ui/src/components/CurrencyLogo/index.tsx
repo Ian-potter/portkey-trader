@@ -1,17 +1,13 @@
-import { Currency } from '@awaken/sdk-core';
-// import Logo from 'components/Logo';
-// import { ChainConstants } from 'constants/ChainConstants';
-import { useMemo } from 'react';
-// import { getTokenLogoURLs } from 'utils';
-import { ImageProps } from 'antd';
 import './index.less';
+import { useMemo } from 'react';
+import { ImageProps } from 'antd';
 import clsx from 'clsx';
 import Logo from '../Logo';
-// import { NATIVE_LOGO } from 'assets/logo';
-// import { getPairsLogoOrderByTokenWeights } from 'utils/pair';
+import { getTokenLogoUrl } from '../../utils';
+import { getPairsLogoOrderByTokenWeights } from '../../utils/token';
+import { TTokenItem } from '../../types';
+
 export function CurrencyLogo({
-  currency,
-  address,
   alt,
   size = 20,
   style,
@@ -20,27 +16,11 @@ export function CurrencyLogo({
   className,
   symbol,
 }: {
-  currency?: Currency | null;
-  address?: string;
-  size?: number;
   symbol?: string;
+  size?: number;
 } & ImageProps) {
-  console.log(address, src);
-  // const srcs: string[] = useMemo(() => {
-  //   if (src) return [src];
-  //   if (address) {
-  //     const { symbol: basesSymbol } = ChainConstants.constants.COMMON_BASES[0] || {};
-  //     if (basesSymbol && address.includes(basesSymbol)) return [NATIVE_LOGO[basesSymbol]];
-  //     const key = ChainConstants.chainType === 'ELF' ? symbol : address;
-  //     return [...getTokenLogoURLs(key)];
-  //   }
-  //   if (!currency) return [];
-  //   if (currency?.isNative) return [NATIVE_LOGO[currency.symbol || 'ETH']];
+  const srcs = useMemo(() => [getTokenLogoUrl(symbol)], [symbol]);
 
-  //   const key = currency.isToken ? currency.address : currency.symbol;
-  //   const defaultUrls = [...getTokenLogoURLs(key)];
-  //   return defaultUrls;
-  // }, [address, currency, src, symbol]);
   return (
     <Logo
       className={className}
@@ -52,14 +32,14 @@ export function CurrencyLogo({
         ...style,
       }}
       size={size}
-      srcs={['srcs']}
-      alt={alt || (currency?.isNative ? 'ethereum logo' : currency?.symbol) || 'error logo'}
-      symbol={symbol || currency?.symbol}
+      srcs={srcs || [src]}
+      alt={alt || 'logo'}
+      symbol={symbol}
     />
   );
 }
 export function CurrencyLogos({
-  tokens = [],
+  tokens,
   size = 20,
   preview,
   className,
@@ -68,26 +48,13 @@ export function CurrencyLogos({
   className?: string;
   preview?: boolean;
   size?: number;
-  tokens?: Array<{
-    address?: string;
-    src?: string;
-    currency?: Currency | null;
-    symbol?: string;
-  }>;
+  tokens: TTokenItem[];
   isSortToken?: boolean;
 }) {
-  const tokenList = useMemo(() => {
-    return [
-      {
-        currency: null,
-        address: '',
-        src: '',
-        symbol: '',
-      },
-    ];
-    // if (!isSortToken) return tokens;
-    // return getPairsLogoOrderByTokenWeights(tokens);
-  }, []);
+  const tokenList = useMemo(
+    () => (isSortToken ? getPairsLogoOrderByTokenWeights(tokens) : tokens),
+    [isSortToken, tokens],
+  );
 
   return (
     <div
@@ -98,14 +65,11 @@ export function CurrencyLogos({
         maxHeight: tokens.length === 1 ? size : `${Math.ceil(size * tokens.length - size / 4)}px`,
       }}>
       {tokenList.map((i, k) => {
-        const { currency, address, src, symbol } = i || {};
+        const { symbol } = i;
         return (
           <CurrencyLogo
             key={k}
             size={size}
-            src={src}
-            currency={currency}
-            address={address}
             preview={preview}
             symbol={symbol || ''}
             style={{

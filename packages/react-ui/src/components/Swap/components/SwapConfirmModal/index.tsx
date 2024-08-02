@@ -230,7 +230,7 @@ export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) 
         dispatch(swapActions.setConfirmModalShow.actions(false));
       }}>
       <CommonModalHeader
-        title="Receive Swap"
+        title="Confirm"
         showClose
         onClose={() => dispatch(swapActions.setConfirmModalShow.actions(false))}
       />
@@ -242,7 +242,7 @@ export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) 
             </Font>
             <Font size={24} lineHeight={32}>{`${swapInfo?.valueIn} ${formatSymbol('swapInfo?.tokenIn?.symbol')}`}</Font>
             <Font size={14} lineHeight={22} color="two">
-              {`$${'priceIn'}`}
+              {`$${'Receive'}`}
             </Font>
           </div>
           {/* <CurrencyLogo size={36} currency={'swapInfo?.tokenIn'} /> */}
@@ -259,7 +259,7 @@ export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) 
               {`$${'priceOut'}`}
             </Font>
           </div>
-          {/* <CurrencyLogo size={36} currency={'swapInfo?.tokenOut'} /> */}
+          <CurrencyLogo size={36} currency={'swapInfo?.tokenOut'} />
         </div>
 
         <div className="swap-confirm-modal-detail">

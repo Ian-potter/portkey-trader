@@ -5,14 +5,12 @@ import { filterTokens, useSortedTokensByQuery } from '../../../../utils/filterin
 import CurrencyRow from './CurrencyRow';
 import { useTokenComparator } from './sorting';
 import { useTranslation } from 'react-i18next';
-import { Token } from '@/types';
-
 import SearchInput from '../../../SearchInput';
 import CommonList from '../../../CommonList';
 // import { useAllTokenList } from 'hooks/tokenList';
 import './styles.less';
 import { ZERO } from '../../../../constants/misc';
-import { Currency } from '@awaken/sdk-core';
+import { TTokenItem } from '../../../../types';
 
 const mockList = [
   {
@@ -179,8 +177,8 @@ const mockList = [
 ];
 
 interface SelectTokenListProps {
-  selectedToken?: Currency;
-  onConfirm?: (token?: Currency) => void;
+  selectedToken?: TTokenItem;
+  onConfirm?: (token?: TTokenItem) => void;
 }
 
 export default function SelectTokenList(props: SelectTokenListProps) {
@@ -195,11 +193,11 @@ export default function SelectTokenList(props: SelectTokenListProps) {
   const debouncedQuery = useDebounce(searchQuery, 200);
   const tokenComparator = useTokenComparator(invertSearchOrder, {});
 
-  const filteredTokens: Token[] = useMemo(() => {
-    return filterTokens(allTokens as unknown as Token[], debouncedQuery);
+  const filteredTokens: TTokenItem[] = useMemo(() => {
+    return filterTokens(allTokens, debouncedQuery);
   }, [allTokens, debouncedQuery]);
 
-  const sortedTokens: Token[] = useMemo(() => {
+  const sortedTokens: TTokenItem[] = useMemo(() => {
     return [...filteredTokens].sort(tokenComparator);
   }, [filteredTokens, tokenComparator]);
 

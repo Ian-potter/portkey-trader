@@ -17,7 +17,7 @@ import { AwakenSwapProvider, useAwakenSwapContext } from '../../../../context/Aw
 import SelectTokenModal from '../SelectTokenModal';
 import { swapActions } from '../../../../context/AwakenSwap/actions';
 import { useGetTokenPrice } from '../../../../hooks/price';
-import { Token } from '../../../../types';
+import { TTokenItem } from '../../../../types';
 import {
   awaken,
   bigNumberToString,
@@ -31,14 +31,15 @@ import CommonTooltip from '../../../CommonTooltip';
 import { TSwapRoute } from '../../types';
 import BigNumber from 'bignumber.js';
 import TokenLogoPair from '../TokenLogoPair';
+import { CurrencyLogos } from '../../../CurrencyLogo';
 
 export interface ISwapPanel {
   wrapClassName?: string;
 }
 
 export type TSwapInfo = {
-  tokenIn?: Token | undefined;
-  tokenOut?: Token | undefined;
+  tokenIn?: TTokenItem;
+  tokenOut?: TTokenItem;
 
   valueIn: string;
   valueOut: string;
@@ -289,7 +290,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   const onSelectTokenIn = useCallback(() => {
     dispatch(swapActions.setSelectTokenModalShow.actions(true));
   }, [dispatch]);
-  const onTokenInChange = useCallback((token: Token) => {
+  const onTokenInChange = useCallback((token: TTokenItem) => {
     setValueInfo((pre: any) => ({
       ...pre,
       tokenIn: token,
@@ -298,7 +299,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   const onSelectTokenOut = useCallback(() => {
     // TODO open modal
   }, []);
-  const onTokenOutChange = useCallback((token: Token) => {
+  const onTokenOutChange = useCallback((token: TTokenItem) => {
     setValueInfo((pre: any) => ({
       ...pre,
       tokenOut: token,
@@ -376,7 +377,9 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
         label: 'Order Routing',
         value: (
           <div className="portkey-swap-flex-row-center">
-            <TokenLogoPair token1={valueInfo.tokenIn} token2={valueInfo.tokenOut} />
+            <CurrencyLogos tokens={[valueInfo.tokenIn, valueInfo.tokenOut]} />
+
+            {/* <TokenLogoPair token1={valueInfo.tokenIn} token2={valueInfo.tokenOut} /> */}
             <CommonSvg type="icon-arrow-up2" />
           </div>
         ),
@@ -490,7 +493,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
 
       <CommonButton
         onClick={() => {
-          dispatch(swapActions.setSettingModalShow.actions(true));
+          dispatch(swapActions.setSelectTokenModalShow.actions(true));
         }}>
         CLICKK
       </CommonButton>
