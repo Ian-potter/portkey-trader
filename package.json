@@ -8,6 +8,7 @@
     "lint": "eslint . --ext .tsx,.ts",
     "publish:npm": "lerna publish --force-publish --conventional-commits",
     "postinstall": "husky install",
+    "react-ui": "yarn workspace @portkey/trader-react-ui",
     "version": "yarn run bootstrap && yarn build",
     "bootstrap": "lerna bootstrap",
     "prebuild": "yarn clean",

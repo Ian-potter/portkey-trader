@@ -1,4 +1,4 @@
-import { TTokenItem } from '@/types';
+import { TTokenItem } from '../types';
 
 const tokenWeights: { [key: string]: number } = {
   USDT: 100,

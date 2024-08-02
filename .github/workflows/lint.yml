@@ -29,5 +29,5 @@ jobs:
       - name: Install Dependencies
         run: yarn
 
-      - name: Run ESLint did-ui-react
-        run: yarn workspace @portkey/did-ui-react run lint
+      - name: Run ESLint Trader-React-UI
+        run: yarn workspace @portkey/trader-react-ui run lint

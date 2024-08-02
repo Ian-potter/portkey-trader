@@ -4,16 +4,16 @@ import { useCallback } from 'react';
 import { useEffectOnce } from 'react-use';
 
 export const useTokenList = () => {
-  const [{ supportTokenList, awakenSwapInstance }, { dispatch }] = useAwakenSwapContext();
+  const [{ supportTokenList, awaken }, { dispatch }] = useAwakenSwapContext();
 
   const getList = useCallback(async () => {
     try {
-      const list = await awakenSwapInstance?.getSupportTokenList({ chainId: 'tDVW' });
+      const list = await awaken?.instance?.getSupportTokenList({ chainId: 'tDVW' });
       dispatch(swapActions.setSupportTokenList.actions(list || []));
     } catch (error) {
       console.log(error);
     }
-  }, [awakenSwapInstance, dispatch]);
+  }, [awaken, dispatch]);
 
   useEffectOnce(() => {
     if (!supportTokenList.length) getList();

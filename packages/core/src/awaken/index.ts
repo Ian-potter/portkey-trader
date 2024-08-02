@@ -9,6 +9,7 @@ import {
   TGetBestRoutersAmountOutParams,
   TSwapperName,
   TSwapperParams,
+  TTokenApproveHandler,
 } from '../types';
 import {
   AwakenService,
@@ -126,11 +127,7 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     owner: string;
     amount: number | string;
     contractOption: TContractOption;
-    tokenApprove?: (params: {
-      spender: string;
-      symbol: string;
-      amount: string | number;
-    }) => Promise<{ error?: any } | void | undefined>;
+    tokenApprove?: TTokenApproveHandler;
   }) {
     const tokenAddress = await getTokenContractAddress(this.contractConfig.rpcUrl);
     const tokenContract = await this.getContract({

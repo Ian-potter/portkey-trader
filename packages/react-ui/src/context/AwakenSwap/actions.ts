@@ -1,6 +1,6 @@
-import { AwakenSwapper } from '@portkey/trader-core';
 import { TTokenItem } from '../../types';
 import { basicActions } from '../utils';
+import { IAwakenConfig } from '../../types/config';
 
 export const AwakenSwapActions = {
   initialized: 'INITIALIZED',
@@ -22,7 +22,7 @@ export interface AwakenSwapState {
     title: string;
     content: string;
   };
-  awakenSwapInstance?: AwakenSwapper;
+  awaken?: IAwakenConfig;
   supportTokenList: TTokenItem[];
 }
 

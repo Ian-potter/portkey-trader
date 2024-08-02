@@ -1,7 +1,7 @@
 import React, { createContext, useMemo, useReducer, useContext } from 'react';
 import { AwakenSwapActions, AwakenSwapState } from './actions';
 import { BasicActions } from '../utils';
-import { AwakenSwapper } from '@portkey/trader-core';
+import { IAwakenConfig } from '../../types/config';
 
 const INITIAL_STATE: AwakenSwapState = {
   isMobile: false,
@@ -24,24 +24,24 @@ export function useAwakenSwapContext(): [AwakenSwapState, BasicActions] {
 export function AwakenSwapProvider({
   children,
   isMobile,
-  awakenSwapInstance,
+  awaken,
 }: {
   children: React.ReactNode;
   isMobile: boolean;
-  awakenSwapInstance?: AwakenSwapper;
+  awaken?: IAwakenConfig;
 }) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
   const providerValue = useMemo<[AwakenSwapState, { dispatch: React.Dispatch<any> }]>(() => {
     return [
       {
-        awakenSwapInstance,
+        awaken,
         isMobile,
         ...state,
       },
       { dispatch },
     ];
-  }, [awakenSwapInstance, isMobile, state]);
+  }, [awaken, isMobile, state]);
 
   return <AwakenSwapContext.Provider value={providerValue}>{children}</AwakenSwapContext.Provider>;
 }
