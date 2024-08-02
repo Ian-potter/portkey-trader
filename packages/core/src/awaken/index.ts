@@ -104,6 +104,12 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     return result.data;
   }
 
+  async getTransactionFee(): Promise<any> {
+    const result = await this.services.getTransactionFee();
+    if (result.code !== '20000') throw result.message;
+    return result.data;
+  }
+
   refreshServices() {
     this.fetchRequest = new FetchRequest(this.config.requestConfig);
     this.services = new AwakenService(this.fetchRequest);
@@ -163,6 +169,33 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
         if (result.error) throw result.error;
       }
     }
+  }
+
+  async getBalance({
+    symbol,
+    owner,
+    contractOption,
+  }: {
+    symbol: string;
+    owner: string;
+    contractOption: TContractOption;
+  }) {
+    const tokenAddress = await getTokenContractAddress(this.contractConfig.rpcUrl);
+    const tokenContract = await this.getContract({
+      rpcUrl: this.contractConfig.rpcUrl,
+      contractAddress: tokenAddress,
+      contractOption,
+    });
+
+    const balanceRes = await tokenContract.callViewMethod('GetBalance', {
+      symbol,
+      owner,
+    });
+
+    if (balanceRes.error) {
+      throw balanceRes.error;
+    }
+    return balanceRes.data;
   }
 
   getContract({
