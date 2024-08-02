@@ -238,7 +238,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   const onValueInChange = useCallback(
     async (v: string) => {
       if (v && !isValidNumber(v)) return;
-      setValueInfo((pre) => ({
+      setValueInfo((pre: any) => ({
         ...pre,
         valueIn: v,
       }));
@@ -252,7 +252,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
       const bestRoute = bestRouters?.[0];
       setSwapRoute(bestRoute as any);
       const _amountOut = divDecimals(bestRoute.amountOut, valueInfo.tokenOut.decimals).toFixed();
-      setValueInfo((pre) => ({
+      setValueInfo((pre: any) => ({
         ...pre,
         valueOut: _amountOut,
       }));
@@ -278,7 +278,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
       const bestRoute = bestRouters?.[0];
       setSwapRoute(bestRoute as any);
       const _amountIn = divDecimals(bestRoute.amountIn, valueInfo.tokenIn.decimals).toFixed();
-      setValueInfo((pre) => ({
+      setValueInfo((pre: any) => ({
         ...pre,
         valueIn: _amountIn,
       }));
@@ -290,7 +290,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
     dispatch(swapActions.setSelectTokenModalShow.actions(true));
   }, [dispatch]);
   const onTokenInChange = useCallback((token: Token) => {
-    setValueInfo((pre) => ({
+    setValueInfo((pre: any) => ({
       ...pre,
       tokenIn: token,
     }));
@@ -299,13 +299,13 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
     // TODO open modal
   }, []);
   const onTokenOutChange = useCallback((token: Token) => {
-    setValueInfo((pre) => ({
+    setValueInfo((pre: any) => ({
       ...pre,
       tokenOut: token,
     }));
   }, []);
   const switchToken = useCallback(() => {
-    setValueInfo((pre) => ({
+    setValueInfo((pre: any) => ({
       tokenIn: pre.tokenOut,
       tokenOut: pre.tokenIn,
       valueOut: pre.valueIn,
@@ -496,9 +496,9 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
       </CommonButton>
 
       <SwapTipsModal />
-      <SelectTokenModal />
+      <SelectTokenModal selectedToken={} onConfirm={} />
       <SwapSettingsModal />
-      <SwapConfirmModal gasFee={''} tokenInUsd={''} tokenOutUsd={''} />
+      {/* <SwapConfirmModal gasFee={''} tokenInUsd={''} tokenOutUsd={''} /> */}
     </div>
   );
 }

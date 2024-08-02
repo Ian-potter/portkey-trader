@@ -245,7 +245,7 @@ export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) 
               {`$${'priceIn'}`}
             </Font>
           </div>
-          <CurrencyLogo size={36} currency={'swapInfo?.tokenIn'} />
+          {/* <CurrencyLogo size={36} currency={'swapInfo?.tokenIn'} /> */}
         </div>
         <div className="swap-confirm-modal-input-wrap">
           <div className="swap-confirm-modal-input-info">
