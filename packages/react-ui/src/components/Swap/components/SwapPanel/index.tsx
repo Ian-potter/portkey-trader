@@ -32,6 +32,7 @@ import { TSwapRoute } from '../../types';
 import BigNumber from 'bignumber.js';
 import TokenLogoPair from '../TokenLogoPair';
 import { CurrencyLogos } from '../../../CurrencyLogo';
+import { getBalance } from '../../../../utils/getBalance';
 import { useTokenList } from '../../../../hooks/tokenList';
 
 export interface ISwapPanel {
@@ -86,10 +87,11 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   const [valueOutBalance, setValueOutBalance] = useState('');
   const [confirmBtnError, setConfirmBtnError] = useState<BtnErrEnum>(BtnErrEnum.none);
   const [isUnitConversionReverse, setIsUnitConversionReverse] = useState(false);
+  const [gasFee, setGasFee] = useState(0);
   const getTokenPrice = useGetTokenPrice();
   const timerRef = useRef<NodeJS.Timeout>();
   // TODO
-  const gasFee = 0;
+  const owner = 'LEwNefrRAcYtQWFvTZTXykPca7QrijatqgbmAqB5M4Ud2yJGL';
   // TODO
   const userSlippageTolerance = '0.005';
   const slippageValue = useMemo(() => {
@@ -176,6 +178,18 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
     registerTimer();
   });
 
+  useEffectOnce(() => {
+    awaken
+      .getTransactionFee()
+      .then((res) => {
+        setGasFee(res.transactionFee);
+      })
+      .catch((err) => {
+        setGasFee(0);
+        console.log('===getTransactionFee err', err);
+      });
+  });
+
   useEffect(() => {
     if (!valueInfo.tokenIn?.symbol) return;
     getTokenPrice({
@@ -207,6 +221,38 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
         console.log('===getTokenPrice error', err);
       });
   }, [getTokenPrice, valueInfo.tokenIn.symbol, valueInfo.tokenOut.symbol]);
+
+  useEffect(() => {
+    if (!valueInfo.tokenIn?.symbol) {
+      setValueInBalance('');
+    } else {
+      getBalance({ symbol: valueInfo.tokenIn.symbol, owner })
+        .then((res) => {
+          const _bal = divDecimals(res.balance, valueInfo.tokenIn.decimals).toFixed();
+          setValueInBalance(_bal);
+        })
+        .catch((err) => {
+          setValueInBalance('');
+          console.log('===getBalance error', err);
+        });
+    }
+  }, [valueInfo.tokenIn.decimals, valueInfo.tokenIn.symbol]);
+
+  useEffect(() => {
+    if (!valueInfo.tokenOut?.symbol) {
+      setValueOutBalance('');
+    } else {
+      getBalance({ symbol: valueInfo.tokenOut.symbol, owner })
+        .then((res) => {
+          const _bal = divDecimals(res.balance, valueInfo.tokenOut.decimals).toFixed();
+          setValueOutBalance(_bal);
+        })
+        .catch((err) => {
+          setValueOutBalance('');
+          console.log('===getBalance error', err);
+        });
+    }
+  }, [valueInfo.tokenIn.decimals, valueInfo.tokenIn.symbol, valueInfo.tokenOut.decimals, valueInfo.tokenOut.symbol]);
 
   const usdImpactInfo = useMemo(() => {
     const { tokenIn, tokenOut, valueIn, valueOut } = valueInfo;
@@ -311,13 +357,29 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
     setValueInfo((pre: any) => ({
       tokenIn: pre.tokenOut,
       tokenOut: pre.tokenIn,
-      valueOut: pre.valueIn,
-      valueIn: pre.valueOut,
+      valueOut: '',
+      valueIn: '',
     }));
+    setValueInBalance('');
+    setValueOutBalance('');
   }, []);
   const onClickMax = useCallback(() => {
-    //
-  }, []);
+    let _v = '0';
+    if (valueInfo.tokenIn?.symbol === 'ELF' && gasFee && valueInBalance) {
+      const _valueBN = ZERO.plus(timesDecimals(valueInBalance, valueInfo.tokenIn.decimals)).minus(gasFee);
+      if (_valueBN.lte(ZERO)) {
+        _v = '0';
+      } else {
+        _v = divDecimals(_valueBN, valueInfo.tokenIn?.decimals).toFixed();
+      }
+    } else {
+      _v = divDecimals(valueInBalance || ZERO, valueInfo.tokenIn?.decimals).toFixed();
+    }
+    setValueInfo((pre: any) => ({
+      ...pre,
+      valueIn: _v,
+    }));
+  }, [gasFee, valueInBalance, valueInfo.tokenIn.decimals, valueInfo.tokenIn?.symbol]);
 
   const unitConversionShow = useMemo(() => {
     const { tokenIn, tokenOut, valueIn, valueOut } = valueInfo;

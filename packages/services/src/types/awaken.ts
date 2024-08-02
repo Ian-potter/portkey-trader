@@ -18,6 +18,7 @@ export interface IAwakenService {
 
   getSupportTokenList(params: FetchTokenListParams): Promise<IApiResponse<ITokenList>>;
   getTokenPrice(params: IFetchTokenPriceParams): Promise<IApiResponse<any>>;
+  getTransactionFee(): Promise<any>;
 }
 
 // const func = ((params: any) => {

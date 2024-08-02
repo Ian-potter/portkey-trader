@@ -35,4 +35,10 @@ export class AwakenService<T extends IBaseRequest = IBaseRequest> extends BaseSe
       params,
     });
   }
+  getTransactionFee(): Promise<any> {
+    return this._request.send({
+      method: 'GET',
+      url: '/api/app/transaction-fee',
+    });
+  }
 }

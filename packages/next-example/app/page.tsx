@@ -242,8 +242,23 @@ function APP() {
     console.log(list, 'getSupportTokenList');
   }, []);
 
+  const getBalance = useCallback(async () => {
+    const COMMON_PRIVATE = 'f6e512a3c259e5f9af981d7f99d245aa5bc52fe448495e0b0dd56e8406be6f71';
+    const res = await awaken.getBalance({
+      symbol: 'ELF',
+      owner: 'LEwNefrRAcYtQWFvTZTXykPca7QrijatqgbmAqB5M4Ud2yJGL',
+      contractOption: {
+        account: aelf.getWallet(COMMON_PRIVATE),
+      },
+    });
+    console.log('🌹🌹🌹GetBalance', res);
+  }, []);
+
   return (
     <main className=" min-h-screen flex-col items-center justify-between p-24">
+      <Button onClick={getBalance}>GetBalance</Button>
+      <div>------</div>
+
       <Button onClick={onAwakenSwapper}>awaken</Button>
       <div>------</div>
 
