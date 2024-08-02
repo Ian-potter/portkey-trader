@@ -10,7 +10,14 @@ import {
   TSwapperName,
   TSwapperParams,
 } from '../types';
-import { AwakenService, FetchTokenListParams, IAwakenService, IToken, RouteType } from '@portkey/trader-services';
+import {
+  AwakenService,
+  FetchTokenListParams,
+  IAwakenService,
+  IFetchTokenPriceParams,
+  IToken,
+  RouteType,
+} from '@portkey/trader-services';
 
 import { FetchRequest } from '@portkey/request';
 import { IBaseRequest } from '@portkey/types';
@@ -89,6 +96,12 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
       tokenMap[item.symbol] = item;
     });
     return Object.values(tokenMap);
+  }
+
+  async getTokenPrice(params: IFetchTokenPriceParams): Promise<any> {
+    const result = await this.services.getTokenPrice(params);
+    if (result.code !== '20000') throw result.message;
+    return result.data;
   }
 
   refreshServices() {

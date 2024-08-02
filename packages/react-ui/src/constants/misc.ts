@@ -25,3 +25,4 @@ export const isEffectiveNumber = (v: any) => {
   const val = new BigNumber(v);
   return !val.isNaN() && !val.lte(0);
 };
+export const SWAP_TIME_INTERVAL = 30 * 1000;

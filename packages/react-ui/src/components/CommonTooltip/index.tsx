@@ -33,13 +33,14 @@ export default function CommonTooltip({
 }) {
   // const modalDispatch = useModalDispatch();
   // const isMobile = useMobile();
+  const isMobile = false;
 
   const renderChildren = useMemo(() => {
     if (!children) {
-      return <span className={clsx('common-question', !'isMobile' && 'common-question-pc')}></span>;
+      return <span className={clsx('common-question', !isMobile && 'common-question-pc')}></span>;
     }
     return children;
-  }, [children]);
+  }, [children, isMobile]);
 
   const style = useMemo(() => {
     return clsx(
