@@ -6,7 +6,7 @@ import { ChainId } from '@portkey/types';
 import detectProvider from '@portkey/detect-provider';
 import { aelf } from '@portkey/utils';
 import { BestSwapRoutesAmountInParams, BestSwapRoutesAmountOutParams, RouteType } from '@portkey/trader-services';
-import { Swap } from '@portkey/trader-react-ui';
+import { Swap, ComponentType } from '@portkey/trader-react-ui';
 import { Currency } from '@awaken/sdk-core';
 import { AElfReactProvider, useAElfReact } from '@aelf-react/core';
 import {
@@ -296,7 +296,7 @@ function APP() {
         }}
       />
       {/* <Swap /> */}
-      <Swap />
+      <Swap componentUiType={ComponentType.Mobile} awakenSwapInstance={awaken} />
     </main>
   );
 }

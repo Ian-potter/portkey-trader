@@ -1,13 +1,15 @@
-import { ComponentType } from '@/types';
+import { AwakenSwapper } from '@portkey/trader-core';
+import { TTokenItem } from '../../types';
 import { basicActions } from '../utils';
 
 export const AwakenSwapActions = {
   initialized: 'INITIALIZED',
   destroy: 'DESTROY',
-  setSelectTokenModalShow: 'setSelectTokenModal',
-  setTipsModalShow: 'setTipsModalShow',
-  setConfirmModalShow: 'setConfirmModalShow',
-  setSettingModalShow: 'setSettingModalShow',
+  setSelectTokenModalShow: 'SET_SELECT_TOKEN_MODAL_SHOW',
+  setTipsModalShow: 'SET_TIPS_MODAL_SHOW',
+  setConfirmModalShow: 'SET_CONFIRM_MODAL_SHOW',
+  setSettingModalShow: 'SET_SETTING_MODAL_SHOW',
+  setSupportTokenList: 'SET_SUPPORT_TOKEN_LIST',
 };
 
 export interface AwakenSwapState {
@@ -20,6 +22,8 @@ export interface AwakenSwapState {
     title: string;
     content: string;
   };
+  awakenSwapInstance?: AwakenSwapper;
+  supportTokenList: TTokenItem[];
 }
 
 export const swapActions = {
@@ -49,5 +53,9 @@ export const swapActions = {
   setTipsModalShow: {
     type: AwakenSwapActions['setTipsModalShow'],
     actions: (isTipsModalShow: boolean) => basicActions(AwakenSwapActions['setTipsModalShow'], { isTipsModalShow }),
+  },
+  setSupportTokenList: {
+    type: AwakenSwapActions['setSupportTokenList'],
+    actions: (list: TTokenItem[]) => basicActions(AwakenSwapActions['setSupportTokenList'], { list }),
   },
 };

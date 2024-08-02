@@ -259,7 +259,7 @@ export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) 
               {`$${'priceOut'}`}
             </Font>
           </div>
-          <CurrencyLogo size={36} currency={'swapInfo?.tokenOut'} />
+          <CurrencyLogo size={36} symbol={'ELF'} />
         </div>
 
         <div className="swap-confirm-modal-detail">

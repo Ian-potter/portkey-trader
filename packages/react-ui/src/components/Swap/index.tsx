@@ -2,22 +2,20 @@ import clsx from 'clsx';
 import './styles.less';
 import SwapPanel from './components/SwapPanel/';
 import { AwakenSwapProvider } from '../../context/AwakenSwap';
-
-export enum SwapComponentUiType {
-  Mobile = 'Mobile',
-  Web = 'Web',
-}
+import { AwakenSwapper } from '@portkey/trader-core';
+import { ComponentType } from '../../types';
 
 interface ISwapProps {
   containerClassName?: string;
-  componentUiType?: SwapComponentUiType;
+  componentUiType?: ComponentType;
+  awakenSwapInstance?: AwakenSwapper;
 }
 
-export const Swap = ({ componentUiType, containerClassName }: ISwapProps) => {
+export const Swap = ({ componentUiType, containerClassName, awakenSwapInstance }: ISwapProps) => {
   return (
-    <AwakenSwapProvider>
+    <AwakenSwapProvider isMobile={componentUiType === ComponentType.Mobile} awakenSwapInstance={awakenSwapInstance}>
       <div className={clsx(['swap-page', containerClassName])}>
-        {componentUiType === SwapComponentUiType.Mobile ? <SwapPanel /> : <SwapPanel />}
+        {componentUiType === ComponentType.Mobile ? <SwapPanel /> : <SwapPanel />}
       </div>
     </AwakenSwapProvider>
   );

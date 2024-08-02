@@ -33,6 +33,7 @@ import BigNumber from 'bignumber.js';
 import TokenLogoPair from '../TokenLogoPair';
 import { CurrencyLogos } from '../../../CurrencyLogo';
 import { getBalance } from '../../../../utils/getBalance';
+import { useTokenList } from '../../../../hooks/tokenList';
 
 export interface ISwapPanel {
   wrapClassName?: string;
@@ -53,7 +54,8 @@ export enum BtnErrEnum {
 }
 
 export default function SwapPanel({ wrapClassName }: ISwapPanel) {
-  const [, { dispatch }] = useAwakenSwapContext();
+  const [{ isMobile }, { dispatch }] = useAwakenSwapContext();
+
   const [extraPriceInfoShow, setExtraPriceInfoShow] = useState(false);
   const [valueInfo, setValueInfo] = useState<any>({
     tokenIn: {
@@ -538,7 +540,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
           {extraPriceInfoData.map((info, index: number) => (
             <div key={index} className="portkey-swap-flex-row-between price-swap-info-item">
               <div className="portkey-swap-flex-row-center">
-                <span className="price-swap-info-label">{info.label}</span>
+                <span className="max-label">{info.label}</span>
                 <CommonTooltip
                   placement="top"
                   title={info.tooltipMsg}
