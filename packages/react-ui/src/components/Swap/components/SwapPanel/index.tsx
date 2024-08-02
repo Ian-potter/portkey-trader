@@ -490,14 +490,14 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
 
       <CommonButton
         onClick={() => {
-          dispatch(swapActions.setConfirmModalShow.actions(true));
+          dispatch(swapActions.setSettingModalShow.actions(true));
         }}>
         CLICKK
       </CommonButton>
 
       <SwapTipsModal />
-      <SelectTokenModal selectedToken={} onConfirm={} />
-      <SwapSettingsModal />
+      <SelectTokenModal />
+      <SwapSettingsModal value={'0.4'} onConfirm={(v) => console.log(v)} />
       {/* <SwapConfirmModal gasFee={''} tokenInUsd={''} tokenOutUsd={''} /> */}
     </div>
   );
