@@ -9,6 +9,9 @@ import { CurrencyLogo } from '../../../CurrencyLogo';
 
 import { SwapRouteInfo } from '../SwapRouteInfo';
 import './styles.less';
+import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
+import { swapActions } from '../../../../context/AwakenSwap/actions';
+import CommonModalHeader from '../../../CommonModalHeader';
 
 export type TSwapConfirmModalProps = {
   onSuccess?: () => void;
@@ -22,7 +25,7 @@ export interface SwapConfirmModalInterface {
 }
 
 export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) => {
-  const [isVisible] = useState(false);
+  const [{ isConfirmModalShow }, { dispatch }] = useAwakenSwapContext();
   const [swapInfo] = useState<any>();
   const [routeInfo] = useState<TSwapRouteInfo>();
   const [priceLabel] = useState('');
@@ -220,12 +223,17 @@ export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) 
       showBackIcon={false}
       closable={true}
       centered={true}
-      open={isVisible}
-      title={'Review Swap'}
+      open={isConfirmModalShow}
+      title={false}
       className={'swap-confirm-modal'}
       onCancel={() => {
-        console.log('console');
+        dispatch(swapActions.setConfirmModalShow.actions(false));
       }}>
+      <CommonModalHeader
+        title="Receive Swap"
+        showClose
+        onClose={() => dispatch(swapActions.setConfirmModalShow.actions(false))}
+      />
       <div className="swap-confirm-modal-content">
         <div className="swap-confirm-modal-input-wrap">
           <div className="swap-confirm-modal-input-info">
@@ -237,7 +245,7 @@ export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) 
               {`$${'priceIn'}`}
             </Font>
           </div>
-          {/* <CurrencyLogo size={36} currency={'swapInfo?.tokenIn'} /> */}
+          <CurrencyLogo size={36} currency={'swapInfo?.tokenIn'} />
         </div>
         <div className="swap-confirm-modal-input-wrap">
           <div className="swap-confirm-modal-input-info">

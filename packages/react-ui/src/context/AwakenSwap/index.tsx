@@ -51,8 +51,6 @@ function reducer(state: AwakenSwapState, { type, payload }: any) {
     }
     case AwakenSwapActions.setSettingModalShow: {
       const isSettingModalShow = payload.isSettingModalShow;
-      console.log('isSettingModalShow', isSettingModalShow, Object.assign({}, state, { isSettingModalShow }));
-
       return Object.assign({}, state, { isSettingModalShow });
     }
     case AwakenSwapActions.destroy: {
