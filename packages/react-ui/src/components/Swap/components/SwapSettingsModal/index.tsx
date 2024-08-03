@@ -89,8 +89,6 @@ export default function SwapSettingsModal(props: SwapSettingsModalProps) {
               placement="top"
               title={'The trade will be cancelled when slippage exceeds this percentage.'}
               getPopupContainer={(v) => v}
-              // buttonTitle={'ok'}
-              // headerDesc={'yyy'}
             />
           </div>
 

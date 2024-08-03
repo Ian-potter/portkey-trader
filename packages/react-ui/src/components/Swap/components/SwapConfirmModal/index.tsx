@@ -1,37 +1,42 @@
 import Font from '../../../Font';
-import { forwardRef, useState } from 'react';
-import { formatSymbol } from '@portkey/trader-utils';
+import { useMemo } from 'react';
+import { formatSymbol, ZERO } from '@portkey/trader-utils';
 import { Col, Row } from 'antd';
 import CommonModal from '../../../CommonModal';
 import CommonButton from '../../../CommonButton';
-import { TSwapRouteInfo } from '@portkey/trader-types';
 import { CurrencyLogo } from '../../../CurrencyLogo';
 
-import { SwapRouteInfo } from '../SwapRouteInfo';
-import './styles.less';
 import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
 import { swapActions } from '../../../../context/AwakenSwap/actions';
 import CommonModalHeader from '../../../CommonModalHeader';
-
-export type TSwapConfirmModalProps = {
-  onSuccess?: () => void;
-  gasFee: string | 0;
-  tokenInPrice: string;
-  tokenOutPrice: string;
-};
+import { IValueInfo } from '../SwapPanel';
+import './styles.less';
 
 export interface SwapConfirmModalInterface {
-  show: (params: { swapInfo: any; routeInfo: TSwapRouteInfo; priceLabel: string }) => void;
+  slippageValue: string;
+  amountOutMinValue: string;
+  priceImpact: string;
+  swapFeeValue: string;
+  gasFeeValue: number;
+  valueInfo: IValueInfo;
+  tokenOutUsd: string;
+  tokenInUsd: string;
+  unitConversionShow: string;
 }
 
-export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) => {
+export const SwapConfirmModal = ({
+  gasFeeValue,
+  slippageValue,
+  amountOutMinValue,
+  priceImpact,
+  swapFeeValue,
+  valueInfo,
+  tokenOutUsd,
+  tokenInUsd,
+  unitConversionShow,
+}: SwapConfirmModalInterface) => {
   const [{ isConfirmModalShow }, { dispatch }] = useAwakenSwapContext();
-  const [swapInfo] = useState<any>();
-  const [routeInfo] = useState<TSwapRouteInfo>();
-  const [priceLabel] = useState('');
 
-  // const slippageValue = useMemo(() => {
-  //   return ZERO.plus(parseUserSlippageTolerance(userSlippageTolerance)).dp(2).toString();
   // }, [userSlippageTolerance]);
 
   // const priceIn = useMemo(
@@ -215,6 +220,15 @@ export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) 
   //   userSlippageTolerance,
   // ]);
 
+  const inUSD = useMemo(() => {
+    if (!(valueInfo.valueIn && tokenInUsd)) return '-';
+    return `$${ZERO.plus(valueInfo.valueIn).times(tokenInUsd).toFixed(2)}`;
+  }, [tokenInUsd, valueInfo.valueIn]);
+  const outUSD = useMemo(() => {
+    if (!(valueInfo.valueOut && tokenOutUsd)) return '-';
+    return `$${ZERO.plus(valueInfo.valueOut).times(tokenOutUsd).toFixed(2)}`;
+  }, [tokenOutUsd, valueInfo.valueOut]);
+
   return (
     <CommonModal
       width="420px"
@@ -234,88 +248,142 @@ export const SwapConfirmModal = forwardRef(({ gasFee }: TSwapConfirmModalProps) 
         showClose
         onClose={() => dispatch(swapActions.setConfirmModalShow.actions(false))}
       />
-      <div className="swap-confirm-modal-content">
-        <div className="swap-confirm-modal-input-wrap">
-          <div className="swap-confirm-modal-input-info">
-            <Font size={14} lineHeight={22} color="two">
-              {'Pay'}
-            </Font>
-            <Font size={24} lineHeight={32}>{`${swapInfo?.valueIn} ${formatSymbol('swapInfo?.tokenIn?.symbol')}`}</Font>
-            <Font size={14} lineHeight={22} color="two">
-              {`$${'Receive'}`}
-            </Font>
-          </div>
-          {/* <CurrencyLogo size={36} currency={'swapInfo?.tokenIn'} /> */}
-        </div>
-        <div className="swap-confirm-modal-input-wrap">
-          <div className="swap-confirm-modal-input-info">
-            <Font size={14} lineHeight={22} color="two">
-              {'Receive'}
-            </Font>
-            <Font size={24} lineHeight={32}>{`${swapInfo?.valueOut} ${formatSymbol(
-              'swapInfo?.tokenOut?.symbol',
-            )}`}</Font>
-            <Font size={14} lineHeight={22} color="two">
-              {`$${'priceOut'}`}
-            </Font>
-          </div>
-          <CurrencyLogo size={36} symbol={'ELF'} />
-        </div>
-
-        <div className="swap-confirm-modal-detail">
-          <Row align={'middle'} justify={'space-between'}>
-            <Col className="swap-detail-title">
-              <Font color="two" size={14} lineHeight={22}>
-                {'price'}
+      <div className="content-wrap">
+        <div className="swap-confirm-modal-content">
+          <div className="swap-confirm-modal-input-wrap">
+            <div className="swap-confirm-modal-input-info">
+              <span className="titlew">{'Pay'}</span>
+              <Font size={24} lineHeight={32}>{`${valueInfo?.valueIn} ${formatSymbol(valueInfo.tokenIn.symbol)}`}</Font>
+              <Font size={14} lineHeight={22} color="two">
+                {inUSD}
               </Font>
-            </Col>
+            </div>
+            <CurrencyLogo size={36} symbol={valueInfo.tokenIn.symbol} />
+          </div>
+          <div className="swap-confirm-modal-input-wrap">
+            <div className="swap-confirm-modal-input-info">
+              <Font size={14} lineHeight={22} color="two">
+                {'Receive'}
+              </Font>
+              <Font size={24} lineHeight={32}>{`${valueInfo?.valueOut} ${formatSymbol(
+                valueInfo?.tokenOut?.symbol,
+              )}`}</Font>
+              <Font size={14} lineHeight={22} color="two">
+                {outUSD}
+              </Font>
+            </div>
+            <CurrencyLogo size={36} symbol={valueInfo.tokenOut.symbol} />
+          </div>
 
-            <Row gutter={[4, 0]} align="middle">
-              <Col>
-                <Font size={14} lineHeight={22}>
-                  {priceLabel}
+          <div className="swap-confirm-modal-detail">
+            <Row align={'middle'} justify={'space-between'}>
+              <Col className="swap-detail-title">
+                <Font color="two" size={14} lineHeight={22}>
+                  {'Rate'}
                 </Font>
               </Col>
+
+              <Row gutter={[4, 0]} align="middle">
+                <Col>
+                  <Font size={14} lineHeight={22} weight="medium">
+                    {unitConversionShow}
+                  </Font>
+                </Col>
+              </Row>
             </Row>
-          </Row>
 
-          <Row align={'middle'} justify={'space-between'}>
-            <Col className="swap-detail-title">
-              <Font color="two" size={14} lineHeight={22}>
-                {'slippageTolerance'}
-              </Font>
-            </Col>
-
-            <Row gutter={[4, 0]} align="middle">
-              <Col>
-                <Font size={14} lineHeight={22} suffix="%">
-                  {'slippageValue'}
+            <Row align={'middle'} justify={'space-between'}>
+              <Col className="swap-detail-title">
+                <Font color="two" size={14} lineHeight={22}>
+                  {'Max. Slippage'}
                 </Font>
               </Col>
-            </Row>
-          </Row>
 
-          {routeInfo && swapInfo && (
-            <SwapRouteInfo
-              isTipShow={false}
-              isRoutingShow={false}
-              swapInfo={swapInfo}
-              routeInfo={routeInfo}
-              gasFee={gasFee}
-            />
-          )}
+              <Row gutter={[4, 0]} align="middle">
+                <Col>
+                  <Font size={14} lineHeight={22} suffix="%" weight="medium">
+                    {slippageValue}
+                  </Font>
+                </Col>
+              </Row>
+            </Row>
+
+            <Row align={'middle'} justify={'space-between'}>
+              <Col className="swap-detail-title">
+                <Font color="two" size={14} lineHeight={22}>
+                  {'Min. Received'}
+                </Font>
+              </Col>
+
+              <Row gutter={[4, 0]} align="middle">
+                <Col>
+                  <Font size={14} lineHeight={22} weight="medium">
+                    {amountOutMinValue}
+                  </Font>
+                </Col>
+              </Row>
+            </Row>
+
+            <Row align={'middle'} justify={'space-between'}>
+              <Col className="swap-detail-title">
+                <Font color="two" size={14} lineHeight={22}>
+                  {'Price Impact'}
+                </Font>
+              </Col>
+
+              <Row gutter={[4, 0]} align="middle">
+                <Col>
+                  <Font size={14} lineHeight={22} weight="medium">
+                    {priceImpact}
+                  </Font>
+                </Col>
+              </Row>
+            </Row>
+
+            <Row align={'middle'} justify={'space-between'}>
+              <Col className="swap-detail-title">
+                <Font color="two" size={14} lineHeight={22}>
+                  {'Swap Fee'}
+                </Font>
+              </Col>
+
+              <Row gutter={[4, 0]} align="middle">
+                <Col>
+                  <Font size={14} lineHeight={22} weight="medium">
+                    {swapFeeValue}
+                  </Font>
+                </Col>
+              </Row>
+            </Row>
+
+            <Row align={'middle'} justify={'space-between'}>
+              <Col className="swap-detail-title">
+                <Font color="two" size={14} lineHeight={22}>
+                  {'Network Cost'}
+                </Font>
+              </Col>
+
+              <Row gutter={[4, 0]} align="middle">
+                <Col>
+                  <Font size={14} lineHeight={22} weight="medium">
+                    {`${gasFeeValue} ELF`}
+                  </Font>
+                </Col>
+              </Row>
+            </Row>
+          </div>
         </div>
+        <CommonButton
+          onClick={() => {
+            console.log('onConfirmClick');
+          }}
+          // disabled={isSwapping}
+          // loading={isSwapping}
+          className="swap-confirm-modal-btn"
+          type="primary">
+          {'Confirm Swap'}
+        </CommonButton>
       </div>
-      <CommonButton
-        onClick={() => {
-          console.log('onConfirmClick');
-        }}
-        // disabled={isSwapping}
-        // loading={isSwapping}
-        className="swap-confirm-modal-btn"
-        type="primary">
-        {'Confirm Swap'}
-      </CommonButton>
     </CommonModal>
   );
-});
+};

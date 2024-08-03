@@ -9,6 +9,7 @@ export const AwakenSwapActions = {
   setTipsModalShow: 'SET_TIPS_MODAL_SHOW',
   setConfirmModalShow: 'SET_CONFIRM_MODAL_SHOW',
   setSettingModalShow: 'SET_SETTING_MODAL_SHOW',
+  setOrderRoutingModalShow: 'SET_ORDER_ROUTING_MODAL_SHOW',
   setSupportTokenList: 'SET_SUPPORT_TOKEN_LIST',
 };
 
@@ -18,6 +19,7 @@ export interface AwakenSwapState {
   isConfirmModalShow: boolean;
   isSettingModalShow: boolean;
   isTipsModalShow: boolean;
+  isOrderRoutingModalShow: boolean;
   tipsModalInfo: {
     title: string;
     content: string;
@@ -53,6 +55,11 @@ export const swapActions = {
   setTipsModalShow: {
     type: AwakenSwapActions['setTipsModalShow'],
     actions: (isTipsModalShow: boolean) => basicActions(AwakenSwapActions['setTipsModalShow'], { isTipsModalShow }),
+  },
+  setOrderRoutingModalShow: {
+    type: AwakenSwapActions['setOrderRoutingModalShow'],
+    actions: (isOrderRoutingModalShow: boolean) =>
+      basicActions(AwakenSwapActions['setOrderRoutingModalShow'], { isOrderRoutingModalShow }),
   },
   setSupportTokenList: {
     type: AwakenSwapActions['setSupportTokenList'],

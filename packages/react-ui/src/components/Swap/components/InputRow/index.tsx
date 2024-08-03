@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import CommonInput from '../../../../components/CommonInput';
 import CommonSvg from '../../../../components/CommonSvg';
-import { Currency } from '@awaken/sdk-core';
 import clsx from 'clsx';
 import TokenImageDisplay from '../TokenImageDisplay';
 import { ZERO } from '../../../../constants/misc';
 import './index.less';
+import { TTokenItem } from '../../../../types';
 
 export interface IInputContainer {
   title?: string;
@@ -14,7 +14,7 @@ export interface IInputContainer {
   priceInUsd?: number | string;
   balance?: number | string;
   placeholder?: string;
-  tokenInfo?: Currency;
+  tokenInfo?: TTokenItem;
   showMax?: boolean;
   usdSuffix?: React.ReactNode;
   onInputChange: (v: string) => void;

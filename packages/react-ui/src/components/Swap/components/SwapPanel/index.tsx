@@ -34,6 +34,7 @@ import TokenLogoPair from '../TokenLogoPair';
 import { CurrencyLogos } from '../../../CurrencyLogo';
 import { getBalance } from '../../../../utils/getBalance';
 import { useTokenList } from '../../../../hooks/tokenList';
+import { SwapOrderRoutingModal } from '../SwapOrderRouting/SwapOrderRoutingModal';
 
 export interface ISwapPanel {
   wrapClassName?: string;
@@ -53,11 +54,18 @@ export enum BtnErrEnum {
   'tip' = 'tip',
 }
 
+export interface IValueInfo {
+  tokenIn: TTokenItem;
+  tokenOut: TTokenItem;
+  valueIn: string;
+  valueOut: string;
+}
+
 export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   const [{ isMobile }, { dispatch }] = useAwakenSwapContext();
 
   const [extraPriceInfoShow, setExtraPriceInfoShow] = useState(false);
-  const [valueInfo, setValueInfo] = useState<any>({
+  const [valueInfo, setValueInfo] = useState<IValueInfo>({
     tokenIn: {
       address: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
       symbol: 'ELF',
@@ -70,9 +78,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
       symbol: 'USDT',
       decimals: 6,
       chainId: 'tDVW',
-      id: '910301a7-ee78-425f-951d-60099c895ecc',
     },
-
     valueIn: '',
     valueOut: '',
   });
@@ -80,12 +86,15 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   const valueInfoRef = useRef(valueInfo);
   valueInfoRef.current = valueInfo;
   const [swapRoute, setSwapRoute] = useState<TSwapRoute>();
+  const [swapTokens, setSwapTokens] = useState([]);
+
   const circleProcessRef = useRef<CircleProcessInterface>();
   const [tokenInUsd, setTokenInUsd] = useState('');
   const [tokenOutUsd, setTokenOutUsd] = useState('');
   const [valueInBalance, setValueInBalance] = useState('');
   const [valueOutBalance, setValueOutBalance] = useState('');
   const [confirmBtnError, setConfirmBtnError] = useState<BtnErrEnum>(BtnErrEnum.none);
+
   const [isUnitConversionReverse, setIsUnitConversionReverse] = useState(false);
   const [gasFee, setGasFee] = useState(0);
   const getTokenPrice = useGetTokenPrice();
@@ -300,11 +309,13 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
       const { bestRouters, swapTokens } = await awaken.getBestRouters(RouteType.AmountIn, params);
       const bestRoute = bestRouters?.[0];
       setSwapRoute(bestRoute as any);
+      setSwapTokens(swapTokens as any);
       const _amountOut = divDecimals(bestRoute.amountOut, valueInfo.tokenOut.decimals).toFixed();
       setValueInfo((pre: any) => ({
         ...pre,
         valueOut: _amountOut,
       }));
+
       console.log('🌹🌹🌹onValueInChange', bestRouters, swapTokens);
     },
     [valueInfo],
@@ -441,7 +452,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
         label: 'Order Routing',
         value: (
           <div className="portkey-swap-flex-row-center">
-            <CurrencyLogos tokens={[valueInfo.tokenIn, valueInfo.tokenOut]} />
+            <CurrencyLogos size={20} tokens={[valueInfo.tokenIn, valueInfo.tokenOut]} />
 
             {/* <TokenLogoPair token1={valueInfo.tokenIn} token2={valueInfo.tokenOut} /> */}
             <CommonSvg type="icon-arrow-up2" />
@@ -557,15 +568,26 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
 
       <CommonButton
         onClick={() => {
-          dispatch(swapActions.setSelectTokenModalShow.actions(true));
+          dispatch(swapActions.setConfirmModalShow.actions(true));
         }}>
-        CLICKK
+        CLICK
       </CommonButton>
 
+      <SwapOrderRoutingModal swapRoute={swapRoute} />
       <SwapTipsModal />
       <SelectTokenModal />
       <SwapSettingsModal value={'0.4'} onConfirm={(v) => console.log(v)} />
-      {/* <SwapConfirmModal gasFee={''} tokenInUsd={''} tokenOutUsd={''} /> */}
+      <SwapConfirmModal
+        slippageValue={slippageValue}
+        amountOutMinValue={amountOutMinValue}
+        priceImpact={priceImpact}
+        swapFeeValue={swapFeeValue}
+        gasFeeValue={gasFee}
+        valueInfo={valueInfo}
+        tokenOutUsd={tokenInUsd}
+        tokenInUsd={tokenOutUsd}
+        unitConversionShow={unitConversionShow}
+      />
     </div>
   );
 }

@@ -9,6 +9,7 @@ const INITIAL_STATE: AwakenSwapState = {
   isConfirmModalShow: false,
   isSettingModalShow: false,
   isTipsModalShow: false,
+  isOrderRoutingModalShow: false,
   tipsModalInfo: {
     title: '',
     content: '',
@@ -64,6 +65,10 @@ function reducer(state: AwakenSwapState, { type, payload }: any) {
     case AwakenSwapActions.setSettingModalShow: {
       const isSettingModalShow = payload.isSettingModalShow;
       return Object.assign({}, state, { isSettingModalShow });
+    }
+    case AwakenSwapActions.setOrderRoutingModalShow: {
+      const isOrderRoutingModalShow = payload.isOrderRoutingModalShow;
+      return Object.assign({}, state, { isOrderRoutingModalShow });
     }
     case AwakenSwapActions.setSupportTokenList: {
       const list = payload.list;

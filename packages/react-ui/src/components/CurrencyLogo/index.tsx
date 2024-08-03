@@ -60,7 +60,7 @@ export function CurrencyLogos({
     <div
       className={clsx('currency-logo', className)}
       style={{
-        maxWidth: tokens.length === 1 ? size : `${Math.ceil(size * tokens.length - size / 4)}px`,
+        // maxWidth: tokens.length === 1 ? size : `${Math.ceil(size * tokens.length - size / 4)}px`,
 
         maxHeight: tokens.length === 1 ? size : `${Math.ceil(size * tokens.length - size / 4)}px`,
       }}>

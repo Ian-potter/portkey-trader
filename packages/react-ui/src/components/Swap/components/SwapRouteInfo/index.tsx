@@ -206,7 +206,7 @@ export const SwapRouteInfo = ({
               getPopupContainer={(v) => v}
               buttonTitle={'ok'}
               headerDesc={'Order Routing'}>
-              <CurrencyLogos size={20} tokens={[]} isSortToken={false} />
+              <CurrencyLogos size={24} tokens={[]} isSortToken={false} />
             </CommonTooltip>
           </Col>
         </Row>
