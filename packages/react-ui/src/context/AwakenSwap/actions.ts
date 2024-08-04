@@ -7,6 +7,7 @@ export const AwakenSwapActions = {
   destroy: 'DESTROY',
   setSelectTokenModalShow: 'SET_SELECT_TOKEN_MODAL_SHOW',
   setTipsModalShow: 'SET_TIPS_MODAL_SHOW',
+  setTipsModalInfo: 'SET_TIPS_MODAL_INFO',
   setConfirmModalShow: 'SET_CONFIRM_MODAL_SHOW',
   setSettingModalShow: 'SET_SETTING_MODAL_SHOW',
   setOrderRoutingModalShow: 'SET_ORDER_ROUTING_MODAL_SHOW',
@@ -14,7 +15,7 @@ export const AwakenSwapActions = {
 };
 
 export interface AwakenSwapState {
-  isMobile: boolean;
+  isMobile?: boolean;
   isSelectModalShow: boolean;
   isConfirmModalShow: boolean;
   isSettingModalShow: boolean;
@@ -55,6 +56,11 @@ export const swapActions = {
   setTipsModalShow: {
     type: AwakenSwapActions['setTipsModalShow'],
     actions: (isTipsModalShow: boolean) => basicActions(AwakenSwapActions['setTipsModalShow'], { isTipsModalShow }),
+  },
+  setTipsModalInfo: {
+    type: AwakenSwapActions['setTipsModalInfo'],
+    actions: (tipsModalInfo: { title: string; content: string }) =>
+      basicActions(AwakenSwapActions['setTipsModalInfo'], { tipsModalInfo }),
   },
   setOrderRoutingModalShow: {
     type: AwakenSwapActions['setOrderRoutingModalShow'],

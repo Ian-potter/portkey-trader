@@ -377,7 +377,7 @@ function APP() {
   }, [getNightElfProvider, getPortkeyProvider, getPortkeySDKProvider, walletType]);
 
   return (
-    <main className=" min-h-screen flex-col items-center justify-between p-24">
+    <main className=" min-h-screen flex-col items-center justify-between">
       <Button onClick={getBalance}>GetBalance</Button>
       <div>------</div>
 

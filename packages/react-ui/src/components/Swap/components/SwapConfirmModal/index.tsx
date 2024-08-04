@@ -1,7 +1,7 @@
 import Font from '../../../Font';
-import { useMemo } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { formatSymbol, ZERO } from '@portkey/trader-utils';
-import { Col, Row } from 'antd';
+import { Col, Row, message } from 'antd';
 import CommonModal from '../../../CommonModal';
 import CommonButton from '../../../CommonButton';
 import { CurrencyLogo } from '../../../CurrencyLogo';
@@ -11,6 +11,9 @@ import { swapActions } from '../../../../context/AwakenSwap/actions';
 import CommonModalHeader from '../../../CommonModalHeader';
 import { IValueInfo } from '../SwapPanel';
 import './styles.less';
+import { RouteType } from '@portkey/trader-services';
+import { TSwapToken } from '@portkey/trader-core';
+import { useIsMobile } from '../../../../hooks/device';
 
 export interface SwapConfirmModalInterface {
   slippageValue: string;
@@ -22,6 +25,7 @@ export interface SwapConfirmModalInterface {
   tokenOutUsd: string;
   tokenInUsd: string;
   unitConversionShow: string;
+  routerInfo: TSwapToken[];
 }
 
 export const SwapConfirmModal = ({
@@ -34,8 +38,11 @@ export const SwapConfirmModal = ({
   tokenOutUsd,
   tokenInUsd,
   unitConversionShow,
+  routerInfo,
 }: SwapConfirmModalInterface) => {
-  const [{ isConfirmModalShow }, { dispatch }] = useAwakenSwapContext();
+  const [{ isConfirmModalShow, awaken }, { dispatch }] = useAwakenSwapContext();
+  const [isSwapping, setIsSwapping] = useState(false);
+  const isMobile = useIsMobile();
 
   // }, [userSlippageTolerance]);
 
@@ -229,11 +236,44 @@ export const SwapConfirmModal = ({
     return `$${ZERO.plus(valueInfo.valueOut).times(tokenOutUsd).toFixed(2)}`;
   }, [tokenOutUsd, valueInfo.valueOut]);
 
+  const approveAndSwap = useCallback(async () => {
+    if (!awaken) return;
+    setIsSwapping(true);
+
+    try {
+      const options = await awaken?.getOptions?.();
+      console.log('options', options);
+      if (!options?.contractOptions) return;
+
+      const swapTokens = await awaken?.instance?.checkBestRouters({
+        routeType: RouteType.AmountIn,
+        swapTokens: routerInfo,
+      });
+      if (!swapTokens) return;
+
+      await awaken?.instance?.swap({
+        routeType: RouteType.AmountIn,
+        contractOption: options?.contractOptions,
+        amountIn: valueInfo.valueIn,
+        symbol: valueInfo.tokenIn.symbol,
+        bestSwapTokensInfo: swapTokens,
+        slippageTolerance: slippageValue,
+        userAddress: options.address,
+        tokenApprove: awaken.tokenApprove,
+      });
+      message.success('Swap Success!');
+      dispatch(swapActions.setConfirmModalShow.actions(false));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSwapping(false);
+    }
+  }, [awaken, dispatch, routerInfo, slippageValue, valueInfo.tokenIn.symbol, valueInfo.valueIn]);
+
   return (
     <CommonModal
       width="420px"
-      height="522px"
-      showType="modal"
+      height={isMobile ? '70%' : '522px'}
       showBackIcon={false}
       closable={true}
       centered={true}
@@ -374,11 +414,9 @@ export const SwapConfirmModal = ({
           </div>
         </div>
         <CommonButton
-          onClick={() => {
-            console.log('onConfirmClick');
-          }}
-          // disabled={isSwapping}
-          // loading={isSwapping}
+          onClick={approveAndSwap}
+          disabled={isSwapping}
+          loading={isSwapping}
           className="swap-confirm-modal-btn"
           type="primary">
           {'Confirm Swap'}

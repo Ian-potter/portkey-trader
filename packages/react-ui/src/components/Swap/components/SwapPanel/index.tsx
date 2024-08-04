@@ -358,12 +358,14 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
   const onSelectTokenOut = useCallback(() => {
     // TODO open modal
   }, []);
+
   const onTokenOutChange = useCallback((token: TTokenItem) => {
     setValueInfo((pre: any) => ({
       ...pre,
       tokenOut: token,
     }));
   }, []);
+
   const switchToken = useCallback(() => {
     setValueInfo((pre: any) => ({
       tokenIn: pre.tokenOut,
@@ -568,6 +570,12 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
 
       <CommonButton
         onClick={() => {
+          dispatch(
+            swapActions.setTipsModalInfo.actions({
+              title: 'Max. Slippage',
+              content: 'the trade will be cancelled when slippage exceeds this percentage.',
+            }),
+          );
           dispatch(swapActions.setConfirmModalShow.actions(true));
         }}>
         CLICK
@@ -587,6 +595,7 @@ export default function SwapPanel({ wrapClassName }: ISwapPanel) {
         tokenOutUsd={tokenInUsd}
         tokenInUsd={tokenOutUsd}
         unitConversionShow={unitConversionShow}
+        routerInfo={swapTokens}
       />
     </div>
   );
