@@ -6,8 +6,7 @@ import CommonModalHeader from '../../../CommonModalHeader';
 import CommonButton from '../../../CommonButton';
 
 export default function SwapTipsModal() {
-  const [{ tipsModalInfo, isTipsModalShow }, { dispatch }] = useAwakenSwapContext();
-  const isMobile = false;
+  const [{ tipsModalInfo, isTipsModalShow, isMobile }, { dispatch }] = useAwakenSwapContext();
 
   const onCloseModal = () => {
     dispatch(swapActions.setTipsModalShow.actions(false));

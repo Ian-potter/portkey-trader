@@ -4,14 +4,14 @@ import { useMemo } from 'react';
 import { CurrencyLogo, CurrencyLogos } from '../../../CurrencyLogo';
 import { ZERO } from '../../../../constants/misc';
 import { TSwapRoute } from '../../types';
-import { useIsMobile } from '../../../../hooks/device';
+import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
 
 export type TSwapOrderRoutingProps = {
   swapRoute?: TSwapRoute;
 };
 
 export const SwapOrderRouting = ({ swapRoute }: TSwapOrderRoutingProps) => {
-  const isMobile = useIsMobile();
+  const [{ isMobile }] = useAwakenSwapContext();
 
   const routeList = useMemo(() => {
     if (swapRoute) {
@@ -45,13 +45,13 @@ export const SwapOrderRouting = ({ swapRoute }: TSwapOrderRoutingProps) => {
   if (!swapRoute) return <></>;
   return (
     <div className="swap-order-routing">
-      {/* {!isMobile && (
+      {!isMobile && (
         <div className="swap-order-header">
           <Font size={12} lineHeight={14}>
-            {t('Order Routing')}
+            {'Order Routing'}
           </Font>
         </div>
-      )} */}
+      )}
 
       <div className="swap-order-content">
         {routeList.map((route, pathIdx) => (

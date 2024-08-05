@@ -3,6 +3,7 @@ import { Input, InputProps, InputRef } from 'antd';
 import clsx from 'clsx';
 import './index.less';
 import CommonSvg from '../CommonSvg';
+import { useAwakenSwapContext } from '../../context/AwakenSwap';
 
 let blurTimer: any = null;
 
@@ -29,7 +30,7 @@ export default forwardRef(function CommonInput(
   ref,
 ) {
   const [scrollY, setScrollY] = useState(0);
-
+  const [{ isMobile }] = useAwakenSwapContext();
   const inputEle = useRef<InputRef>(null);
 
   useImperativeHandle(ref, () => ({
@@ -48,7 +49,7 @@ export default forwardRef(function CommonInput(
   };
   const onBlurInternal = (e: any) => {
     onBlur?.(e);
-    if ('isMobile' && resumePositionOnBlur) {
+    if (isMobile && resumePositionOnBlur) {
       blurTimer = setTimeout(() => {
         blurTimer = 0;
         try {

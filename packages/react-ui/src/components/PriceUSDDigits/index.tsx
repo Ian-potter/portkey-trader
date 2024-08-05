@@ -2,9 +2,10 @@ import BigNumber from 'bignumber.js';
 import clsx from 'clsx';
 import { CSSProperties, useMemo } from 'react';
 import { TSize } from '../../types';
-import './index.less';
 import { ONE, ZERO, formatPriceUSD } from '@portkey/trader-utils';
 import PriceUSDDecimalsSink from '../PriceUSDDecimalsSink';
+import { useAwakenSwapContext } from '../../context/AwakenSwap';
+import './index.less';
 
 export default function PriceUSDDigits({
   price,
@@ -31,8 +32,7 @@ export default function PriceUSDDigits({
   isPlusPrefixShow?: boolean;
   isUSDUnitZero?: boolean;
 }) {
-  // TODO
-  const isMobile = false;
+  const [{ isMobile }] = useAwakenSwapContext();
 
   const _prefix = useMemo(() => {
     if (!isPlusPrefixShow) return prefix;

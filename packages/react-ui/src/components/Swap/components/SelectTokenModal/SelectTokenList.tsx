@@ -8,8 +8,8 @@ import SearchInput from '../../../SearchInput';
 import CommonList from '../../../CommonList';
 import { ZERO } from '../../../../constants/misc';
 import { TTokenItem } from '../../../../types';
-import { useIsMobile } from '../../../../hooks/device';
 import { useTokenList } from '../../../../hooks/tokenList';
+import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
 import './styles.less';
 
 interface SelectTokenListProps {
@@ -18,7 +18,7 @@ interface SelectTokenListProps {
 }
 
 export default function SelectTokenList(props: SelectTokenListProps) {
-  const isMobile = useIsMobile();
+  const [{ isMobile }] = useAwakenSwapContext();
   const allTokens = useTokenList();
 
   const [searchQuery, setSearchQuery] = useState<string>('');

@@ -616,7 +616,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
   }, [valueInBalance, valueInfo.tokenIn, valueInfo.tokenOut, valueInfo.valueIn]);
 
   return (
-    <div className={clsx('swap-panel-wrapper', wrapClassName)}>
+    <div className={clsx('swap-panel-wrapper', isMobile && 'swap-panel-wrapper-mobile', wrapClassName)}>
       <InputContainer
         title="Pay"
         value={valueInfo.valueIn}

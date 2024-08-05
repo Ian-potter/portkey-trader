@@ -40,9 +40,8 @@ export const SwapConfirmModal = ({
   unitConversionShow,
   routerInfo,
 }: SwapConfirmModalInterface) => {
-  const [{ isConfirmModalShow, awaken }, { dispatch }] = useAwakenSwapContext();
+  const [{ isConfirmModalShow, awaken, isMobile }, { dispatch }] = useAwakenSwapContext();
   const [isSwapping, setIsSwapping] = useState(false);
-  const isMobile = useIsMobile();
 
   // }, [userSlippageTolerance]);
 

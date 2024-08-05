@@ -12,8 +12,7 @@ interface ISelectTokenModalProps {
 }
 
 export default function SelectTokenModal(props: ISelectTokenModalProps) {
-  const [{ isSelectModalShow }, { dispatch }] = useAwakenSwapContext();
-  const isMobile = false;
+  const [{ isMobile, isSelectModalShow }, { dispatch }] = useAwakenSwapContext();
 
   const onCloseModal = () => {
     dispatch(swapActions.setSelectTokenModalShow.actions(false));

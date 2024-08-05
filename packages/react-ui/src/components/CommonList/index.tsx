@@ -4,9 +4,9 @@ import InfiniteScroll from 'react-infinite-scroller';
 import Font from '../Font';
 import clsx from 'clsx';
 import CommonEmpty from '../CommonEmpty';
-// import { useMobile } from 'utils/isMobile';
 import { useTranslation } from 'react-i18next';
 import { COMMON_LOADING_CONFIG } from '../CommonLoading/loading';
+import { useAwakenSwapContext } from '../../context/AwakenSwap';
 import './index.less';
 
 export interface CommonListProps<T> {
@@ -38,8 +38,7 @@ export default function CommonList<T>({
   pageNum,
 }: CommonListProps<T>) {
   const { t } = useTranslation();
-
-  const isMobile = false;
+  const [{ isMobile }] = useAwakenSwapContext();
 
   const hasMore = useMemo(() => {
     if (!total) {

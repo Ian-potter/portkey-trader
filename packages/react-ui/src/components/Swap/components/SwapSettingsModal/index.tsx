@@ -1,6 +1,5 @@
 import CommonModal from '../../../CommonModal';
 import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
-import { useIsMobile } from '../../../../hooks/device';
 import { swapActions } from '../../../../context/AwakenSwap/actions';
 import './styles.less';
 import CommonModalHeader from '../../../CommonModalHeader';
@@ -24,9 +23,7 @@ interface SwapSettingsModalProps {
 export default function SwapSettingsModal(props: SwapSettingsModalProps) {
   const { value, onConfirm } = props;
   const { t } = useTranslation();
-  const isMobile = useIsMobile();
-
-  const [{ isSettingModalShow }, { dispatch }] = useAwakenSwapContext();
+  const [{ isSettingModalShow, isMobile }, { dispatch }] = useAwakenSwapContext();
 
   const [inputVal, setInputVal] = useState(value || '0');
   const [userSlippageTolerance, setUserSlippageTolerance] = useState(value || '0.005');

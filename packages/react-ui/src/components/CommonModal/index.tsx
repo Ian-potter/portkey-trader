@@ -6,7 +6,7 @@ import Font, { FontProps } from '../Font';
 import CommonButton from '../CommonButton';
 
 import './index.less';
-import { useIsMobile } from '../../hooks/device';
+import { useAwakenSwapContext } from '../../context/AwakenSwap';
 
 interface CommonModalProps extends ModalProps, DrawerProps {
   leftCallBack?: () => void;
@@ -40,7 +40,7 @@ export default function CommonModal({
   titleFontProps,
   ...props
 }: CommonModalProps) {
-  const isMobile = useIsMobile();
+  const [{ isMobile }] = useAwakenSwapContext();
 
   const renderTitle = useMemo(() => {
     if (!title) return null;

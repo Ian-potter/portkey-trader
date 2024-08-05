@@ -1,10 +1,7 @@
 import { ReactNode, useCallback, useMemo } from 'react';
 import { Tooltip, TooltipProps } from 'antd';
 import clsx from 'clsx';
-// import { useMobile } from 'utils/isMobile';
-// import { useModalDispatch } from 'contexts/useModal/hooks';
-// import { basicModalView } from 'contexts/useModal/actions';
-
+import { useAwakenSwapContext } from '../../context/AwakenSwap';
 import './styles.less';
 
 export default function CommonTooltip({
@@ -32,8 +29,7 @@ export default function CommonTooltip({
   width?: string | number;
 }) {
   // const modalDispatch = useModalDispatch();
-  // const isMobile = useMobile();
-  // const isMobile = false;
+  const [{ isMobile }] = useAwakenSwapContext();
 
   const renderChildren = useMemo(() => {
     if (!children) {
@@ -53,7 +49,7 @@ export default function CommonTooltip({
   }, [className, type]);
 
   const handleClick = useCallback(() => {
-    if (!'isMobile' || useTooltip) {
+    if (!isMobile || useTooltip) {
       return;
     }
 
@@ -103,12 +99,12 @@ export default function CommonTooltip({
       return visible;
     }
 
-    // if ('isMobile') {
-    //   return false;
-    // }
+    if (isMobile) {
+      return false;
+    }
 
     return undefined;
-  }, [visible, useTooltip]);
+  }, [useTooltip, isMobile, visible]);
 
   return (
     <Tooltip
