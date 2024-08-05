@@ -1,6 +1,6 @@
 import Font from '../../../Font';
 import { useMemo, useCallback, useState } from 'react';
-import { formatSymbol, ZERO } from '@portkey/trader-utils';
+import { divDecimals, formatSymbol, ZERO } from '@portkey/trader-utils';
 import { Col, Row, message } from 'antd';
 import CommonModal from '../../../CommonModal';
 import CommonButton from '../../../CommonButton';
@@ -407,7 +407,7 @@ export const SwapConfirmModal = ({
               <Row gutter={[4, 0]} align="middle">
                 <Col>
                   <Font size={14} lineHeight={22} weight="medium">
-                    {`${gasFeeValue} ELF`}
+                    {`${divDecimals(gasFeeValue, 8).toFixed()} ELF`}
                   </Font>
                 </Col>
               </Row>
