@@ -708,7 +708,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
       )}
 
       <SwapOrderRoutingModal swapRoute={swapRoute} />
-      <SwapTipsModal />
+      <SwapTipsModal showType="modal" />
       <SelectTokenModal
         selectedToken={opTokenIn ? valueInfo.tokenIn : valueInfo.tokenOut}
         onConfirm={opTokenIn ? onTokenInChange : onTokenOutChange}
