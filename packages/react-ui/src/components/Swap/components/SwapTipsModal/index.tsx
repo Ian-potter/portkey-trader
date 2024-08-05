@@ -5,7 +5,11 @@ import { swapActions } from '../../../../context/AwakenSwap/actions';
 import CommonModalHeader from '../../../CommonModalHeader';
 import CommonButton from '../../../CommonButton';
 
-export default function SwapTipsModal() {
+export interface ISwapTipsModalParams {
+  showType?: 'modal' | 'drawer' | '';
+}
+
+export default function SwapTipsModal({ showType = '' }: ISwapTipsModalParams) {
   const [{ tipsModalInfo, isTipsModalShow, isMobile }, { dispatch }] = useAwakenSwapContext();
 
   const onCloseModal = () => {
@@ -21,6 +25,8 @@ export default function SwapTipsModal() {
       onCancel={() => {
         onCloseModal();
       }}
+      centered
+      showType={showType}
       className={isMobile ? 'tips-modal-m' : 'tips-modal'}>
       <div className="modal-panel">
         <CommonModalHeader title={tipsModalInfo.title} showClose={true} onClose={onCloseModal} />
