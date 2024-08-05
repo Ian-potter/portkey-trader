@@ -293,12 +293,14 @@ export const SwapConfirmModal = ({
           <div className="swap-confirm-modal-input-wrap">
             <div className="swap-confirm-modal-input-info">
               <span className="titlew">{'Pay'}</span>
-              <Font size={24} lineHeight={32}>{`${valueInfo?.valueIn} ${formatSymbol(valueInfo.tokenIn.symbol)}`}</Font>
+              <Font size={24} lineHeight={32}>{`${valueInfo?.valueIn} ${formatSymbol(
+                valueInfo.tokenIn?.symbol,
+              )}`}</Font>
               <Font size={14} lineHeight={22} color="two">
                 {inUSD}
               </Font>
             </div>
-            <CurrencyLogo size={36} symbol={valueInfo.tokenIn.symbol} />
+            <CurrencyLogo size={36} symbol={valueInfo.tokenIn?.symbol} />
           </div>
           <div className="swap-confirm-modal-input-wrap">
             <div className="swap-confirm-modal-input-info">
@@ -312,7 +314,7 @@ export const SwapConfirmModal = ({
                 {outUSD}
               </Font>
             </div>
-            <CurrencyLogo size={36} symbol={valueInfo.tokenOut.symbol} />
+            <CurrencyLogo size={36} symbol={valueInfo.tokenOut?.symbol} />
           </div>
 
           <div className="swap-confirm-modal-detail">

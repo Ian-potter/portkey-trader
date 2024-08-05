@@ -1,17 +1,6 @@
 import { ONE, ZERO, valueToPercentage } from '@portkey/trader-utils';
 import { DEFAULT_SLIPPAGE_TOLERANCE } from '../constants/swap';
-import { AwakenSwapper } from '@portkey/trader-core';
 import BigNumber from 'bignumber.js';
-
-export const awaken = new AwakenSwapper({
-  contractConfig: {
-    swapContractAddress: '2vahJs5WeWVJruzd1DuTAu3TwK8jktpJ2NNeALJJWEbPQCUW4Y',
-    rpcUrl: 'https://tdvw-test-node.aelf.io',
-  },
-  requestDefaults: {
-    baseURL: 'https://test.awaken.finance',
-  },
-});
 
 export function parseUserSlippageTolerance(input?: string) {
   return valueToPercentage(input || DEFAULT_SLIPPAGE_TOLERANCE);

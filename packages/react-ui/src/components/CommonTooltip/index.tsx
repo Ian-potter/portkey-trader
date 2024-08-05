@@ -33,14 +33,14 @@ export default function CommonTooltip({
 }) {
   // const modalDispatch = useModalDispatch();
   // const isMobile = useMobile();
-  const isMobile = false;
+  // const isMobile = false;
 
   const renderChildren = useMemo(() => {
     if (!children) {
-      return <span className={clsx('common-question', !isMobile && 'common-question-pc')}></span>;
+      return <span className="common-question"></span>;
     }
     return children;
-  }, [children, isMobile]);
+  }, [children]);
 
   const style = useMemo(() => {
     return clsx(
@@ -69,7 +69,7 @@ export default function CommonTooltip({
     //     buttonTitle,
     //   }),
     // );
-  }, [useTooltip, onClick, width, title, headerDesc, buttonTitle]);
+  }, [useTooltip, onClick]);
 
   const renderAlign = useMemo(() => {
     if (align) {

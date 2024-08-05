@@ -29,16 +29,16 @@ export default function SwapSettingsModal(props: SwapSettingsModalProps) {
   const [{ isSettingModalShow }, { dispatch }] = useAwakenSwapContext();
 
   const [inputVal, setInputVal] = useState(value || '0');
-  const [userSlippageTolerance, setUserSlippageTolerance] = useState(value || '0.5');
+  const [userSlippageTolerance, setUserSlippageTolerance] = useState(value || '0.005');
 
   const onCloseModal = useCallback(() => {
     dispatch(swapActions.setSettingModalShow.actions(false));
   }, [dispatch]);
 
   const onSave = useCallback(() => {
-    onConfirm(inputVal);
+    onConfirm(userSlippageTolerance);
     onCloseModal?.();
-  }, [inputVal, onCloseModal, onConfirm]);
+  }, [onCloseModal, onConfirm, userSlippageTolerance]);
 
   const inputChange = useCallback((value: string) => {
     if (!value) {
