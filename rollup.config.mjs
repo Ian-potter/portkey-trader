@@ -1,6 +1,7 @@
 import esbuild from 'rollup-plugin-esbuild';
 import postcss from 'rollup-plugin-postcss';
 import url from '@rollup/plugin-url';
+import json from '@rollup/plugin-json';
 import postcssUrl from 'postcss-url';
 import copy from 'rollup-plugin-copy';
 
@@ -71,7 +72,7 @@ export default function createConfig(packageName) {
   return [
     {
       input: './index.ts',
-      plugins: [minifyHtml, esbuildPlugin, postcssPlugin, urlPlugin, copyPlugin, terserPlugin],
+      plugins: [minifyHtml, esbuildPlugin, postcssPlugin, urlPlugin, copyPlugin, terserPlugin, json()],
       output: [{ file: './dist/index.js', format: 'es', ...output }],
     },
     // {

@@ -52,16 +52,18 @@ export type TBaseSwapperParams = {
 //   amountOut: number | string;
 // } & TBaseSwapperParams;
 
+export type TTokenApproveHandler = (params: {
+  spender: string;
+  symbol: string;
+  amount: string | number;
+}) => Promise<{ error?: any } | void | undefined>;
+
 export type TSwapperParams = {
   routeType: RouteType;
   amountIn?: string | number;
   amountOut?: string | number;
   symbol: string;
-  tokenApprove?: (params: {
-    spender: string;
-    symbol: string;
-    amount: string | number;
-  }) => Promise<{ error?: any } | void | undefined>;
+  tokenApprove?: TTokenApproveHandler;
 } & TBaseSwapperParams;
 
 export type TSlippageTolerance = {
@@ -88,6 +90,9 @@ export interface IPortkeySwapperAdapter<Name extends string = string> {
   checkBestRouters(params: TCheckBestRouter): Promise<TBestRoutersAmountInfo>;
   swap(params: TSwapperParams): Promise<any>;
   getSupportTokenList(params: FetchTokenListParams): Promise<IToken[]>;
+  getTokenPrice(params: any): Promise<any>;
+  getTransactionFee(): Promise<any>;
+  getBalance(params: any): Promise<any>;
 }
 
 export interface ISwapperBaseConfig {

@@ -1,0 +1,1 @@
+export const DEFAULT_SLIPPAGE_TOLERANCE = '0.005';

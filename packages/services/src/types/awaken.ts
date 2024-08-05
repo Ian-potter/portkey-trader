@@ -4,6 +4,7 @@ import {
   FetchTokenListParams,
   IApiResponse,
   IBestSwapRoutes,
+  IFetchTokenPriceParams,
   ITokenList,
 } from './baseSwapper';
 
@@ -16,6 +17,8 @@ export interface IAwakenService {
   fetchBestSwapRoutes(params: BestSwapRoutesAmountOutParams): Promise<IApiResponse<IBestSwapRoutes>>;
 
   getSupportTokenList(params: FetchTokenListParams): Promise<IApiResponse<ITokenList>>;
+  getTokenPrice(params: IFetchTokenPriceParams): Promise<IApiResponse<any>>;
+  getTransactionFee(): Promise<any>;
 }
 
 // const func = ((params: any) => {

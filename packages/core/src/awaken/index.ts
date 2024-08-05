@@ -9,8 +9,16 @@ import {
   TGetBestRoutersAmountOutParams,
   TSwapperName,
   TSwapperParams,
+  TTokenApproveHandler,
 } from '../types';
-import { AwakenService, FetchTokenListParams, IAwakenService, IToken, RouteType } from '@portkey/trader-services';
+import {
+  AwakenService,
+  FetchTokenListParams,
+  IAwakenService,
+  IFetchTokenPriceParams,
+  IToken,
+  RouteType,
+} from '@portkey/trader-services';
 
 import { FetchRequest } from '@portkey/request';
 import { IBaseRequest } from '@portkey/types';
@@ -91,6 +99,18 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     return Object.values(tokenMap);
   }
 
+  async getTokenPrice(params: IFetchTokenPriceParams): Promise<any> {
+    const result = await this.services.getTokenPrice(params);
+    if (result.code !== '20000') throw result.message;
+    return result.data;
+  }
+
+  async getTransactionFee(): Promise<any> {
+    const result = await this.services.getTransactionFee();
+    if (result.code !== '20000') throw result.message;
+    return result.data;
+  }
+
   refreshServices() {
     this.fetchRequest = new FetchRequest(this.config.requestConfig);
     this.services = new AwakenService(this.fetchRequest);
@@ -107,11 +127,7 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     owner: string;
     amount: number | string;
     contractOption: TContractOption;
-    tokenApprove?: (params: {
-      spender: string;
-      symbol: string;
-      amount: string | number;
-    }) => Promise<{ error?: any } | void | undefined>;
+    tokenApprove?: TTokenApproveHandler;
   }) {
     const tokenAddress = await getTokenContractAddress(this.contractConfig.rpcUrl);
     const tokenContract = await this.getContract({
@@ -150,6 +166,33 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
         if (result.error) throw result.error;
       }
     }
+  }
+
+  async getBalance({
+    symbol,
+    owner,
+    contractOption,
+  }: {
+    symbol: string;
+    owner: string;
+    contractOption: TContractOption;
+  }) {
+    const tokenAddress = await getTokenContractAddress(this.contractConfig.rpcUrl);
+    const tokenContract = await this.getContract({
+      rpcUrl: this.contractConfig.rpcUrl,
+      contractAddress: tokenAddress,
+      contractOption,
+    });
+
+    const balanceRes = await tokenContract.callViewMethod('GetBalance', {
+      symbol,
+      owner,
+    });
+
+    if (balanceRes.error) {
+      throw balanceRes.error;
+    }
+    return balanceRes.data;
   }
 
   getContract({

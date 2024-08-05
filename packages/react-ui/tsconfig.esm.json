@@ -1,9 +1,0 @@
-{
-	"extends": "./tsconfig.json",
-	"compilerOptions": {
-		"outDir": "./dist/esm",
-		"esModuleInterop": true,
-		"module": "es2020"
-	},
-	"include": ["src/**/*","../../index.d.ts"]
-}

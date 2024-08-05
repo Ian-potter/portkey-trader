@@ -1,0 +1,62 @@
+@import './constants.less';
+
+html,
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: var(--awaken-ui-page-bg);
+  min-width: var(--awaken-ui-page-min-width);
+  font-size: 14px;
+
+  // Solve the font loading error problem caused by the UI framework taking effect in the first place
+  .font-regular-important();
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* set list-style */
+ul,
+ol {
+  list-style: none;
+}
+
+/* set text-decoration */
+a,
+a:hover {
+  text-decoration: none;
+}
+
+/* clear margin & padding */
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, /* structural elements */
+  dl, dt, dd, ul, ol, li, /* list elements */
+  pre, /* text formatting elements */
+  fieldset, button, input, textarea, /* form elements */
+  th, td {
+  /* table elements */
+  margin: 0;
+  padding: 0;
+}
+.pointer-events-none {
+  pointer-events: none !important;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  appearance: textfield;
+}
+
+// selected option
+.awaken-ant-select-dropdown.drop-wrap {
+  .awaken-ant-select-item-option-selected {
+    color: var(--awaken-ui-normal) !important;
+    background: none !important;
+  }
+}

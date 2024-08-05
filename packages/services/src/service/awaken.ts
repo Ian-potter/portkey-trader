@@ -8,6 +8,7 @@ import {
   IAwakenService,
   FetchTokenListParams,
   ITokenList,
+  IFetchTokenPriceParams,
 } from '../types';
 
 export class AwakenService<T extends IBaseRequest = IBaseRequest> extends BaseService<T> implements IAwakenService {
@@ -25,6 +26,19 @@ export class AwakenService<T extends IBaseRequest = IBaseRequest> extends BaseSe
       method: 'GET',
       url: '/api/app/route/best-swap-routes',
       params,
+    });
+  }
+  getTokenPrice(params: IFetchTokenPriceParams): Promise<IApiResponse<any>> {
+    return this._request.send({
+      method: 'GET',
+      url: '/api/app/token/price',
+      params,
+    });
+  }
+  getTransactionFee(): Promise<any> {
+    return this._request.send({
+      method: 'GET',
+      url: '/api/app/transaction-fee',
     });
   }
 }

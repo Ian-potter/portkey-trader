@@ -1,0 +1,129 @@
+.swap-panel-wrapper {
+  position: relative;
+  // width: 100%;
+  width: 375px;
+  padding: 0 24px;
+  &.swap-panel-wrapper-mobile {
+    padding: 0 16px;
+  }
+
+  .swap-token-switch-wrap {
+    height: 4px;
+    display: flex;
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    .swap-token-switch-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      background-color: #F7F7F9;
+      cursor: pointer;
+      .portkey-swap-common-svg {
+        width: 16px;
+        height: 16px;
+        svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .swap-token-switch-btn-default {
+        display: block;
+      }
+      .swap-token-switch-btn-hover {
+        display: none;
+      }
+    }
+    .swap-token-switch-btn:hover {
+      .swap-token-switch-btn-default {
+        display: none;
+      }
+      .swap-token-switch-btn-hover {
+        display: block;
+        transform: rotate(90deg);
+        path {
+          fill: black;
+        }
+      }
+    }
+  }
+
+  .swap-btn-wrap {
+    padding-top: 30px;
+    .btn-tip {
+      opacity: 0.3;
+    }
+    .common-button {
+      background-color: #5B8EF4;
+      color: #fff;
+      width: 100%;
+      height: 48px;
+      border-radius: 24px;
+      &:hover {
+        background-color: #5B8EF4;
+        color: #fff;
+      }
+      &.btn-error {
+        color: #B34B4B;
+        background-color: #F3E4E4;
+        &:hover {
+          color: #B34B4B;
+          background-color: #F3E4E4;
+        }
+      }
+    }
+  }
+
+  .swap-price-swap {
+    padding: 24px 0 16px;
+    .single-price-swap {
+      font-size: 16px;
+      line-height: 24px;
+      color: #25272A;
+    }
+    .icon-price-switch-icon {
+      margin-left: 4px;
+      cursor: pointer;
+      svg {
+        fill: black;
+      }
+    }
+    .circle-process-warp {
+      margin-left: 16px;
+    }
+    .icon-arrow-up2-icon {
+      cursor: pointer;
+      &.rotate-icon {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  .swap-price-swap-info {
+    gap: 12px;
+    font-size: 14px;
+    line-height: 22px;
+    .price-swap-info-label {
+      margin-right: 4px;
+      color: #515A62;
+    }
+    .icon-question-icon {
+      width: 16px;
+      height: 16px;
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .price-swap-info-value {
+      font-weight: 500;
+      color: #25272A;
+    }
+    .portkey-swap-common-svg {
+      cursor: pointer;
+    }
+    .icon-arrow-up2-icon {
+      transform: rotate(90deg);
+    }
+  }
+}
