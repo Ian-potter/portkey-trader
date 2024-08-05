@@ -92,6 +92,7 @@ export interface IPortkeySwapperAdapter<Name extends string = string> {
   getSupportTokenList(params: FetchTokenListParams): Promise<IToken[]>;
   getTokenPrice(params: any): Promise<any>;
   getTransactionFee(): Promise<any>;
+  getBalance(params: any): Promise<any>;
 }
 
 export interface ISwapperBaseConfig {
