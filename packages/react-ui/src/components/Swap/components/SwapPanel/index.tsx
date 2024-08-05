@@ -192,7 +192,6 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
     if (!timerRef.current) return;
     clearInterval(timerRef.current);
     timerRef.current = undefined;
-    // routeListRef.current = undefined;
     console.log('clearTimer');
   }, []);
 
@@ -241,8 +240,8 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
     if (!valueInfo.tokenIn?.symbol) return;
     getTokenPrice({
       symbol: valueInfo.tokenIn.symbol,
-      chainId: 'tDVW',
-      tokenAddress: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+      chainId: valueInfo.tokenIn.chainId as any,
+      tokenAddress: valueInfo.tokenIn.address,
     })
       .then((res) => {
         setTokenInUsd(res);
@@ -251,14 +250,14 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
         setTokenInUsd('');
         console.log('===getTokenPrice error', err);
       });
-  }, [getTokenPrice, valueInfo.tokenIn?.symbol]);
+  }, [getTokenPrice, valueInfo.tokenIn]);
 
   useEffect(() => {
     if (!valueInfo.tokenOut?.symbol) return;
     getTokenPrice({
       symbol: valueInfo.tokenOut.symbol,
-      chainId: 'tDVW',
-      tokenAddress: 'ASh2Wt7nSEmYqnGxPPzp4pnVDU4uhj1XW9Se5VeZcX2UDdyjx',
+      chainId: valueInfo.tokenOut.chainId as any,
+      tokenAddress: valueInfo.tokenOut.address,
     })
       .then((res) => {
         setTokenOutUsd(res);
@@ -267,7 +266,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
         setTokenOutUsd('');
         console.log('===getTokenPrice error', err);
       });
-  }, [getTokenPrice, valueInfo.tokenIn?.symbol, valueInfo.tokenOut?.symbol]);
+  }, [getTokenPrice, valueInfo.tokenOut]);
 
   useEffect(() => {
     if (!valueInfo.tokenIn?.symbol) {
@@ -299,14 +298,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
           console.log('===getBalance error', err);
         });
     }
-  }, [
-    owner,
-    valueInfo.tokenIn?.decimals,
-    valueInfo.tokenIn?.symbol,
-    valueInfo.tokenOut?.decimals,
-    valueInfo.tokenOut?.symbol,
-    awaken,
-  ]);
+  }, [owner, valueInfo.tokenIn, valueInfo.tokenOut, awaken]);
 
   const usdImpactInfo = useMemo(() => {
     const { tokenIn, tokenOut, valueIn, valueOut } = valueInfo;
@@ -615,7 +607,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
       setConfirmBtnError(BtnErrEnum.tip);
       return `Enter an amount`;
     }
-    if (ZERO.plus(valueInfo.valueIn).gt(valueInBalance)) {
+    if (!valueInBalance || ZERO.plus(valueInfo.valueIn).gt(valueInBalance)) {
       setConfirmBtnError(BtnErrEnum.error);
       return `Insufficient ${valueInfo.tokenIn.symbol} balance`;
     }
