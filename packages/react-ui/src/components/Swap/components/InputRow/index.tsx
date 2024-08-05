@@ -1,11 +1,17 @@
-import { useMemo } from 'react';
+import { useMemo, useRef, useCallback } from 'react';
 import CommonInput from '../../../../components/CommonInput';
 import CommonSvg from '../../../../components/CommonSvg';
 import clsx from 'clsx';
-import TokenImageDisplay from '../TokenImageDisplay';
 import { ZERO } from '../../../../constants/misc';
-import './index.less';
 import { TTokenItem } from '../../../../types';
+import { CurrencyLogo } from '../../../../components/CurrencyLogo';
+import { divDecimals } from '@portkey/trader-utils';
+import BigNumber from 'bignumber.js';
+import { isValidNumber } from '../../../../utils/reg';
+import { parseInputChange } from '../../../../utils/input';
+import PriceUSDDigits from '../../../../components/PriceUSDDigits';
+import { Pair } from '../../../Pair';
+import './index.less';
 
 export interface IInputContainer {
   title?: string;
@@ -17,6 +23,7 @@ export interface IInputContainer {
   tokenInfo?: TTokenItem;
   showMax?: boolean;
   usdSuffix?: React.ReactNode;
+  inputDisabled: boolean;
   onInputChange: (v: string) => void;
   onSelectToken: () => void;
   onClickMax?: () => void;
@@ -32,13 +39,24 @@ export default function InputContainer({
   tokenInfo,
   showMax,
   usdSuffix,
+  inputDisabled,
   onInputChange,
   onSelectToken,
   onClickMax,
 }: IInputContainer) {
+  const min = useRef<BigNumber>(divDecimals('1', tokenInfo?.decimals));
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const v = e.target.value;
+      if (v && !isValidNumber(v)) return;
+      onInputChange?.(parseInputChange(v, min.current, tokenInfo?.decimals));
+    },
+    [onInputChange, tokenInfo?.decimals],
+  );
+
   const valueInUsd = useMemo(() => {
     if (!(value && priceInUsd)) return '-';
-    return `$${ZERO.plus(value).times(priceInUsd).toFixed(2)}`;
+    return ZERO.plus(value).times(priceInUsd);
   }, [priceInUsd, value]);
 
   const renderSelectToken = useMemo(() => {
@@ -52,8 +70,8 @@ export default function InputContainer({
   const renderTokenInfo = useMemo(() => {
     return (
       <div className="show-token-wrap portkey-swap-flex-row-center">
-        <TokenImageDisplay symbol={tokenInfo?.symbol} width={20} />
-        <span>{tokenInfo?.symbol}</span>
+        <CurrencyLogo size={20} symbol={tokenInfo?.symbol} />
+        <Pair lineHeight={24} size={16} weight="medium" symbol={tokenInfo?.symbol} />
         <CommonSvg type="icon-arrow-up2" onClick={onSelectToken} />
       </div>
     );
@@ -64,19 +82,18 @@ export default function InputContainer({
       <div className="swap-input-row1">{title}</div>
       <div className="swap-input-row2 portkey-swap-flex-row-between">
         <CommonInput
-          onChange={(e) => onInputChange(e.target.value)}
+          onChange={handleInputChange}
           value={value || ''}
           placeholder={placeholder}
-          className="swap-input-value"
+          className={clsx('swap-input-value', value && 'swap-input-value-value')}
           wrapClassName="portkey-swap-flex-1"
-          disabled={!tokenInfo}
-          // ref={inputRef}
+          disabled={!tokenInfo || inputDisabled}
         />
         {tokenInfo ? renderTokenInfo : renderSelectToken}
       </div>
       <div className="swap-input-row3 portkey-swap-flex-row-between">
         <div className="portkey-swap-flex-row-center">
-          <span className="value-in-usd">{valueInUsd}</span>
+          <PriceUSDDigits wrapperClassName="value-in-usd" price={valueInUsd} />
           <span className="usd-suffix-show">{usdSuffix}</span>
         </div>
         <div className="portkey-swap-flex-row-center">

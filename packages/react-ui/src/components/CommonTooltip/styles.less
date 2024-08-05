@@ -1,33 +1,26 @@
-.common-question {
-  display: flex;
-  background-image: url('../../assets/icons/icon-question.svg');
-  width: 20px;
-  height: 20px;
-  background-size: 100% 100%;
-}
-
-.mobile-site-content {
+.awk-common-tool-tip {
   .common-question {
+    display: flex;
+    background-image: url('../../assets/icons/icon-question.svg');
     width: 16px;
     height: 16px;
+    background-size: 100% 100%;
   }
-}
-
-.common-question-pc {
-  transition: all .3s;
-  &:hover {
-    background-image: url('../../assets/icons/icon-question-hover.svg');
+  &.ant-tooltip-open {
+    .common-question {
+      background-image: url('../../assets/icons/icon-question-hover.svg');
+    }
   }
-}
-
-
-.common-question.anticon {
-  color: #5B8EF4;
 }
 
 .common-tooltip {
   &.ant-tooltip {
     z-index: 10;
+  }
+  .ant-tooltip-arrow {
+    &::before {
+      background-color: #FFFFFF;
+    }
   }
   .ant-tooltip-inner {
     padding: 12px 16px;
@@ -35,13 +28,8 @@
     color: #515A62;
     font-size: 12px;
     line-height: 18px;
-    max-width: 240px;
+    max-width: 300px;
     border-radius: 4px;
-  }
-  .ant-tooltip-arrow-content {
-    &::before {
-      background: #FFFFFF;
-    }
   }
 }
 
