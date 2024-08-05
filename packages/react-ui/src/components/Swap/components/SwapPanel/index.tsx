@@ -273,7 +273,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
     if (!valueInfo.tokenIn?.symbol) {
       setValueInBalance('');
     } else {
-      getBalance({ symbol: valueInfo.tokenIn.symbol, owner })
+      getBalance({ symbol: valueInfo.tokenIn.symbol, owner, awaken })
         .then((res) => {
           const _bal = divDecimals(res.balance, valueInfo.tokenIn?.decimals).toFixed();
           setValueInBalance(_bal);
@@ -283,13 +283,13 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
           console.log('===getBalance error', err);
         });
     }
-  }, [owner, valueInfo.tokenIn?.decimals, valueInfo.tokenIn?.symbol]);
+  }, [awaken, owner, valueInfo.tokenIn?.decimals, valueInfo.tokenIn?.symbol]);
 
   useEffect(() => {
     if (!valueInfo.tokenOut?.symbol) {
       setValueOutBalance('');
     } else {
-      getBalance({ symbol: valueInfo.tokenOut.symbol, owner })
+      getBalance({ symbol: valueInfo.tokenOut.symbol, owner, awaken })
         .then((res) => {
           const _bal = divDecimals(res.balance, valueInfo.tokenOut?.decimals).toFixed();
           setValueOutBalance(_bal);
@@ -305,6 +305,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
     valueInfo.tokenIn?.symbol,
     valueInfo.tokenOut?.decimals,
     valueInfo.tokenOut?.symbol,
+    awaken,
   ]);
 
   const usdImpactInfo = useMemo(() => {

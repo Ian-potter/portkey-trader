@@ -9,7 +9,7 @@ export const getBalance = async ({
 }: {
   symbol: string;
   owner: string;
-  awaken: IAwakenConfig;
+  awaken: IAwakenConfig | undefined;
 }) => {
   const res = await awaken?.instance?.getBalance({
     symbol,
