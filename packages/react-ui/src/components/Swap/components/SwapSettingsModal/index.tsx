@@ -75,6 +75,7 @@ export default function SwapSettingsModal(props: SwapSettingsModalProps) {
     <CommonModal
       closable
       centered
+      showType="modal"
       open={isSettingModalShow}
       className="transactions-settings-modal"
       title={false}

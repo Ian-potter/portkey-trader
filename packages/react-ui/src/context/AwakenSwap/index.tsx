@@ -4,7 +4,6 @@ import { BasicActions } from '../utils';
 import { IAwakenConfig } from '../../types/config';
 
 const INITIAL_STATE: AwakenSwapState = {
-  isMobile: false,
   isSelectModalShow: false,
   isConfirmModalShow: false,
   isSettingModalShow: false,
@@ -57,6 +56,10 @@ function reducer(state: AwakenSwapState, { type, payload }: any) {
     case AwakenSwapActions.setTipsModalShow: {
       const isTipsModalShow = payload.isTipsModalShow;
       return Object.assign({}, state, { isTipsModalShow });
+    }
+    case AwakenSwapActions.setTipsModalInfo: {
+      const tipsModalInfo = payload.tipsModalInfo;
+      return Object.assign({}, state, { tipsModalInfo });
     }
     case AwakenSwapActions.setConfirmModalShow: {
       const isConfirmModalShow = payload.isConfirmModalShow;

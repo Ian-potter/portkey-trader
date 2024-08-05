@@ -90,7 +90,8 @@ export interface IPortkeySwapperAdapter<Name extends string = string> {
   checkBestRouters(params: TCheckBestRouter): Promise<TBestRoutersAmountInfo>;
   swap(params: TSwapperParams): Promise<any>;
   getSupportTokenList(params: FetchTokenListParams): Promise<IToken[]>;
-  // getTokenPrice(params: any): Promise<any>;
+  getTokenPrice(params: any): Promise<any>;
+  getTransactionFee(): Promise<any>;
 }
 
 export interface ISwapperBaseConfig {

@@ -5,20 +5,18 @@ import InputContainer from '../InputRow';
 import CommonSvg from '../../../CommonSvg';
 import CommonButton from '../../../CommonButton';
 import { CircleProcess, CircleProcessInterface } from '../../../CircleProcess';
-// import { Token } from '@awaken/sdk-core';
 import { isValidNumber } from '../../../../utils/reg';
 import { SWAP_TIME_INTERVAL, ZERO } from '../../../../constants/misc';
 import './index.less';
 import SwapTipsModal from '../SwapTipsModal';
 import SwapSettingsModal from '../SwapSettingsModal';
 import { SwapConfirmModal } from '../SwapConfirmModal';
-import { AwakenSwapProvider, useAwakenSwapContext } from '../../../../context/AwakenSwap';
+import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
 import SelectTokenModal from '../SelectTokenModal';
 import { swapActions } from '../../../../context/AwakenSwap/actions';
 import { useGetTokenPrice } from '../../../../hooks/price';
 import { TTokenItem } from '../../../../types';
 import {
-  awaken,
   bigNumberToString,
   getPriceImpactWithBuy,
   minimumAmountOut,
@@ -67,7 +65,7 @@ export interface IValueInfo {
 
 export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTokenOutSymbol }: ISwapPanel) {
   const allTokens = useTokenList();
-  const [{ isMobile }, { dispatch }] = useAwakenSwapContext();
+  const [{ isMobile, awaken }, { dispatch }] = useAwakenSwapContext();
   const [extraPriceInfoShow, setExtraPriceInfoShow] = useState(false);
   const [valueInfo, setValueInfo] = useState<IValueInfo>({
     tokenIn: undefined,
@@ -96,8 +94,18 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
   const timerRef = useRef<NodeJS.Timeout>();
   const [userSlippageTolerance, setUserSlippageTolerance] = useState(DEFAULT_SLIPPAGE_TOLERANCE);
   const timerFlagRef = useRef(false);
-  // TODO
-  const owner = 'LEwNefrRAcYtQWFvTZTXykPca7QrijatqgbmAqB5M4Ud2yJGL';
+  const [owner, setOwner] = useState('');
+
+  useEffect(() => {
+    awaken
+      ?.getOptions?.()
+      .then((res) => {
+        setOwner(res?.address ?? '');
+      })
+      .catch((err) => {
+        console.log('===awaken?.getOptions', err);
+      });
+  }, [awaken]);
   const executeCb = useCallback(async () => {
     const { tokenIn, tokenOut } = valueInfoRef.current;
     if (!tokenIn || !tokenOut) return;
@@ -218,8 +226,8 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
   }, [valueInfo]);
 
   useEffectOnce(() => {
-    awaken
-      .getTransactionFee()
+    awaken?.instance
+      ?.getTransactionFee()
       .then((res) => {
         setGasFee(res.transactionFee);
       })
@@ -275,7 +283,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
           console.log('===getBalance error', err);
         });
     }
-  }, [valueInfo.tokenIn?.decimals, valueInfo.tokenIn?.symbol]);
+  }, [owner, valueInfo.tokenIn?.decimals, valueInfo.tokenIn?.symbol]);
 
   useEffect(() => {
     if (!valueInfo.tokenOut?.symbol) {
@@ -292,6 +300,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
         });
     }
   }, [
+    owner,
     valueInfo.tokenIn?.decimals,
     valueInfo.tokenIn?.symbol,
     valueInfo.tokenOut?.decimals,
@@ -342,18 +351,19 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
           ? timesDecimals(valueInfo.valueIn, valueInfo.tokenIn?.decimals).toFixed()
           : undefined,
     };
-    const { bestRouters, swapTokens } = await awaken.getBestRouters(routeTypeRef.current as any, params as any);
-    const bestRoute = bestRouters?.[0];
+    // { bestRouters, swapTokens }
+    const routerRes = await awaken?.instance?.getBestRouters(routeTypeRef.current as any, params as any);
+    const bestRoute = routerRes?.bestRouters?.[0];
     setSwapRoute(bestRoute as any);
-    const _amountIn = divDecimals(bestRoute.amountIn, valueInfo.tokenIn?.decimals).toFixed();
-    const _amountOut = divDecimals(bestRoute.amountOut, valueInfo.tokenOut?.decimals).toFixed();
+    const _amountIn = divDecimals(bestRoute?.amountIn, valueInfo.tokenIn?.decimals).toFixed();
+    const _amountOut = divDecimals(bestRoute?.amountOut, valueInfo.tokenOut?.decimals).toFixed();
     setValueInfo((pre: any) => ({
       ...pre,
       valueIn: _amountIn,
       valueOut: _amountOut,
     }));
-    console.log('🌹🌹🌹onValueOutChange', bestRouters, swapTokens);
-  }, [valueInfo.tokenIn, valueInfo.tokenOut, valueInfo.valueIn, valueInfo.valueOut]);
+    console.log('🌹🌹🌹onValueOutChange', routerRes);
+  }, [awaken?.instance, valueInfo.tokenIn, valueInfo.tokenOut, valueInfo.valueIn, valueInfo.valueOut]);
 
   refreshTokenValueRef.current = refreshTokenValue;
   const refreshTokenValueDebounce = useDebounceCallback(refreshTokenValue, [refreshTokenValue]);
@@ -717,6 +727,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
         tokenOutUsd={tokenInUsd}
         tokenInUsd={tokenOutUsd}
         unitConversionShow={unitConversionShow}
+        routerInfo={swapTokens}
       />
     </div>
   );

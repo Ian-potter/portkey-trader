@@ -6,6 +6,7 @@ import Font, { FontProps } from '../Font';
 import CommonButton from '../CommonButton';
 
 import './index.less';
+import { useIsMobile } from '../../hooks/device';
 
 interface CommonModalProps extends ModalProps, DrawerProps {
   leftCallBack?: () => void;
@@ -39,7 +40,7 @@ export default function CommonModal({
   titleFontProps,
   ...props
 }: CommonModalProps) {
-  // const isMobile = useMobile();
+  const isMobile = useIsMobile();
 
   const renderTitle = useMemo(() => {
     if (!title) return null;
@@ -96,8 +97,7 @@ export default function CommonModal({
       );
     }
 
-    //  if (showType === 'drawer' || 'isMobile') {
-    if (showType === 'drawer') {
+    if (showType === 'drawer' || isMobile) {
       const drawProps = {
         ...props,
       };
