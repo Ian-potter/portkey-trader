@@ -12,21 +12,12 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - 🎸 add web login ([2523106](https://github.com/Ian-potter/portkey-trader/commit/252310613bb12880953755b61616c6702d051a71))
 - 🎸 change awaken options ([4e14a32](https://github.com/Ian-potter/portkey-trader/commit/4e14a32c58a0aa9c79ed5708e81b332c1d50c1c3))
 - 🎸 change package ([4f25e3d](https://github.com/Ian-potter/portkey-trader/commit/4f25e3df5c173f61730338b3b35561f898353414))
-- 🎸 confirm modal ([454e482](https://github.com/Ian-potter/portkey-trader/commit/454e482c68b60414e911dca816fe82317f0a665a))
 - 🎸 first commit ([beee723](https://github.com/Ian-potter/portkey-trader/commit/beee7233c296336ad32bb3ff5f3d7f01013aa57c))
 - 🎸 panel swap ([8779146](https://github.com/Ian-potter/portkey-trader/commit/8779146e5b56e999e749accaf18a59b970c641b6))
-- 🎸 swap ([6cfe0c5](https://github.com/Ian-potter/portkey-trader/commit/6cfe0c57cd4574880b5cb5e7876d559fd14653df))
 - 🎸 swap ([3522373](https://github.com/Ian-potter/portkey-trader/commit/3522373ed388cc9afc030568506658e07e9c775f))
-- 🎸 trade ([a88038c](https://github.com/Ian-potter/portkey-trader/commit/a88038ce357ee6dbb35c97aafe617f183ac4f2a2))
 
 ### Bug Fixes
 
-- 🐛 bug ([846a4e6](https://github.com/Ian-potter/portkey-trader/commit/846a4e6e1d2b875f929d94f444ab474aa6e79704))
 - 🐛 mobile ([3aa8f06](https://github.com/Ian-potter/portkey-trader/commit/3aa8f06af062211bb34c7ed90c3434be789e9e1f))
-- 🐛 swap ([766daa0](https://github.com/Ian-potter/portkey-trader/commit/766daa0620aa760d3515b840a9b1c4d4022ffdea))
-- 🐛 swap ([c76ce46](https://github.com/Ian-potter/portkey-trader/commit/c76ce462fcd201ba25d08b4bad72ff11a3f64083))
-- 🐛 swap ([ba29a0f](https://github.com/Ian-potter/portkey-trader/commit/ba29a0f9f1d86e7874898baa835dcb13cd05c164))
 - 🐛 swap ([6ce8209](https://github.com/Ian-potter/portkey-trader/commit/6ce8209c7f6fb48d1237776ef4881866bda3c01b))
-- 🐛 swap error ([86d9e19](https://github.com/Ian-potter/portkey-trader/commit/86d9e198a8f1fae1c5a8350d3669276c701f152f))
 - 🐛 swap modal ([bdaff02](https://github.com/Ian-potter/portkey-trader/commit/bdaff02fa10275fae64137da6847b67afc782df6))
-- 🐛 update version ([4dceb13](https://github.com/Ian-potter/portkey-trader/commit/4dceb13c2fa357026aace2d23cd07bfcba7e33ce))

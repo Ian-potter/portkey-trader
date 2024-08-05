@@ -1,0 +1,19 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## 0.0.2-alpha.0 (2024-08-05)
+
+### Features
+
+- 🎸 add nightelf swap ([4d8df4c](https://github.com/Portkey-Wallet/portkey-trader/commit/4d8df4c6a7c3b9c2759cb4082297d47cc2f0b44d))
+- 🎸 add web login ([2523106](https://github.com/Portkey-Wallet/portkey-trader/commit/252310613bb12880953755b61616c6702d051a71))
+- 🎸 change package ([4f25e3d](https://github.com/Portkey-Wallet/portkey-trader/commit/4f25e3df5c173f61730338b3b35561f898353414))
+- 🎸 first commit ([beee723](https://github.com/Portkey-Wallet/portkey-trader/commit/beee7233c296336ad32bb3ff5f3d7f01013aa57c))
+- 🎸 trade ([a88038c](https://github.com/Portkey-Wallet/portkey-trader/commit/a88038ce357ee6dbb35c97aafe617f183ac4f2a2))
+
+### Bug Fixes
+
+- 🐛 swap ([6ce8209](https://github.com/Portkey-Wallet/portkey-trader/commit/6ce8209c7f6fb48d1237776ef4881866bda3c01b))
+- 🐛 swap modal ([bdaff02](https://github.com/Portkey-Wallet/portkey-trader/commit/bdaff02fa10275fae64137da6847b67afc782df6))
