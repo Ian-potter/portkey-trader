@@ -1,9 +1,17 @@
 import { COMMON_PRIVATE } from '../constants';
-import { awaken } from './swap';
 import { aelf } from '@portkey/utils';
+import { IAwakenConfig } from '../types';
 
-export const getBalance = async ({ symbol, owner }: { symbol: string; owner: string }) => {
-  const res = await awaken.getBalance({
+export const getBalance = async ({
+  symbol,
+  owner,
+  awaken,
+}: {
+  symbol: string;
+  owner: string;
+  awaken: IAwakenConfig;
+}) => {
+  const res = await awaken?.instance?.getBalance({
     symbol,
     owner,
     contractOption: {
