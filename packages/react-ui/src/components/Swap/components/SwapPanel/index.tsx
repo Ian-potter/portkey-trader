@@ -35,6 +35,7 @@ import { useDebounceCallback } from '../../../../hooks';
 import { DEFAULT_SLIPPAGE_TOLERANCE } from '../../../../constants/swap';
 import Font from '../../../../components/Font';
 import { SwapOrderRouting } from '../SwapOrderRouting';
+import { TSwapToken } from '@portkey/trader-core';
 
 export interface ISwapPanel {
   wrapClassName?: string;
@@ -77,7 +78,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
   const valueInfoRef = useRef(valueInfo);
   valueInfoRef.current = valueInfo;
   const [swapRoute, setSwapRoute] = useState<TSwapRoute>();
-  const [swapTokens, setSwapTokens] = useState([]);
+  const [swapTokens, setSwapTokens] = useState<TSwapToken[]>();
 
   const circleProcessRef = useRef<CircleProcessInterface>();
   const [tokenInUsd, setTokenInUsd] = useState('');
@@ -331,26 +332,27 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
   }, [tokenInUsd, tokenOutUsd, valueInfo]);
 
   const refreshTokenValue = useCallback(async () => {
+    if (!(valueInfo.tokenIn && valueInfo.tokenOut)) return;
     const params = {
-      chainId: 'tDVW' as any,
-      symbolIn: valueInfo.tokenIn!.symbol,
-      symbolOut: valueInfo.tokenOut!.symbol,
+      chainId: valueInfo.tokenIn.chainId,
+      symbolIn: valueInfo.tokenIn.symbol,
+      symbolOut: valueInfo.tokenOut.symbol,
       amountOut:
         routeTypeRef.current === RouteType.AmountIn
           ? undefined
-          : timesDecimals(valueInfo.valueOut, valueInfo.tokenOut?.decimals).toFixed(),
+          : timesDecimals(valueInfo.valueOut, valueInfo.tokenOut.decimals).toFixed(),
       amountIn:
         routeTypeRef.current === RouteType.AmountIn
-          ? timesDecimals(valueInfo.valueIn, valueInfo.tokenIn?.decimals).toFixed()
+          ? timesDecimals(valueInfo.valueIn, valueInfo.tokenIn.decimals).toFixed()
           : undefined,
     };
-    // { bestRouters, swapTokens }
-    const routerRes = await awaken?.instance?.getBestRouters(routeTypeRef.current as any, params as any);
+    const routerRes = await awaken?.instance?.getBestRouters(routeTypeRef.current, params);
     const bestRoute = routerRes?.bestRouters?.[0];
     setSwapRoute(bestRoute as any);
+    setSwapTokens(routerRes?.swapTokens);
     const _amountIn = divDecimals(bestRoute?.amountIn, valueInfo.tokenIn?.decimals).toFixed();
     const _amountOut = divDecimals(bestRoute?.amountOut, valueInfo.tokenOut?.decimals).toFixed();
-    setValueInfo((pre: any) => ({
+    setValueInfo((pre) => ({
       ...pre,
       valueIn: _amountIn,
       valueOut: _amountOut,
@@ -364,7 +366,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
   const switchToken = useCallback(async () => {
     if (!(valueInfo.tokenIn && valueInfo.tokenOut)) return;
     const lastOpIn = routeTypeRef.current === RouteType.AmountIn;
-    setValueInfo((pre: any) => ({
+    setValueInfo((pre) => ({
       tokenIn: pre.tokenOut,
       tokenOut: pre.tokenIn,
       valueOut: lastOpIn ? pre.valueIn : '',
@@ -389,7 +391,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
   const onValueInChange = useCallback(
     async (v: string) => {
       if (!v) {
-        setValueInfo((pre: any) => ({
+        setValueInfo((pre) => ({
           ...pre,
           valueIn: '',
           valueOut: '',
@@ -397,7 +399,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
         return;
       }
       if (v && !isValidNumber(v)) return;
-      setValueInfo((pre: any) => ({
+      setValueInfo((pre) => ({
         ...pre,
         valueIn: v,
         valueOut: '',
@@ -410,7 +412,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
   const onValueOutChange = useCallback(
     async (v: string) => {
       if (!v) {
-        setValueInfo((pre: any) => ({
+        setValueInfo((pre) => ({
           ...pre,
           valueIn: '',
           valueOut: '',
@@ -437,7 +439,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
       if (token?.symbol === valueInfo.tokenOut?.symbol) {
         switchToken();
       } else {
-        setValueInfo((pre: any) => ({
+        setValueInfo((pre) => ({
           ...pre,
           tokenIn: token,
           valueIn: '',
@@ -457,7 +459,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
       if (token?.symbol === valueInfo.tokenIn?.symbol) {
         switchToken();
       } else {
-        setValueInfo((pre: any) => ({
+        setValueInfo((pre) => ({
           ...pre,
           tokenOut: token,
           valueOut: '',
@@ -482,7 +484,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
     } else {
       _v = valueInBalance;
     }
-    setValueInfo((pre: any) => ({
+    setValueInfo((pre) => ({
       ...pre,
       valueIn: _v,
       valueOut: '',
@@ -654,6 +656,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
             confirmBtnError === BtnErrEnum.error && 'btn-error',
             confirmBtnError === BtnErrEnum.tip && 'btn-tip',
           )}
+          onClick={() => dispatch(swapActions.setConfirmModalShow.actions(true))}
           disabled={confirmBtnError !== BtnErrEnum.none}>
           {confirmBtnText}
         </CommonButton>

@@ -443,7 +443,7 @@ function APP() {
       />
       {/* <Swap /> */}
       <Swap
-        componentUiType={ComponentType.Web}
+        componentUiType={ComponentType.Mobile}
         awaken={{
           instance: awaken,
           tokenApprove: walletType === WalletTypeEnum.aa ? tokenApprove : undefined,

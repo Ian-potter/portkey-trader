@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import './styles.less';
 import CommonModal from '../../../CommonModal';
 import SelectTokenList from './SelectTokenList';
@@ -11,17 +12,26 @@ interface ISelectTokenModalProps {
   onConfirm?: (token?: TTokenItem) => void;
 }
 
-export default function SelectTokenModal(props: ISelectTokenModalProps) {
+export default function SelectTokenModal({ onConfirm, ...props }: ISelectTokenModalProps) {
   const [{ isMobile, isSelectModalShow }, { dispatch }] = useAwakenSwapContext();
 
-  const onCloseModal = () => {
+  const onCloseModal = useCallback(() => {
     dispatch(swapActions.setSelectTokenModalShow.actions(false));
-  };
+  }, [dispatch]);
+
+  const onSelectToken = useCallback(
+    (token?: TTokenItem) => {
+      onConfirm?.(token);
+      onCloseModal();
+    },
+    [onCloseModal, onConfirm],
+  );
 
   return (
     <CommonModal
       width="420px"
-      height={isMobile ? 'auto' : '632px'}
+      showType={isMobile ? 'drawer' : 'modal'}
+      height={isMobile ? '70%' : '632px'}
       open={isSelectModalShow}
       title={false}
       onCancel={() => {
@@ -31,7 +41,7 @@ export default function SelectTokenModal(props: ISelectTokenModalProps) {
       <div className="modal-panel">
         <div className="modal-panel-content">
           <CommonModalHeader title={'Select a Token'} showClose={true} onClose={onCloseModal} />
-          <SelectTokenList {...props} />
+          <SelectTokenList {...props} onConfirm={onSelectToken} />
         </div>
       </div>
     </CommonModal>

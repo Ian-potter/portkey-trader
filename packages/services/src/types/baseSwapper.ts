@@ -82,6 +82,6 @@ export interface IFetchTokenPriceParams {
   symbol: string;
 }
 
-export interface IFetchTokenPriceResult {
-  data: string;
+export interface IFetchTransactionFeeResult {
+  transactionFee: number | string;
 }
