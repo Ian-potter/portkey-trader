@@ -1,6 +1,6 @@
 {
   "name": "@portkey/trader-utils",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.0",
   "description": "",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
@@ -40,14 +40,14 @@
     "start": "tsc --watch"
   },
   "dependencies": {
-    "@portkey/trader-types": "^0.0.1",
-    "loadsh": "^0.0.4",
-    "@awaken/sdk-core": "git+https://github.com/Awaken-Finance/sdk-core.git"
+    "@awaken/sdk-core": "git+https://github.com/Awaken-Finance/sdk-core.git",
+    "@portkey/trader-types": "^0.0.1-alpha.0",
+    "loadsh": "^0.0.4"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.7",
     "@portkey/contracts": "^2.7.1-alpha.4",
-    "@portkey/utils": "^2.7.1-alpha.4"
+    "@portkey/utils": "^2.7.1-alpha.4",
+    "@types/lodash": "^4.17.7"
   },
   "peerDependencies": {
     "aelf-sdk": "^3.4.7"
