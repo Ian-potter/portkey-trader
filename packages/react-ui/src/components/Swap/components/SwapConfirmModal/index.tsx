@@ -13,7 +13,6 @@ import { IValueInfo } from '../SwapPanel';
 import './styles.less';
 import { RouteType } from '@portkey/trader-services';
 import { TSwapToken } from '@portkey/trader-core';
-import { useIsMobile } from '../../../../hooks/device';
 
 export interface SwapConfirmModalInterface {
   slippageValue: string;
@@ -25,7 +24,7 @@ export interface SwapConfirmModalInterface {
   tokenOutUsd: string;
   tokenInUsd: string;
   unitConversionShow: string;
-  routerInfo: TSwapToken[];
+  routerInfo?: TSwapToken[];
 }
 
 export const SwapConfirmModal = ({
@@ -237,6 +236,7 @@ export const SwapConfirmModal = ({
 
   const approveAndSwap = useCallback(async () => {
     if (!awaken) return;
+    if (!routerInfo) return;
     setIsSwapping(true);
 
     try {

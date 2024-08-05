@@ -346,7 +346,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
           ? timesDecimals(valueInfo.valueIn, valueInfo.tokenIn.decimals).toFixed()
           : undefined,
     };
-    const routerRes = await awaken?.instance?.getBestRouters(routeTypeRef.current, params);
+    const routerRes = await awaken?.instance?.getBestRouters(routeTypeRef.current as any, params as any);
     const bestRoute = routerRes?.bestRouters?.[0];
     setSwapRoute(bestRoute as any);
     setSwapTokens(routerRes?.swapTokens);

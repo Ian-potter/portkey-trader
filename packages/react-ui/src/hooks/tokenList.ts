@@ -9,7 +9,7 @@ export const useTokenList = () => {
   const getList = useCallback(async () => {
     try {
       const list = await awaken?.instance?.getSupportTokenList({ chainId: 'tDVW' });
-      dispatch(swapActions.setSupportTokenList.actions(list || []));
+      dispatch(swapActions.setSupportTokenList.actions((list || []) as any));
     } catch (error) {
       console.log(error);
     }
