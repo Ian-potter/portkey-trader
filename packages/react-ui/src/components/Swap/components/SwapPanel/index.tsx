@@ -15,7 +15,7 @@ import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
 import SelectTokenModal from '../SelectTokenModal';
 import { swapActions } from '../../../../context/AwakenSwap/actions';
 import { useGetTokenPrice } from '../../../../hooks/price';
-import { TTokenItem } from '../../../../types';
+import { ChainId, TTokenItem } from '../../../../types';
 import {
   bigNumberToString,
   getPriceImpactWithBuy,
@@ -241,7 +241,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
     if (!valueInfo.tokenIn?.symbol) return;
     getTokenPrice({
       symbol: valueInfo.tokenIn.symbol,
-      chainId: valueInfo.tokenIn.chainId as any,
+      chainId: valueInfo.tokenIn.chainId as ChainId,
       tokenAddress: valueInfo.tokenIn.address,
     })
       .then((res) => {
@@ -257,7 +257,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
     if (!valueInfo.tokenOut?.symbol) return;
     getTokenPrice({
       symbol: valueInfo.tokenOut.symbol,
-      chainId: valueInfo.tokenOut.chainId as any,
+      chainId: valueInfo.tokenOut.chainId as ChainId,
       tokenAddress: valueInfo.tokenOut.address,
     })
       .then((res) => {
@@ -472,6 +472,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
     [refreshTokenValueDebounce, switchToken, valueInfo.tokenIn?.symbol],
   );
   const onClickMax = useCallback(() => {
+    if (!valueInBalance) return;
     if (!(valueInfo.tokenIn && valueInfo.tokenOut)) return;
     let _v = '0';
     if (valueInfo.tokenIn?.symbol === 'ELF' && gasFee && valueInBalance) {
