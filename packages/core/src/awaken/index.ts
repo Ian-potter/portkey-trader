@@ -16,6 +16,7 @@ import {
   FetchTokenListParams,
   IAwakenService,
   IFetchTokenPriceParams,
+  IFetchTransactionFeeResult,
   IToken,
   RouteType,
 } from '@portkey/trader-services';
@@ -99,13 +100,13 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     return Object.values(tokenMap);
   }
 
-  async getTokenPrice(params: IFetchTokenPriceParams): Promise<any> {
+  async getTokenPrice(params: IFetchTokenPriceParams): Promise<string> {
     const result = await this.services.getTokenPrice(params);
     if (result.code !== '20000') throw result.message;
     return result.data;
   }
 
-  async getTransactionFee(): Promise<any> {
+  async getTransactionFee(): Promise<IFetchTransactionFeeResult> {
     const result = await this.services.getTransactionFee();
     if (result.code !== '20000') throw result.message;
     return result.data;
