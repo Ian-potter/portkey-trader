@@ -255,7 +255,7 @@ export const SwapConfirmModal = ({
         routeType: RouteType.AmountIn,
         contractOption: options?.contractOptions,
         amountIn: valueInfo.valueIn,
-        symbol: valueInfo.tokenIn.symbol,
+        symbol: `${valueInfo.tokenIn?.symbol}`,
         bestSwapTokensInfo: swapTokens,
         slippageTolerance: slippageValue,
         userAddress: options.address,
@@ -268,7 +268,7 @@ export const SwapConfirmModal = ({
     } finally {
       setIsSwapping(false);
     }
-  }, [awaken, dispatch, routerInfo, slippageValue, valueInfo.tokenIn.symbol, valueInfo.valueIn]);
+  }, [awaken, dispatch, routerInfo, slippageValue, valueInfo.tokenIn?.symbol, valueInfo.valueIn]);
 
   return (
     <CommonModal

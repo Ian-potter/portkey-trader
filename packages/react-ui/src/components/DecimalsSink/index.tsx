@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import './index.less';
 
 import { CSSProperties } from 'react';
-import { TSize } from 'types';
+import { TSize } from '../../types';
 
 export interface IBaseDecimalsSinkProps {
   className?: string;
