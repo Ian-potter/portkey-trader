@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.1-alpha.2](https://github.com/Ian-potter/portkey-trader/compare/v0.0.1-alpha.1...v0.0.1-alpha.2) (2024-08-06)
+
+### Bug Fixes
+
+- 🐛 fee show ([3664c8c](https://github.com/Ian-potter/portkey-trader/commit/3664c8caa68a8f0754a9228ab355ce0a87353779))
+
 ## 0.0.1-alpha.1 (2024-08-05)
 
 ### Features
