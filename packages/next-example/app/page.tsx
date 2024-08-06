@@ -442,14 +442,16 @@ function APP() {
         }}
       />
       {/* <Swap /> */}
-      <Swap
-        componentUiType={ComponentType.Mobile}
-        awaken={{
-          instance: awaken,
-          tokenApprove: walletType === WalletTypeEnum.aa ? tokenApprove : undefined,
-          getOptions,
-        }}
-      />
+      <div style={{ width: 375, marginLeft: 50, marginTop: 50 }}>
+        <Swap
+          componentUiType={ComponentType.Mobile}
+          awaken={{
+            instance: awaken,
+            tokenApprove: walletType === WalletTypeEnum.aa ? tokenApprove : undefined,
+            getOptions,
+          }}
+        />
+      </div>
     </main>
   );
 }
