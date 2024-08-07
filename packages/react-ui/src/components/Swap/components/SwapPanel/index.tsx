@@ -577,7 +577,7 @@ export default function SwapPanel({
               />
             ) : (
               <CommonTooltip
-                placement="top"
+                placement="topRight"
                 overlayStyle={{ maxWidth: '1000px' }}
                 title={<SwapOrderRouting swapRoute={swapRoute} />}>
                 <CommonSvg type="icon-arrow-up2" />
@@ -724,7 +724,7 @@ export default function SwapPanel({
                     }}
                   />
                 ) : (
-                  <CommonTooltip placement="top" title={info.tooltipMsg} getPopupContainer={(v) => v} />
+                  <CommonTooltip placement="topLeft" title={info.tooltipMsg} getPopupContainer={(v) => v} />
                 )}
               </div>
               <div className="price-swap-info-value">{info.value}</div>
