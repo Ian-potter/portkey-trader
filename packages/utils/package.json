@@ -1,6 +1,6 @@
 {
   "name": "@portkey/trader-utils",
-  "version": "0.0.1-alpha.6",
+  "version": "0.0.1-alpha.7",
   "description": "",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@awaken/sdk-core": "git+https://github.com/Awaken-Finance/sdk-core.git",
-    "@portkey/trader-types": "^0.0.1-alpha.6",
+    "@portkey/trader-types": "^0.0.1-alpha.7",
     "loadsh": "^0.0.4"
   },
   "devDependencies": {
