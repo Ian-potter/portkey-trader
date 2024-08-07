@@ -25,6 +25,7 @@ export interface SwapConfirmModalInterface {
   tokenInUsd: string;
   unitConversionShow: string;
   routerInfo?: TSwapToken[];
+  onConfirmSwap?: () => void;
 }
 
 export const SwapConfirmModal = ({
@@ -38,6 +39,7 @@ export const SwapConfirmModal = ({
   tokenInUsd,
   unitConversionShow,
   routerInfo,
+  onConfirmSwap,
 }: SwapConfirmModalInterface) => {
   const [{ isConfirmModalShow, awaken, isMobile }, { dispatch }] = useAwakenSwapContext();
   const [isSwapping, setIsSwapping] = useState(false);
@@ -262,12 +264,13 @@ export const SwapConfirmModal = ({
       });
       message.success('Swap Success!');
       dispatch(swapActions.setConfirmModalShow.actions(false));
+      onConfirmSwap?.();
     } catch (error) {
       console.log(error);
     } finally {
       setIsSwapping(false);
     }
-  }, [awaken, dispatch, routerInfo, slippageValue, valueInfo.tokenIn?.symbol, valueInfo.valueIn]);
+  }, [awaken, dispatch, onConfirmSwap, routerInfo, slippageValue, valueInfo.tokenIn?.symbol, valueInfo.valueIn]);
 
   return (
     <CommonModal
