@@ -41,6 +41,7 @@ export interface ISwapPanel {
   wrapClassName?: string;
   selectTokenInSymbol?: string;
   selectTokenOutSymbol?: string;
+  onConfirmSwap?: () => void;
 }
 
 export type TSwapInfo = {
@@ -64,7 +65,12 @@ export interface IValueInfo {
   valueOut: string;
 }
 
-export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTokenOutSymbol }: ISwapPanel) {
+export default function SwapPanel({
+  wrapClassName,
+  selectTokenInSymbol,
+  selectTokenOutSymbol,
+  onConfirmSwap,
+}: ISwapPanel) {
   const allTokens = useTokenList();
   const [{ isMobile, awaken }, { dispatch }] = useAwakenSwapContext();
   const [extraPriceInfoShow, setExtraPriceInfoShow] = useState(false);
@@ -618,6 +624,26 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
     return `Swap`;
   }, [valueInBalance, valueInfo.tokenIn, valueInfo.tokenOut, valueInfo.valueIn]);
 
+  const handleConfirmSwapSuccess = useCallback(() => {
+    onConfirmSwap?.();
+    if (allTokens.length) {
+      let _tokenIn = valueInfo.tokenIn;
+      let _tokenOut = valueInfo.tokenOut;
+      if (selectTokenInSymbol) {
+        _tokenIn = allTokens.find((item) => item.symbol === selectTokenInSymbol);
+      }
+      if (selectTokenOutSymbol) {
+        _tokenOut = allTokens.find((item) => item.symbol === selectTokenOutSymbol);
+      }
+      setValueInfo({
+        valueIn: '',
+        valueOut: '',
+        tokenIn: _tokenIn,
+        tokenOut: _tokenOut,
+      });
+    }
+  }, [allTokens, onConfirmSwap, selectTokenInSymbol, selectTokenOutSymbol, valueInfo.tokenIn, valueInfo.tokenOut]);
+
   return (
     <div className={clsx('swap-panel-wrapper', isMobile && 'swap-panel-wrapper-mobile', wrapClassName)}>
       <InputContainer
@@ -725,6 +751,7 @@ export default function SwapPanel({ wrapClassName, selectTokenInSymbol, selectTo
         tokenInUsd={tokenOutUsd}
         unitConversionShow={unitConversionShow}
         routerInfo={swapTokens}
+        onConfirmSwap={handleConfirmSwapSuccess}
       />
     </div>
   );
