@@ -444,6 +444,8 @@ function APP() {
       {/* <Swap /> */}
       <div style={{ width: 375, marginLeft: 50, marginTop: 50 }}>
         <Swap
+          selectTokenInSymbol="ELF"
+          selectTokenOutSymbol="USDT"
           componentUiType={ComponentType.Mobile}
           awaken={{
             instance: awaken,
