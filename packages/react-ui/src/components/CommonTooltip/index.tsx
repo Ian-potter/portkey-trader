@@ -56,16 +56,7 @@ export default function CommonTooltip({
     if (typeof onClick === 'function') {
       return onClick();
     }
-
-    // modalDispatch(
-    //   basicModalView.setTooltipModal.actions({
-    //     width,
-    //     title: title as ReactNode,
-    //     headerDesc,
-    //     buttonTitle,
-    //   }),
-    // );
-  }, [useTooltip, onClick]);
+  }, [isMobile, useTooltip, onClick]);
 
   const renderAlign = useMemo(() => {
     if (align) {
@@ -75,19 +66,19 @@ export default function CommonTooltip({
     switch (placement) {
       case 'bottomLeft':
         return {
-          offset: [-22, 0],
+          offset: [-20, -10],
         };
       case 'topLeft':
         return {
-          offset: [-25, 0],
+          offset: [-20, -10],
         };
       case 'topRight':
         return {
-          offset: [22, 0],
+          offset: [20, -10],
         };
       case 'bottomRight':
         return {
-          offset: [25, 0],
+          offset: [20, -10],
         };
     }
 
