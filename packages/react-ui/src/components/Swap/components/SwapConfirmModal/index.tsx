@@ -1,6 +1,6 @@
 import Font from '../../../Font';
 import { useMemo, useCallback, useState } from 'react';
-import { divDecimals, formatSymbol, ZERO } from '@portkey/trader-utils';
+import { divDecimals, formatSymbol, timesDecimals, ZERO } from '@portkey/trader-utils';
 import { Col, Row, message } from 'antd';
 import CommonModal from '../../../CommonModal';
 import CommonButton from '../../../CommonButton';
@@ -255,10 +255,10 @@ export const SwapConfirmModal = ({
       await awaken?.instance?.swap({
         routeType: RouteType.AmountIn,
         contractOption: options?.contractOptions,
-        amountIn: valueInfo.valueIn,
+        amountIn: timesDecimals(valueInfo.valueIn, valueInfo.tokenIn?.decimals).toFixed(),
         symbol: `${valueInfo.tokenIn?.symbol}`,
         bestSwapTokensInfo: swapTokens,
-        slippageTolerance: slippageValue,
+        slippageTolerance: ZERO.plus(slippageValue).div(100).toFixed(),
         userAddress: options.address,
         tokenApprove: awaken.tokenApprove,
       });
@@ -266,11 +266,11 @@ export const SwapConfirmModal = ({
       dispatch(swapActions.setConfirmModalShow.actions(false));
       onConfirmSwap?.();
     } catch (error) {
-      console.log(error);
+      console.log('===approveAndSwap error', error);
     } finally {
       setIsSwapping(false);
     }
-  }, [awaken, dispatch, onConfirmSwap, routerInfo, slippageValue, valueInfo.tokenIn?.symbol, valueInfo.valueIn]);
+  }, [awaken, dispatch, onConfirmSwap, routerInfo, slippageValue, valueInfo]);
 
   return (
     <CommonModal
