@@ -7,13 +7,20 @@
   color: var(--ant-black-font-color-1);
   box-shadow: none !important;
 
-  .ant-input {
-    background-color: var(--ant-input-bg-color);
+  .portkey-trade-ant-input {
     color: var(--ant-black-font-color-1);
     box-shadow: none !important;
     // &.ant-input-status-error {
     //   border-color: #e43555;
     // }
+  }
+
+  .portkey-trade-input-outlined {
+    background-color: transparent !important;
+    &:focus-within,
+    &:hover {
+      background-color: transparent !important;
+    }
   }
 
   &:hover,
@@ -36,24 +43,24 @@
     }
   }
 
-  .ant-input-clear-icon {
+  .portkey-trade-ant-input-clear-icon {
     display: inline-flex;
     align-items: center;
   }
 }
 
-.common-input.ant-input-affix-wrapper {
+.common-input.portkey-trade-ant-input-affix-wrapper {
   background-color: var(--ant-input-bg-color);
   border-color: var(--ant-input-bg-color);
   border-width: 1px;
 }
-.common-input.ant-input-affix-wrapper:focus,
-.common-input.ant-input-affix-wrapper-focused {
+.common-input.portkey-trade-ant-input-affix-wrapper:focus,
+.common-input.portkey-trade-ant-input-affix-wrapper-focused {
   box-shadow: none;
   border-color: var(--ant-border-color);
 }
 
-.common-input.ant-input {
+.common-input.portkey-trade-ant-input {
   background-color: var(--ant-input-bg-color);
   padding: 0 8px;
   border-radius: 4px;

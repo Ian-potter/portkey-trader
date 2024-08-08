@@ -14,8 +14,8 @@ export type CommonModalHeaderProps = {
 
 export default function CommonModalHeader({ title, showClose, onClose }: CommonModalHeaderProps) {
   return (
-    <div className="ant-modal-header common-modal-header">
-      <div className="ant-modal-title">
+    <div className="portkey-trade-ant-modal-header common-modal-header">
+      <div className="portkey-trade-ant-modal-title">
         <span className="default-font-style font-weight-medium font-color-one font-size-16 line-height-undefined text-align-left">
           {title}
         </span>
