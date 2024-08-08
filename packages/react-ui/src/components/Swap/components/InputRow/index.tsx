@@ -55,7 +55,7 @@ export default function InputContainer({
   );
 
   const valueInUsd = useMemo(() => {
-    if (!(value && priceInUsd)) return '-';
+    if (!(value && priceInUsd)) return undefined;
     return ZERO.plus(value).times(priceInUsd);
   }, [priceInUsd, value]);
 
