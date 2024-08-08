@@ -276,7 +276,7 @@ export default function SwapPanel({
   }, [getTokenPrice, valueInfo.tokenOut]);
 
   useEffect(() => {
-    if (!valueInfo.tokenIn?.symbol) {
+    if (!(valueInfo.tokenIn?.symbol && owner)) {
       setValueInBalance('');
     } else {
       getBalance({ symbol: valueInfo.tokenIn.symbol, owner, awaken })
@@ -292,7 +292,7 @@ export default function SwapPanel({
   }, [awaken, owner, valueInfo.tokenIn?.decimals, valueInfo.tokenIn?.symbol]);
 
   useEffect(() => {
-    if (!valueInfo.tokenOut?.symbol) {
+    if (!(valueInfo.tokenOut?.symbol && owner)) {
       setValueOutBalance('');
     } else {
       getBalance({ symbol: valueInfo.tokenOut.symbol, owner, awaken })
@@ -612,7 +612,7 @@ export default function SwapPanel({
       setConfirmBtnError(BtnErrEnum.tip);
       return `Select a token`;
     }
-    if (!valueInfo.valueIn) {
+    if (!Number(valueInfo.valueIn)) {
       setConfirmBtnError(BtnErrEnum.tip);
       return `Enter an amount`;
     }
