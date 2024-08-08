@@ -747,8 +747,8 @@ export default function SwapPanel({
         swapFeeValue={swapFeeValue}
         gasFeeValue={gasFee}
         valueInfo={valueInfo}
-        tokenOutUsd={tokenInUsd}
-        tokenInUsd={tokenOutUsd}
+        tokenOutUsd={tokenOutUsd}
+        tokenInUsd={tokenInUsd}
         unitConversionShow={unitConversionShow}
         routerInfo={swapTokens}
         onConfirmSwap={handleConfirmSwapSuccess}
