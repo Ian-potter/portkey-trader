@@ -1,6 +1,6 @@
 {
   "name": "@portkey/trader-services",
-  "version": "0.0.1-alpha.12",
+  "version": "0.0.1-alpha.13",
   "description": "",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
@@ -54,5 +54,5 @@
     "aelf-sdk": "^3.4.7",
     "query-string": "^7.1.1"
   },
-  "gitHead": "9ba1306de72b5035883d7b102fe84beb36b5e258"
+  "gitHead": "9d563d81e462108ba52bb77e4691e7c9b1e9a34e"
 }

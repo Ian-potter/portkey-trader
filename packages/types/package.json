@@ -1,6 +1,6 @@
 {
   "name": "@portkey/trader-types",
-  "version": "0.0.1-alpha.12",
+  "version": "0.0.1-alpha.13",
   "description": "",
   "main": "./dist/commonjs/index.js",
   "module": "./dist/esm/index.js",
@@ -38,5 +38,6 @@
     "lint:fix": "eslint --fix --ext .js,.ts .",
     "format": "prettier --write '**/*'",
     "start": "tsc --watch"
-  }
+  },
+  "gitHead": "9d563d81e462108ba52bb77e4691e7c9b1e9a34e"
 }
