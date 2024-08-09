@@ -6,11 +6,10 @@ import { useAwakenSwapContext } from '../../../../context/AwakenSwap';
 import { swapActions } from '../../../../context/AwakenSwap/actions';
 import CommonModalHeader from '../../../CommonModalHeader';
 import { SwapOrderRouting } from './index';
-import { TPercentInfo, TSwapRoute } from '../../types';
+import { TSwapRoute } from '../../types';
 
 export type SwapOrderRoutingModal = {
   swapRoute?: TSwapRoute;
-  percentRoutes?: TPercentInfo[];
 };
 
 export const SwapOrderRoutingModal = (props: SwapOrderRoutingModal) => {

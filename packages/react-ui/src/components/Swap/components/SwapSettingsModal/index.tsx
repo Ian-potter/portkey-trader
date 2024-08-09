@@ -4,7 +4,7 @@ import { swapActions } from '../../../../context/AwakenSwap/actions';
 import './styles.less';
 import CommonModalHeader from '../../../CommonModalHeader';
 import CommonButton from '../../../CommonButton';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import { Col, Row } from 'antd';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +14,8 @@ import CommonInput from '../../../CommonInput';
 import BigNumber from 'bignumber.js';
 import { timesDecimals } from '@portkey/trader-utils';
 import CommonTooltip from '../../../CommonTooltip';
+import { DEFAULT_SLIPPAGE_TOLERANCE, STORAGE_SLIPPAGE_TOLERANCE_KEY } from '../../../../constants/swap';
+import CommonSvg from '../../../../components/CommonSvg';
 
 interface SwapSettingsModalProps {
   value: string;
@@ -26,7 +28,11 @@ export default function SwapSettingsModal(props: SwapSettingsModalProps) {
   const [{ isSettingModalShow, isMobile }, { dispatch }] = useAwakenSwapContext();
 
   const [inputVal, setInputVal] = useState(value || '0');
-  const [userSlippageTolerance, setUserSlippageTolerance] = useState(value || '0.005');
+  const [userSlippageTolerance, setUserSlippageTolerance] = useState(value || DEFAULT_SLIPPAGE_TOLERANCE);
+
+  useLayoutEffect(() => {
+    setUserSlippageTolerance(value);
+  }, [value]);
 
   const onCloseModal = useCallback(() => {
     dispatch(swapActions.setSettingModalShow.actions(false));
@@ -34,6 +40,7 @@ export default function SwapSettingsModal(props: SwapSettingsModalProps) {
 
   const onSave = useCallback(() => {
     onConfirm(userSlippageTolerance);
+    localStorage.setItem(STORAGE_SLIPPAGE_TOLERANCE_KEY, userSlippageTolerance);
     onCloseModal?.();
   }, [onCloseModal, onConfirm, userSlippageTolerance]);
 
@@ -66,7 +73,7 @@ export default function SwapSettingsModal(props: SwapSettingsModalProps) {
       return;
     }
     setInputVal(bigUserSlippageTolerance.times(100).toString());
-  }, [userSlippageTolerance]);
+  }, [userSlippageTolerance, value]);
 
   return (
     <CommonModal
@@ -83,11 +90,26 @@ export default function SwapSettingsModal(props: SwapSettingsModalProps) {
         <div className="content-wrap">
           <div className="tips-wrap">
             <span className="price-swap-info-label">{'Max. Slippage'}</span>
-            <CommonTooltip
-              placement="top"
-              title={'The trade will be cancelled when slippage exceeds this percentage.'}
-              getPopupContainer={(v) => v}
-            />
+            {isMobile ? (
+              <CommonSvg
+                type="icon-question"
+                onClick={() => {
+                  dispatch(
+                    swapActions.setTipsModalInfo.actions({
+                      title: 'Max. Slippage',
+                      content: 'The trade will be cancelled when slippage exceeds this percentage.',
+                    }),
+                  );
+                  dispatch(swapActions.setTipsModalShow.actions(true));
+                }}
+              />
+            ) : (
+              <CommonTooltip
+                placement="top"
+                title={'The trade will be cancelled when slippage exceeds this percentage.'}
+                getPopupContainer={(v) => v}
+              />
+            )}
           </div>
 
           <Row gutter={[0, 8]}>

@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo, useEffect, useRef } from 'react';
+import { useCallback, useState, useMemo, useEffect, useRef, useLayoutEffect } from 'react';
 import { useEffectOnce } from 'react-use';
 import clsx from 'clsx';
 import InputContainer from '../InputRow';
@@ -32,7 +32,7 @@ import { getBalance } from '../../../../utils/getBalance';
 import { useTokenList } from '../../../../hooks/tokenList';
 import { SwapOrderRoutingModal } from '../SwapOrderRouting/SwapOrderRoutingModal';
 import { useDebounceCallback } from '../../../../hooks';
-import { DEFAULT_SLIPPAGE_TOLERANCE } from '../../../../constants/swap';
+import { DEFAULT_SLIPPAGE_TOLERANCE, STORAGE_SLIPPAGE_TOLERANCE_KEY } from '../../../../constants/swap';
 import Font from '../../../../components/Font';
 import { SwapOrderRouting } from '../SwapOrderRouting';
 import { TSwapToken } from '@portkey/trader-core';
@@ -102,6 +102,12 @@ export default function SwapPanel({
   const [userSlippageTolerance, setUserSlippageTolerance] = useState(DEFAULT_SLIPPAGE_TOLERANCE);
   const timerFlagRef = useRef(false);
   const [owner, setOwner] = useState('');
+
+  // init
+  useLayoutEffect(() => {
+    if (localStorage.getItem(STORAGE_SLIPPAGE_TOLERANCE_KEY))
+      setUserSlippageTolerance(localStorage.getItem(STORAGE_SLIPPAGE_TOLERANCE_KEY) || DEFAULT_SLIPPAGE_TOLERANCE);
+  }, []);
 
   useEffect(() => {
     awaken
@@ -568,7 +574,7 @@ export default function SwapPanel({
         value: (
           <div className="portkey-swap-flex-row-center">
             {valueInfo.tokenIn && valueInfo.tokenOut && (
-              <CurrencyLogos size={20} tokens={[valueInfo.tokenIn, valueInfo.tokenOut]} />
+              <CurrencyLogos isSortToken={false} size={20} tokens={[valueInfo.tokenIn, valueInfo.tokenOut]} />
             )}
             {isMobile ? (
               <CommonSvg
@@ -578,7 +584,7 @@ export default function SwapPanel({
             ) : (
               <CommonTooltip
                 placement="topRight"
-                overlayStyle={{ maxWidth: '1000px' }}
+                overlayStyle={{ minWidth: '350px', maxWidth: '1000px' }}
                 title={<SwapOrderRouting swapRoute={swapRoute} />}>
                 <CommonSvg type="icon-arrow-up2" />
               </CommonTooltip>
