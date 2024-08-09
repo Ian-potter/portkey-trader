@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.1-alpha.14](https://github.com/Ian-potter/portkey-trader/compare/v0.0.1-alpha.13...v0.0.1-alpha.14) (2024-08-09)
+
+### Bug Fixes
+
+- 🐛 swap ([f0d3ec5](https://github.com/Ian-potter/portkey-trader/commit/f0d3ec5517645348f57a9ef093134079f86aecfb))
+
 ## [0.0.1-alpha.13](https://github.com/Ian-potter/portkey-trader/compare/v0.0.1-alpha.12...v0.0.1-alpha.13) (2024-08-09)
 
 **Note:** Version bump only for package root
