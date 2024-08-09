@@ -255,7 +255,7 @@ function APP() {
         account: aelf.getWallet(COMMON_PRIVATE),
       },
     });
-    console.log('🌹🌹🌹GetBalance', res);
+    console.log('GetBalance', res);
   }, []);
 
   const [walletType, setWalletType] = useState<WalletTypeEnum>(WalletTypeEnum.unknown);

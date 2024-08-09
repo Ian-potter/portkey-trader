@@ -15,6 +15,7 @@ import { RouteType } from '@portkey/trader-services';
 import { TSwapToken } from '@portkey/trader-core';
 
 export interface SwapConfirmModalInterface {
+  routeType: RouteType;
   slippageValue: string;
   amountOutMinValue: string;
   priceImpact: string;
@@ -29,6 +30,7 @@ export interface SwapConfirmModalInterface {
 }
 
 export const SwapConfirmModal = ({
+  routeType,
   gasFeeValue,
   slippageValue,
   amountOutMinValue,
@@ -247,13 +249,13 @@ export const SwapConfirmModal = ({
       if (!options?.contractOptions) return;
 
       const swapTokens = await awaken?.instance?.checkBestRouters({
-        routeType: RouteType.AmountIn,
+        routeType,
         swapTokens: routerInfo,
       });
       if (!swapTokens) return;
 
       await awaken?.instance?.swap({
-        routeType: RouteType.AmountIn,
+        routeType,
         contractOption: options?.contractOptions,
         amountIn: timesDecimals(valueInfo.valueIn, valueInfo.tokenIn?.decimals).toFixed(),
         symbol: `${valueInfo.tokenIn?.symbol}`,
@@ -266,11 +268,12 @@ export const SwapConfirmModal = ({
       dispatch(swapActions.setConfirmModalShow.actions(false));
       onConfirmSwap?.();
     } catch (error) {
+      message.error('Swap Failed.');
       console.log('===approveAndSwap error', error);
     } finally {
       setIsSwapping(false);
     }
-  }, [awaken, dispatch, onConfirmSwap, routerInfo, slippageValue, valueInfo]);
+  }, [awaken, dispatch, onConfirmSwap, routerInfo, slippageValue, valueInfo, routeType]);
 
   return (
     <CommonModal

@@ -233,7 +233,6 @@ export default function SwapPanel({
     if (!tokenIn || !tokenOut) return;
     timerFlagRef.current = true;
     registerTimer();
-    console.log('🌹🌹🌹register');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valueInfo]);
 
@@ -369,7 +368,6 @@ export default function SwapPanel({
       valueIn: _amountIn,
       valueOut: _amountOut,
     }));
-    console.log('🌹🌹🌹onValueOutChange', routerRes);
   }, [awaken?.instance, valueInfo.tokenIn, valueInfo.tokenOut, valueInfo.valueIn, valueInfo.valueOut]);
 
   refreshTokenValueRef.current = refreshTokenValue;
@@ -416,6 +414,7 @@ export default function SwapPanel({
         valueIn: v,
         valueOut: '',
       }));
+      setOpTokenIn(true);
       routeTypeRef.current = RouteType.AmountIn;
       refreshTokenValueDebounce();
     },
@@ -437,6 +436,7 @@ export default function SwapPanel({
         valueOut: v,
         valueIn: '',
       });
+      setOpTokenIn(false);
       routeTypeRef.current = RouteType.AmountOut;
       refreshTokenValueDebounce();
     },
@@ -456,6 +456,7 @@ export default function SwapPanel({
           tokenIn: token,
           valueIn: '',
         }));
+        setOpTokenIn(false);
         routeTypeRef.current = RouteType.AmountOut;
         refreshTokenValueDebounce();
       }
@@ -477,6 +478,7 @@ export default function SwapPanel({
           valueOut: '',
           valueIn: '',
         }));
+        setOpTokenIn(true);
         routeTypeRef.current = RouteType.AmountIn;
         refreshTokenValueDebounce();
       }
@@ -502,6 +504,7 @@ export default function SwapPanel({
       valueIn: _v,
       valueOut: '',
     }));
+    setOpTokenIn(true);
     routeTypeRef.current = RouteType.AmountIn;
     refreshTokenValueDebounce();
   }, [gasFee, refreshTokenValueDebounce, valueInBalance, valueInfo.tokenIn, valueInfo.tokenOut]);
@@ -747,6 +750,7 @@ export default function SwapPanel({
       />
       <SwapSettingsModal value={userSlippageTolerance} onConfirm={setUserSlippageTolerance} />
       <SwapConfirmModal
+        routeType={opTokenIn ? RouteType.AmountIn : RouteType.AmountOut}
         slippageValue={slippageValue}
         amountOutMinValue={amountOutMinValue}
         priceImpact={priceImpact}
