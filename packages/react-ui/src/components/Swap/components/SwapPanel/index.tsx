@@ -169,12 +169,19 @@ export default function SwapPanel({
     swapRoute.distributions.forEach((path) => {
       for (let i = 0; i < path.tokens.length - 1; i++) {
         const tradePairExtension = path.tradePairExtensions[i];
+        const tradePair = path.tradePairs[i];
         const tokenIn = path.tokens[i];
         const tokenOut = path.tokens[i + 1];
-        const tokenInReserve = ZERO.plus(tradePairExtension.valueLocked0);
-        const tokenOutReserve = ZERO.plus(tradePairExtension.valueLocked1);
+        let tokenInReserve = ZERO.plus(tradePairExtension.valueLocked0);
+        let tokenOutReserve = ZERO.plus(tradePairExtension.valueLocked1);
+        if (tokenIn.symbol !== tradePair.token0.symbol) {
+          tokenInReserve = ZERO.plus(tradePairExtension.valueLocked1);
+          tokenOutReserve = ZERO.plus(tradePairExtension.valueLocked0);
+        }
+
         const valueIn = divDecimals(path.amounts[i], tokenIn.decimals);
         const valueOut = divDecimals(path.amounts[i + 1], tokenOut.decimals);
+
         const _impact = getPriceImpactWithBuy(tokenOutReserve, tokenInReserve, valueIn, valueOut);
         impactList.push(_impact);
       }
@@ -182,6 +189,7 @@ export default function SwapPanel({
 
     return `${bigNumberToString(BigNumber.max(...impactList), 2)}%`;
   }, [swapRoute]);
+
   const swapFeeValue = useMemo(() => {
     const { tokenIn, valueIn } = valueInfo;
 

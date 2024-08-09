@@ -39,7 +39,7 @@ const awaken = new AwakenSwapper({
     rpcUrl: 'https://tdvw-test-node.aelf.io',
   },
   requestDefaults: {
-    baseURL: 'https://test.awaken.finance',
+    baseURL: 'https://test-app.awaken.finance',
   },
 });
 
