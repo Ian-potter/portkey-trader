@@ -218,7 +218,6 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
     routeType,
     contractOption,
     amountIn,
-    amountOut,
     symbol,
     bestSwapTokensInfo,
     slippageTolerance,
@@ -240,7 +239,7 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
       case RouteType.AmountOut:
       default:
         methodName = 'SwapTokensForExactTokens';
-        needApproveAmount = amountOut;
+        needApproveAmount = amountIn;
         needApproveKey = 'amountOut';
         break;
     }
