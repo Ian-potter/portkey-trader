@@ -2,6 +2,7 @@ import React, { createContext, useMemo, useReducer, useContext } from 'react';
 import { AwakenSwapActions, AwakenSwapState } from './actions';
 import { BasicActions } from '../utils';
 import { IAwakenConfig } from '../../types/config';
+import { ChainId } from '../../types';
 
 const INITIAL_STATE: AwakenSwapState = {
   isSelectModalShow: false,
@@ -25,10 +26,12 @@ export function AwakenSwapProvider({
   children,
   isMobile,
   awaken,
+  chainId,
 }: {
   children: React.ReactNode;
   isMobile: boolean;
   awaken?: IAwakenConfig;
+  chainId?: ChainId;
 }) {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
@@ -37,11 +40,12 @@ export function AwakenSwapProvider({
       {
         awaken,
         isMobile,
+        chainId,
         ...state,
       },
       { dispatch },
     ];
-  }, [awaken, isMobile, state]);
+  }, [awaken, chainId, isMobile, state]);
 
   return <AwakenSwapContext.Provider value={providerValue}>{children}</AwakenSwapContext.Provider>;
 }

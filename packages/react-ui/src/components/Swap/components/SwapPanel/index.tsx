@@ -71,8 +71,10 @@ export default function SwapPanel({
   selectTokenOutSymbol,
   onConfirmSwap,
 }: ISwapPanel) {
-  const allTokens = useTokenList();
-  const [{ isMobile, awaken }, { dispatch }] = useAwakenSwapContext();
+  const [{ isMobile, awaken, chainId }, { dispatch }] = useAwakenSwapContext();
+
+  const allTokens = useTokenList(chainId);
+
   const [extraPriceInfoShow, setExtraPriceInfoShow] = useState(false);
   const [valueInfo, setValueInfo] = useState<IValueInfo>({
     tokenIn: undefined,

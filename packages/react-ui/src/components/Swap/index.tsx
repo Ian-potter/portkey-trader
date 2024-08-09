@@ -6,10 +6,10 @@ import { ComponentType } from '../../types';
 import { ISwapProps } from '../../types/config';
 import { ConfigProvider } from 'antd';
 
-export const Swap = ({ componentUiType, containerClassName, awaken, ...props }: ISwapProps) => {
+export const Swap = ({ componentUiType, containerClassName, awaken, chainId, ...props }: ISwapProps) => {
   return (
     <ConfigProvider prefixCls="portkey-trade-ant">
-      <AwakenSwapProvider isMobile={componentUiType === ComponentType.Mobile} awaken={awaken}>
+      <AwakenSwapProvider isMobile={componentUiType === ComponentType.Mobile} awaken={awaken} chainId={chainId}>
         <div className={clsx(['swap-page', containerClassName])}>
           {componentUiType === ComponentType.Mobile ? <SwapPanel {...props} /> : <SwapPanel {...props} />}
         </div>

@@ -1,4 +1,4 @@
-import { TTokenItem } from '../../types';
+import { ChainId, TTokenItem } from '../../types';
 import { basicActions } from '../utils';
 import { IAwakenConfig } from '../../types/config';
 
@@ -27,6 +27,7 @@ export interface AwakenSwapState {
   };
   awaken?: IAwakenConfig;
   supportTokenList: TTokenItem[];
+  chainId?: ChainId;
 }
 
 export const swapActions = {
