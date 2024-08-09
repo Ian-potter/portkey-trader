@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.1-alpha.15](https://github.com/Portkey-Wallet/portkey-trader/compare/v0.0.1-alpha.14...v0.0.1-alpha.15) (2024-08-09)
+
+### Bug Fixes
+
+- 🐛 swap ([845062f](https://github.com/Portkey-Wallet/portkey-trader/commit/845062f7d955f6cd6127bd34c235c22d6e7617f5))
+
 ## [0.0.1-alpha.14](https://github.com/Portkey-Wallet/portkey-trader/compare/v0.0.1-alpha.13...v0.0.1-alpha.14) (2024-08-09)
 
 ### Bug Fixes
