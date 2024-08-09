@@ -1,6 +1,6 @@
 import Font from '../../../Font';
 import { useMemo, useCallback, useState } from 'react';
-import { divDecimals, formatSymbol, timesDecimals, ZERO } from '@portkey/trader-utils';
+import { divDecimals, formatSymbol, handleErrorMessage, timesDecimals, ZERO } from '@portkey/trader-utils';
 import { Col, Row, message } from 'antd';
 import CommonModal from '../../../CommonModal';
 import CommonButton from '../../../CommonButton';
@@ -12,7 +12,7 @@ import CommonModalHeader from '../../../CommonModalHeader';
 import { IValueInfo } from '../SwapPanel';
 import './styles.less';
 import { RouteType } from '@portkey/trader-services';
-import { TSwapToken } from '@portkey/trader-core';
+import { ErrorCodeEnum, TSwapToken } from '@portkey/trader-core';
 
 export interface SwapConfirmModalInterface {
   routeType: RouteType;
@@ -268,7 +268,11 @@ export const SwapConfirmModal = ({
       dispatch(swapActions.setConfirmModalShow.actions(false));
       onConfirmSwap?.();
     } catch (error) {
-      message.error('Swap Failed.');
+      let errMsg = handleErrorMessage(error || 'Swap Failed.');
+      if (errMsg == ErrorCodeEnum.balanceNotEnough) {
+        errMsg = `Insufficient balance for swapping. Please send some tokens to your account or adjust the swapping amount and try again.`;
+      }
+      message.error(errMsg);
       console.log('===approveAndSwap error', error);
     } finally {
       setIsSwapping(false);
