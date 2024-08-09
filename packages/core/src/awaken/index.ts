@@ -27,7 +27,7 @@ import { IAwakenSwapperConfig } from './types';
 import { SwapperConfig } from '../config';
 import { getContractBasic } from '@portkey/contracts';
 import { aelf } from '@portkey/utils';
-import { COMMON_PRIVATE, DEFAULT_CID } from '../constants';
+import { COMMON_PRIVATE, DEFAULT_CID, ErrorCodeEnum } from '../constants';
 import { getTokenContractAddress, handleErrorMessage } from '@portkey/trader-utils';
 import { getDeadline } from '../utils';
 import { maxAmountIn, minimumAmountOut } from '../utils/awaken';
@@ -251,6 +251,15 @@ export class AwakenSwapper implements IPortkeySwapperAdapter {
       amount: needApproveAmount,
       contractOption,
     });
+
+    const balanceRes = await this.getBalance({
+      symbol,
+      owner: userAddress,
+      contractOption,
+    });
+    if (ZERO.plus(balanceRes.balance).lt(amountIn)) {
+      throw ErrorCodeEnum.balanceNotEnough;
+    }
 
     const getAmount = (amountIn: string, amountOut: string) =>
       routeType === RouteType.AmountIn

@@ -60,7 +60,7 @@ export type TTokenApproveHandler = (params: {
 
 export type TSwapperParams = {
   routeType: RouteType;
-  amountIn?: string | number;
+  amountIn: string | number;
   amountOut?: string | number;
   symbol: string;
   tokenApprove?: TTokenApproveHandler;

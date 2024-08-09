@@ -5,3 +5,7 @@ export const DEFAULT_EXPIRATION = '20';
 export const DEFAULT_CID = 'portkey';
 
 export const DEFAULT_SLIPPAGE_TOLERANCE = '0.005';
+
+export enum ErrorCodeEnum {
+  balanceNotEnough = 'balanceNotEnough',
+}
